@@ -1,11 +1,13 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.WebApi.ViewModels.GameReports;
-    using VolleyManagement.UnitTests.Mvc.ViewModels;
+    using Mvc.ViewModels;
 
     [ExcludeFromCodeCoverage]
     internal class PivotStandingsGameViewModelComparer : IComparer, IComparer<PivotStandingsGameViewModel>
@@ -36,8 +38,8 @@
 
         private int CompareInternal(PivotStandingsGameViewModel x, PivotStandingsGameViewModel y)
         {
-            Assert.AreEqual(x.AwayTeamId, y.AwayTeamId, $" AwayTeamId should match");
-            Assert.AreEqual(x.HomeTeamId, y.HomeTeamId, $" HomeTeamId should match");
+            y.AwayTeamId.Should().Be(x.AwayTeamId, $" AwayTeamId should match");
+            y.HomeTeamId.Should().Be(x.HomeTeamId, $" HomeTeamId should match");
 
             TestHelper.AreEqual(x.Results, y.Results, new ShortGameResultViewModelComparer());
 

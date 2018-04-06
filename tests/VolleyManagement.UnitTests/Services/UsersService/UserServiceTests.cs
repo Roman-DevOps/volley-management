@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using MSTestExtensions;
     using System.Collections;
@@ -20,7 +20,7 @@
     using PlayerService;
 
     [ExcludeFromCodeCoverage]
-    [TestClass]
+    
     public class UserServiceTests : BaseTest
     {
         private const int EXISTING_ID = 1;
@@ -39,8 +39,7 @@
         /// <summary>
         /// Initializes test data.
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public UserServiceTests()
         {
             _authServiceMock = new Mock<IAuthorizationService>();
             _userRepositoryMock = new Mock<IUserRepository>();
@@ -52,7 +51,7 @@
             _currentUserServiceMock = new Mock<ICurrentUserService>();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAll_UsersExist_UsersReturned()
         {
             // Arrange
@@ -72,7 +71,7 @@
             TestHelper.AreEqual(expected, actual, new UserComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAll_NoViewRights_AuthorizationExceptionThrown()
         {
             // Arrange
@@ -84,7 +83,7 @@
             Assert.Throws<AuthorizationException>(() => sut.GetAllUsers(), "Requested operation is not allowed");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllActiveUsers_NoViewRights_AuthorizationExceptionThrown()
         {
             // Arrange
@@ -97,7 +96,7 @@
             Assert.Throws<AuthorizationException>(() => sut.GetAllActiveUsers(), "Requested operation is not allowed");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetById_UserExists_UserReturned()
         {
             // Arrange
@@ -113,7 +112,7 @@
             TestHelper.AreEqual<User>(expected, actual, new UserComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetUserDetails_NoViewRights_AuthorizationExceptionThrown()
         {
             // Arrange
@@ -125,7 +124,7 @@
             Assert.Throws<AuthorizationException>(() => sut.GetUserDetails(EXISTING_ID), "Requested operation is not allowed");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetUserDetails_UserExists_UserReturned()
         {
             // Arrange
@@ -142,7 +141,7 @@
             TestHelper.AreEqual<User>(expected, actual, new UserComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAdminsList_UsersExist_UsersReturned()
         {
             // Arrange

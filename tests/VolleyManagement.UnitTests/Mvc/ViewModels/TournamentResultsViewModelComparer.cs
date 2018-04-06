@@ -1,10 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.Mvc.ViewModels.GameReports;
     using UI.Areas.Mvc.ViewModels.GameResults;
 
@@ -56,8 +58,8 @@
         /// <returns>True if given <see cref="StandingsViewModel"/> objects are equal.</returns>
         internal bool AreEqual(TournamentResultsViewModel x, TournamentResultsViewModel y)
         {
-            Assert.AreEqual(x.Id, y.Id, "Id should be equal.");
-            Assert.AreEqual(x.Name, y.Name, "Name should be equal.");
+            y.Id.Should().Be(x.Id, "Id should be equal.");
+            y.Name.Should().Be(x.Name, "Name should be equal.");
 
             return x.GameResults.SequenceEqual(y.GameResults, new GameResultViewModelEqualityComparer());
         }

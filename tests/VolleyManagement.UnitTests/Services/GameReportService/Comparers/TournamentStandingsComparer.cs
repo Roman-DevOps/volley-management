@@ -1,8 +1,10 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameReportService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.GameReportService
 {
     using System.Collections.Generic;
     using Domain.GameReportsAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     public class TournamentStandingsComparer<T> : IComparer<TournamentStandings<T>>
     {
@@ -20,10 +22,7 @@
                 return 0;
             }
 
-            if (x == null || y == null)
-            {
-                throw new AssertFailedException("One instance is null");
-            }
+            (x == null || y == null).Should().BeTrue("One instance is null");
 
             TestHelper.AreEqual(x.Divisions, y.Divisions, _groupItemComparer);
 

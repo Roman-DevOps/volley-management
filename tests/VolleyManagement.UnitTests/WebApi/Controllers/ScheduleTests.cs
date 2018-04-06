@@ -1,19 +1,19 @@
 ﻿namespace VolleyManagement.UnitTests.WebApi.Controllers
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using VolleyManagement.Contracts;
-    using VolleyManagement.Domain.GamesAggregate;
-    using VolleyManagement.Domain.TournamentsAggregate;
-    using VolleyManagement.UI.Areas.WebApi.Controllers;
-    using VolleyManagement.UnitTests.Services.GameService;
-    using VolleyManagement.UnitTests.WebApi.ViewModels.Schedule;
+    using Contracts;
+    using Domain.GamesAggregate;
+    using Domain.TournamentsAggregate;
+    using UI.Areas.WebApi.Controllers;
+    using Services.GameService;
+    using ViewModels.Schedule;
 
     [ExcludeFromCodeCoverage]
-    [TestClass]
+    
     public class ScheduleTests
     {
         /// <summary>
@@ -28,8 +28,7 @@
         /// <summary>
         /// Initializes test data
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public ScheduleTests()
         {
             _tournamentServiceMock = new Mock<ITournamentService>();
             _gameReportServiceMock = new Mock<IGameReportService>();
@@ -42,7 +41,7 @@
         /// Test for GetSchedule method.
         /// Tournament with game; game list returned
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentWithOneWeekOneDivisionOneGame_ScheduleReturned()
         {
             // Arrange
@@ -69,7 +68,7 @@
         /// Test for GetSchedule method.
         /// Tournament without games; empty games list returned
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentWithoutGames_EmptyScheduleReturned()
         {
             // Arrange
@@ -94,7 +93,7 @@
         /// Test for GetSchedule method.
         /// Tournament with games in different weeks. Schedule returned
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentWithTwoWeeksTwoDivisionsTwoGames_ScheduleReturned()
         {
             // Arrange
@@ -123,7 +122,7 @@
         /// Test for GetSchedule method.
         /// Tournament with games in different weeks. Schedule returned
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentWithOneWeekTwoGameDaysTwoDivisionsTwoGames_ScheduleReturned()
         {
             // Arrange
@@ -153,7 +152,7 @@
         /// Test for GetSchedule method.
         /// Tournament with games in different weeks. Schedule returned
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentWithOneWeekOneGameDayTwoDivisionsTwoGames_ScheduleReturned()
         {
             // Arrange
@@ -178,7 +177,7 @@
             ScheduleViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentPlayedOverSeveralWeeks_ScheduleIsOrderedByWeekNumber()
         {
             // Arrange
@@ -204,7 +203,7 @@
             ScheduleViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentPlayedOverSeveralYears_ScheduleIsOrderedByYearThenByWeek()
         {
             // Arrange
@@ -228,7 +227,7 @@
             ScheduleViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetSchedule_TournamentHasFreeDayGame_FreeDayGameIsLast()
         {
             // Arrange
@@ -252,7 +251,7 @@
             ScheduleViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetSchedule_PlayoffScheme_RoundNamesAreCreated()
         {
             // Arrange
@@ -274,7 +273,7 @@
             ScheduleViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetSchedule_PlayoffScheme_NotScheduledGamesAreRemoved()
         {
             // Arrange

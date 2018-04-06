@@ -1,4 +1,6 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
     using System;
     using System.Collections;
@@ -6,7 +8,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.Mvc.ViewModels.Teams;
 
     /// <summary>
@@ -58,10 +60,10 @@
         public bool AreEqual(TeamNameViewModel x, TeamNameViewModel y)
         {
 
-            Assert.AreEqual(x.Id, y.Id, "Id should be equal");
-            Assert.AreEqual(x.Name, y.Name, "Name should be equal");
-            Assert.AreEqual(x.DivisionName, y.DivisionName, "DivisionName should be equal");
-            Assert.AreEqual(x.GroupName, y.GroupName, "GroupName should be equal");
+            y.Id.Should().Be(x.Id, "Id should be equal");
+            y.Name.Should().Be(x.Name, "Name should be equal");
+            y.DivisionName.Should().Be(x.DivisionName, "DivisionName should be equal");
+            y.GroupName.Should().Be(x.GroupName, "GroupName should be equal");
 
             return true;
         }
@@ -77,7 +79,9 @@
             for (var i = 0; i < x.Count; i++)
             {
                 if (!AreEqual(x[i], y[i]))
+                {
                     return false;
+                }
             }
 
             return true;

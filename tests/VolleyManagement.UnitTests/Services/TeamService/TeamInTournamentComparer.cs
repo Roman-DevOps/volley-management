@@ -1,10 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Services.TeamService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.TeamService
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Domain.TeamsAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     /// <summary>
     /// Comparer for team objects.
@@ -54,11 +56,11 @@
         /// <returns>True if given team have the same properties.</returns>
         public bool AreEqual(TeamTournamentDto x, TeamTournamentDto y)
         {
-            Assert.AreEqual(x.TeamId, y.TeamId, "TeamId should match.");
-            Assert.AreEqual(x.TeamName, y.TeamName, "TeamName should match.");
-            Assert.AreEqual(x.DivisionId, y.DivisionId, "DivisionId should match.");
-            Assert.AreEqual(x.GroupId, y.GroupId, "GroupId should match.");
-            Assert.AreEqual(x.GroupName, y.GroupName, "GroupName should match.");
+            y.TeamId.Should().Be(x.TeamId, "TeamId should match.");
+            y.TeamName.Should().Be(x.TeamName, "TeamName should match.");
+            y.DivisionId.Should().Be(x.DivisionId, "DivisionId should match.");
+            y.GroupId.Should().Be(x.GroupId, "GroupId should match.");
+            y.GroupName.Should().Be(x.GroupName, "GroupName should match.");
 
             return true;
         }

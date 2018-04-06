@@ -1,11 +1,13 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.Mvc.ViewModels.GameReports;
 
     /// <summary>
@@ -56,10 +58,10 @@
         /// <returns>True if given <see cref="StandingsViewModel"/> objects are equal.</returns>
         internal bool AreEqual(StandingsViewModel expected, StandingsViewModel actual)
         {
-            Assert.AreEqual(expected.TournamentId, actual.TournamentId, "TournamentId should match");
-            Assert.AreEqual(expected.TournamentName, actual.TournamentName, "TournamentName should match");
+            actual.TournamentId.Should().Be(expected.TournamentId, "TournamentId should match");
+            actual.TournamentName.Should().Be(expected.TournamentName, "TournamentName should match");
 
-            Assert.AreEqual(expected.Message, actual.Message, "Message should match");
+            actual.Message.Should().Be(expected.Message, "Message should match");
 
             if (expected.StandingsTable != null || actual.StandingsTable != null)
             {
@@ -68,19 +70,19 @@
                     Assert.Fail("One of the Standings colection is null");
                 }
 
-                Assert.AreEqual(expected.StandingsTable.Count, actual.StandingsTable.Count, "Number of Standings divisions should match");
+                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count, "Number of Standings divisions should match");
 
                 for (var i = 0; i < expected.StandingsTable.Count; i++)
                 {
                     var expectedStandings = expected.StandingsTable[i];
                     var actualStandings = actual.StandingsTable[i];
 
-                    Assert.AreEqual(expectedStandings.LastUpdateTime, actualStandings.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
+                    actualStandings.LastUpdateTime.Should().Be(expectedStandings.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
 
-                    Assert.AreEqual(actualStandings.StandingsEntries.Count, actualStandings.StandingsEntries.Count, $"[Div#{i}] Number of Standings should match");
+                    actualStandings.StandingsEntries.Count.Should().Be(actualStandings.StandingsEntries.Count, $"[Div#{i}] Number of Standings should match");
                     for (var j = 0; j < actualStandings.StandingsEntries.Count; j++)
                     {
-                        Assert.IsTrue(StandingsEntryViewModelEqualityComparer.AssertAreEqual(
+                        Assert.True(StandingsEntryViewModelEqualityComparer.AssertAreEqual(
                             expectedStandings.StandingsEntries[j],
                             actualStandings.StandingsEntries[j],
                             $"[Div#{i}][Standings[{j}]] "));
@@ -95,16 +97,16 @@
                     Assert.Fail("One of the PivotTable colection is null");
                 }
 
-                Assert.AreEqual(expected.PivotTable.Count, actual.PivotTable.Count, "Number of PivotTable divisions should match");
+                actual.PivotTable.Count.Should().Be(expected.PivotTable.Count, "Number of PivotTable divisions should match");
 
                 for (var i = 0; i < expected.PivotTable.Count; i++)
                 {
                     var expectedPivot = expected.PivotTable[i];
                     var actualPivot = actual.PivotTable[i];
 
-                    Assert.AreEqual(expectedPivot.LastUpdateTime, actualPivot.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
+                    actualPivot.LastUpdateTime.Should().Be(expectedPivot.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
 
-                    Assert.AreEqual(expectedPivot.TeamsStandings.Count, actualPivot.TeamsStandings.Count, $"[Div#{i}] Number of teams in pivot table should match");
+                    actualPivot.TeamsStandings.Count.Should().Be(expectedPivot.TeamsStandings.Count, $"[Div#{i}] Number of teams in pivot table should match");
 
                     for (var j = 0; j < expectedPivot.TeamsStandings.Count; j++)
                     {

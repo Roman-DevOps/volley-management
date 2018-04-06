@@ -1,6 +1,6 @@
 ﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using VolleyManagement.UI.Areas.Mvc.ViewModels.Division;
+    using UI.Areas.Mvc.ViewModels.Division;
 
     [ExcludeFromCodeCoverage]
     public class DivisionViewModelComparer : IComparer, IComparer<DivisionViewModel>

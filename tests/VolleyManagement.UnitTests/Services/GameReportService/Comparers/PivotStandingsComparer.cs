@@ -1,8 +1,10 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameReportService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.GameReportService
 {
     using System.Collections.Generic;
     using Domain.GameReportsAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     internal class PivotStandingsComparer : IComparer<PivotStandingsDto>
     {
@@ -11,7 +13,7 @@
 
         public PivotStandingsComparer()
         {
-            this.teamsComparer = new TeamStandingsDtoComparer();
+            teamsComparer = new TeamStandingsDtoComparer();
         }
         public void WithPointsComparer()
         {
@@ -42,9 +44,9 @@
         }
         public int Compare(PivotStandingsDto x, PivotStandingsDto y)
         {
-            Assert.AreEqual(x.DivisionId, y.DivisionId, "Division Ids do not match");
-            Assert.AreEqual(x.DivisionName, y.DivisionName, $"[DivisionId={x.DivisionId}] Division Names do not match");
-            Assert.AreEqual(x.LastUpdateTime, y.LastUpdateTime, $"[DivisionId={x.DivisionId}] Last Update time do not match");
+            y.DivisionId.Should().Be(x.DivisionId, "Division Ids do not match");
+            y.DivisionName.Should().Be(x.DivisionName, $"[DivisionId={x.DivisionId}] Division Names do not match");
+            y.LastUpdateTime.Should().Be(x.LastUpdateTime, $"[DivisionId={x.DivisionId}] Last Update time do not match");
 
             if (x.Teams.Count == y.Teams.Count)
             {

@@ -2,13 +2,13 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using Domain.TournamentsAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Services.TournamentService;
 
     /// <summary>
     /// Tests for ViewModelToDomain class.
     /// </summary>
-    [TestClass]
+    
     [ExcludeFromCodeCoverage]
     public class ViewModelToDomainTests
     {
@@ -16,7 +16,7 @@
         /// Test for Map() method.
         /// The method should map tournament view model to domain model.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Map_TournamentViewModelAsParam_MappedToDomainModel()
         {
             // Arrange

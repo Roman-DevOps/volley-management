@@ -1,11 +1,13 @@
-﻿namespace VolleyManagement.UnitTests.Services.PlayerService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.PlayerService
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Contracts.Authorization;
     using Contracts.Exceptions;
@@ -23,7 +25,7 @@
     /// Tests for TournamentService class.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [TestClass]
+    
     public class PlayerServiceTests
     {
         private const int SPECIFIC_PLAYER_ID = 2;
@@ -44,8 +46,7 @@
         /// <summary>
         /// Initializes test data.
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public PlayerServiceTests()
         {
             _authServiceMock = new Mock<IAuthorizationService>();
             _playerRepositoryMock = new Mock<IPlayerRepository>();
@@ -64,7 +65,7 @@
         /// Test for Get() method. The method should return existing players
         /// (order is important).
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetAll_PlayersExist_PlayersReturned()
         {
             // Arrange
@@ -86,7 +87,7 @@
         /// <summary>
         /// Test for Get() method. The method should return existing player by id
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Get_PlayerExist_PlayerReturned()
         {
             // Arrange
@@ -105,7 +106,7 @@
         /// <summary>
         /// Test for GetPlayerTeam() method. The method should return existing player team by player object
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetPlayerTeam_TeamExist_TeamReturned()
         {
             // Arrange
@@ -125,7 +126,7 @@
         /// <summary>
         /// Test for GetPlayerTeam() method. The method should return null by player object with no team
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetPlayerTeam_PlayerWithNoTeam_NullReturned()
         {
             // Arrange
@@ -136,13 +137,13 @@
             var actual = sut.GetPlayerTeam(testPlayer);
 
             // Assert
-            Assert.IsNull(actual);
+            Assert.Null(actual);
         }
 
         /// <summary>
         /// Test for Create() method. The method should create a new player.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_PlayerPassed_PlayerCreated()
         {
             // Arrange
@@ -160,7 +161,7 @@
         /// Test for Create() method. The method should throw ArgumentNullException.
         /// Player must not be created
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_InvalidNullPlayer_ArgumentNullExceptionIsThrown()
         {
             var gotException = false;
@@ -180,14 +181,14 @@
             }
 
             // Assert
-            Assert.IsTrue(gotException);
+            Assert.True(gotException);
             VerifyCreatePlayer(newPlayer, Times.Never());
         }
 
         /// <summary>
         /// Test for Create() method with List. The method should create new players
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_AllPlayersAreNew_PlayersCreated()
         {
             // Arrange
@@ -210,7 +211,7 @@
         /// Test for Create() method with List. The method should throw ArgumentNullException.
         /// Players must not be created
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_NoNewPlayers_PlayersNotCreated()
         {
             // Arrange
@@ -226,7 +227,7 @@
             sut.Create(newPlayers);
 
             // Assert
-            Assert.IsFalse(gotException);
+            Assert.False(gotException);
             VerifyCreatePlayers(Times.Never());
         }
 
@@ -234,7 +235,7 @@
         /// Test for Create() method. The method should create new players
         /// Players must be created
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_TwoOfThreePlayersAreNew_PlayersCreated()
         {
             // Arrange
@@ -256,7 +257,7 @@
         /// <summary>
         /// Test for Create() method. The method should throw Argument Exception
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Create_OneOfThePlayersPlaysInAnotherTeam_ArgumentExceptionThown()
         {
             var gotException = false;
@@ -285,7 +286,7 @@
             }
 
             // Assert
-            Assert.IsTrue(gotException);
+            Assert.True(gotException);
             VerifyCreatePlayers(Times.Never());
         }
 
@@ -293,8 +294,7 @@
         /// Test for Create() method with no rights for such action. The method should throw AuthorizationException
         /// and shouldn't invoke Commit() method of IUnitOfWork.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(AuthorizationException))]
+        [Fact]
         public void Create_NoCreateRights_ExceptionThrown()
         {
             // Arrange
@@ -303,9 +303,10 @@
             var sut = BuildSUT();
 
             // Act
-            sut.Create(testPlayer);
+            Action act = () => sut.Create(testPlayer);
 
-            // Assert
+            //Assert
+            act.Should().Throw<AuthorizationException>();
             VerifyCreatePlayer(testPlayer, Times.Never());
             VerifyCheckAccess(AuthOperations.Players.Create, Times.Once());
         }
@@ -314,8 +315,7 @@
         /// Test for Edit() method with no rights for such action. The method should throw AuthorizationException
         /// and shouldn't invoke Commit() method of IUnitOfWork.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(AuthorizationException))]
+        [Fact]
         public void Edit_NoEditRights_ExceptionThrown()
         {
             // Arrange
@@ -324,9 +324,10 @@
             var sut = BuildSUT();
 
             // Act
-            sut.Edit(testPlayer);
+            Action act = () => sut.Edit(testPlayer);
 
-            // Assert
+            //Assert
+            act.Should().Throw<AuthorizationException>();
             VerifyEditPlayer(testPlayer, Times.Never());
             VerifyCheckAccess(AuthOperations.Players.Create, Times.Once());
         }
@@ -335,8 +336,7 @@
         /// Test for Delete() method with no rights for such action. The method should throw AuthorizationException
         /// and shouldn't invoke Commit() method of IUnitOfWork.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(AuthorizationException))]
+        [Fact]
         public void Delete_NoDeleteRights_ExceptionThrown()
         {
             // Arrange
@@ -344,9 +344,10 @@
             var sut = BuildSUT();
 
             // Act
-            sut.Delete(SPECIFIC_PLAYER_ID);
+            Action act = () => sut.Delete(SPECIFIC_PLAYER_ID);
 
-            // Assert
+            //Assert
+            act.Should().Throw<AuthorizationException>();
             VerifyDeletePlayer(SPECIFIC_PLAYER_ID, Times.Never());
             VerifyCheckAccess(AuthOperations.Players.Delete, Times.Once());
         }
@@ -354,7 +355,7 @@
         /// <summary>
         /// Test for Delete() method
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Delete_PlayerId_CorrectIdPostedToDatabaseLayer()
         {
             // Arrange
@@ -371,7 +372,7 @@
         /// <summary>
         /// Test for Delete() method. Player we want to delete does not exist.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Delete_InvalidPlayerId_MissingEntityExceptionThrown()
         {
             const int PLAYER_ID = 1;
@@ -393,14 +394,14 @@
             }
 
             // Assert
-            Assert.IsTrue(gotException);
+            Assert.True(gotException);
             VerifyDeletePlayer(PLAYER_ID, Times.Once(), Times.Never());
         }
 
         /// <summary>
         /// Test for Delete() method. Player we want to delete is captain of existing team.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Delete_CaptainOfExistTeam_ValidationExceptionThrown()
         {
             const int PLAYER_ID = 1;
@@ -422,7 +423,7 @@
             }
 
             // Assert
-            Assert.IsTrue(gotException);
+            Assert.True(gotException);
             VerifyDeletePlayer(PLAYER_ID, Times.Never());
         }
 
@@ -430,8 +431,7 @@
         /// Edit() method test. catch InvalidKeyValueException from DAL
         /// Throws MissingEntityException
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(MissingEntityException))]
+        [Fact]
         public void Edit_CatchDalInvalidKeyValueException_ThrowMissingEntityException()
         {
             // Arrange
@@ -440,13 +440,16 @@
             var playerWithWrongId = new PlayerBuilder().WithTeamId(null).Build();
 
             // Act
-            sut.Edit(playerWithWrongId);
+            Action act = () => sut.Edit(playerWithWrongId);
+
+            //Assert
+            act.Should().Throw<MissingEntityException>();
         }
 
         /// <summary>
         /// Positive test for Edit() method.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Edit_PlayerPassed_PlayerUpdated()
         {
             // Arrange

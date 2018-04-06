@@ -1,9 +1,11 @@
-﻿namespace VolleyManagement.UnitTests.Services.AuthService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.AuthService
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Contracts.Authorization;
     using Contracts.Exceptions;
@@ -16,7 +18,6 @@
     /// Tests <see cref="IAuthorizationService"/> implementation
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [TestClass]
     public class AuthorizationServiceTests
     {
         #region Fields
@@ -38,8 +39,7 @@
 
         #region Init
 
-        [TestInitialize]
-        public void TestInit()
+        public AuthorizationServiceTests()
         {
             _getByIdQueryMock = new Mock<IQuery<ICollection<AuthOperation>, FindByUserIdCriteria>>();
             _currentUserService = new Mock<ICurrentUserService>();
@@ -49,8 +49,7 @@
 
         #region Service tests
 
-        [TestMethod]
-        [ExpectedException(typeof(AuthorizationException))]
+        [Fact]
         public void CheckAccess_OperationNotPermitted_AuthorizationExceptionThrown()
         {
             // Arrange
@@ -67,11 +66,13 @@
             var service = BuildSUT();
 
             // Act
-            service.CheckAccess(operationToCheck);
+            Action act = () => service.CheckAccess(operationToCheck);
+
+            // Assert
+            act.Should().Throw<AuthorizationException>();
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(AuthorizationException))]
+        [Fact]
         public void CheckAccess_NoOperationsPermitted_AuthorizationExceptionThrown()
         {
             // Arrange
@@ -82,10 +83,13 @@
             var service = BuildSUT();
 
             // Act
-            service.CheckAccess(operationToCheck);
+            Action act = () => service.CheckAccess(operationToCheck);
+
+            // Assert
+            act.Should().Throw<AuthorizationException>();
         }
 
-        [TestMethod]
+        [Fact]
         public void CheckAccess_OperationPermitted_AuthorizationExceptionNotThrown()
         {
             // Arrange
@@ -105,7 +109,7 @@
             service.CheckAccess(operationToCheck);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_AllAllowedOperationsSpecified_AllAllowed()
         {
             // Arrange
@@ -132,11 +136,11 @@
             // Assert
             foreach (var item in requestedOperations)
             {
-                Assert.IsTrue(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeTrue();
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_NotAllAllowedOperationsSpecified_OnlySpecifiedAllowed()
         {
             // Arrange
@@ -161,14 +165,14 @@
             var allowedOperations = service.GetAllowedOperations(requestedOperations);
 
             // Assert
-            Assert.IsFalse(allowedOperations.IsAllowed(operationToCheck));
+            allowedOperations.IsAllowed(operationToCheck).Should().BeFalse();
             foreach (var item in requestedOperations)
             {
-                Assert.IsTrue(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeTrue();
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_NotAllowedOperationsSpecified_NoOperationsAllowed()
         {
             // Arrange
@@ -193,16 +197,16 @@
             // Assert
             foreach (var item in allAllowedOperations)
             {
-                Assert.IsFalse(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeFalse();
             }
 
             foreach (var item in requestedOperations)
             {
-                Assert.IsFalse(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeFalse();
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_EmptyListSpecified_NoOneAllowed()
         {
             // Arrange
@@ -222,12 +226,11 @@
             // Assert
             foreach (var item in allAllowedOperations)
             {
-                Assert.IsFalse(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeFalse();
             }
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void GetAllowedOperations_NullListSpecified_ArgumentNullExceptionThrown()
         {
             // Arrange
@@ -242,10 +245,13 @@
             var service = BuildSUT();
 
             // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+            Action act = () => service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_OneAllowedOperationSpecified_OnlySpecifiedAllowed()
         {
             // Arrange
@@ -264,12 +270,12 @@
             var allowedOperations = service.GetAllowedOperations(requestedOperation);
 
             // Assert
-            Assert.IsFalse(allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_1_ID)));
-            Assert.IsFalse(allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_3_ID)));
-            Assert.IsTrue(allowedOperations.IsAllowed(requestedOperation));
+            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_1_ID)).Should().BeFalse();
+            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_3_ID)).Should().BeFalse();
+            allowedOperations.IsAllowed(requestedOperation).Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAllowedOperations_NotAllowedOperationSpecified_NoOneAllowed()
         {
             // Arrange
@@ -293,17 +299,16 @@
             // Assert
             foreach (var item in allAllowedOperations)
             {
-                Assert.IsFalse(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeFalse();
             }
 
             foreach (var item in requestedOperations)
             {
-                Assert.IsFalse(allowedOperations.IsAllowed(item));
+                allowedOperations.IsAllowed(item).Should().BeFalse();
             }
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void GetAllowedOperations_NullSpecified_ArgumentNullExceptionThrown()
         {
             // Arrange
@@ -318,14 +323,17 @@
             var service = BuildSUT();
 
             // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+            Action act = () => service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
         }
 
         #endregion
 
         #region AllowedOperations tests
 
-        [TestMethod]
+        [Fact]
         public void IsAllowed_OperationNotPermitted_OperationIsNotAllowed()
         {
             // Arrange
@@ -340,10 +348,10 @@
             var result = allowedOperations.IsAllowed(operationToCheck);
 
             // Assert
-            Assert.IsFalse(result);
+            result.Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAllowed_NoOperationsPermitted_OperationIsNotAllowed()
         {
             // Arrange
@@ -354,10 +362,10 @@
             var result = allowedOperations.IsAllowed(operationToCheck);
 
             // Assert
-            Assert.IsFalse(result);
+            result.Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAllowed_OperationPermitted_OperationIsAllowed()
         {
             // Arrange
@@ -372,14 +380,14 @@
             var result = allowedOperations.IsAllowed(operationToCheck);
 
             // Assert
-            Assert.IsTrue(result);
+            result.Should().BeTrue();
         }
 
         #endregion
 
         #region AuthOperations tests
 
-        [TestMethod]
+        [Fact]
         public void AuthOperations_AllAreas_AllAreasHasDifferentId()
         {
             // Arrange
@@ -410,13 +418,10 @@
             }
 
             // Assert
-            if (!string.IsNullOrEmpty(errors))
-            {
-                throw new AssertFailedException(errors);
-            }
+            errors.Should().BeNullOrEmpty(errors);
         }
 
-        [TestMethod]
+        [Fact]
         public void AuthOperations_AllAreas_AllOperationsInAreaHasDifferentId()
         {
             // Arrange
@@ -445,13 +450,10 @@
             }
 
             // Assert
-            if (!string.IsNullOrEmpty(errors))
-            {
-                throw new AssertFailedException(errors);
-            }
+            errors.Should().BeNullOrEmpty(errors);
         }
 
-        [TestMethod]
+        [Fact]
         public void AuthOperations_AllAreas_AllOperationsInAreaHasSameAreaId()
         {
             // Arrange
@@ -480,13 +482,10 @@
             }
 
             // Assert
-            if (!string.IsNullOrEmpty(errors))
-            {
-                throw new AssertFailedException(errors);
-            }
+            errors.Should().BeNullOrEmpty(errors);
         }
 
-        [TestMethod]
+        [Fact]
         public void AuthOperation_SameAreaIdOperationId_OperationsEquals()
         {
             // Arrange
@@ -497,10 +496,10 @@
             var result = operation1 == operation2;
 
             // Assert
-            Assert.IsTrue(result);
+            result.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void AuthOperation_DifferenAreaIdSameOperationId_OperationsNotEquals()
         {
             // Arrange
@@ -511,10 +510,10 @@
             var result = operation1 == operation2;
 
             // Assert
-            Assert.IsFalse(result);
+            result.Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void AuthOperation_SameAreaIdDifferentOperationId_OperationsNotEquals()
         {
             // Arrange
@@ -525,7 +524,7 @@
             var result = operation1 == operation2;
 
             // Assert
-            Assert.IsFalse(result);
+            result.Should().BeFalse();
         }
 
         #endregion

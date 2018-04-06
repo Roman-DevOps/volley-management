@@ -1,10 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.Mvc.ViewModels.GameReports;
 
     /// <summary>
@@ -34,10 +36,8 @@
                             Assert.Fail($"{messagePrefix}Pos:({pos.Row},{pos.Col}) One of the results cell is null");
                         }
 
-                        Assert.AreEqual(
-                            expected[i].Count,
-                            actualCell.Count,
-                            $"{messagePrefix}Pos:({pos.Row},{pos.Col}) Number of cell results do not match");
+                        actualCell.Count.Should().Be(expected[i].Count,
+                        $"{messagePrefix}Pos:({pos.Row},{pos.Col}) Number of cell results do not match");
 
                         for (var j = 0; j < expected[i].Count; j++)
                         {

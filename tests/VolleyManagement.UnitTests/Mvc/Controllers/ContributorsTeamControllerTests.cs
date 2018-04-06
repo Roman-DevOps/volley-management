@@ -1,10 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Controllers
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.Controllers
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Contracts;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Domain.ContributorsAggregate;
     using UI.Areas.Mvc.Controllers;
@@ -16,7 +18,6 @@
     /// Tests for MVC ContributorTeamController class.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [TestClass]
     public class ContributorsTeamControllerTests
     {
         private Mock<IContributorTeamService> _contributorTeamServiceMock;
@@ -24,8 +25,7 @@
         /// <summary>
         /// Initializes test data.
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public ContributorsTeamControllerTests()
         {
             _contributorTeamServiceMock = new Mock<IContributorTeamService>();
         }
@@ -33,7 +33,7 @@
         /// <summary>
         /// Test for Index method. All contributors are requested. All contributors are returned.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Index_GetAllContributors_AllContributorsAreReturned()
         {
             // Arrange
@@ -47,7 +47,7 @@
             var actual = TestExtensions.GetModel<IEnumerable<ContributorsTeamViewModel>>(sut.Index()).ToList();
 
             // Assert
-            CollectionAssert.AreEqual(expected, actual, new ContributorTeamViewModelComparer());
+            actual.Should().Equal(expected, new ContributorTeamViewModelComparer());
         }
 
         private List<ContributorTeam> MakeTestContributorTeams()

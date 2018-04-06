@@ -12,7 +12,7 @@
     using Domain.GamesAggregate;
     using Domain.TeamsAggregate;
     using Domain.TournamentsAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using VolleyManagement.Services;
 
@@ -81,18 +81,10 @@
         {
             int compareResult;
             var errorDetails = string.Empty;
-            try
-            {
                 compareResult = new TournamentStandingsComparer<T>(comparer)
                     .Compare(expected, actual);
-            }
-            catch (AssertFailedException e)
-            {
-                compareResult = -1;
-                errorDetails = $" Error Details: {e.Message}";
-            }
 
-            Assert.IsTrue(compareResult == 0, $"{message}{errorDetails}");
+            Assert.True(compareResult == 0, $"{message}{errorDetails}");
         }
 
         protected static Tournament CreateSingleDivisionTournament(int tournamentId,

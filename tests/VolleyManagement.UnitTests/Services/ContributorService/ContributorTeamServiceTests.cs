@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Data.Contracts;
     using Domain.ContributorsAggregate;
@@ -11,7 +11,6 @@
     /// <summary>
     /// Tests for ContributorTeamServiceTests class.
     /// </summary>
-    [TestClass]
     [ExcludeFromCodeCoverage]
     public class ContributorTeamServiceTests
     {
@@ -22,8 +21,7 @@
         /// <summary>
         /// Initializes test data.
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public ContributorTeamServiceTests()
         {
             _contributorTeamRepositoryMock = new Mock<IContributorTeamRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -34,7 +32,7 @@
         /// <summary>
         /// Test for Get() method. The method should return existing contributors teams
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetAll_ContributorsTeamExist_ContributorsTeamReturned()
         {
             // Arrange

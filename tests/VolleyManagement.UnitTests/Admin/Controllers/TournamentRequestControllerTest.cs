@@ -1,4 +1,6 @@
-﻿namespace VolleyManagement.UnitTests.Admin.Controllers
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Admin.Controllers
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -13,7 +15,7 @@
     using Domain.TournamentRequestAggregate;
     using Domain.TournamentsAggregate;
     using Domain.UsersAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Mvc.ViewModels;
     using Services.PlayerService;
@@ -29,7 +31,7 @@
     using ViewModels;
 
     [ExcludeFromCodeCoverage]
-    [TestClass]
+    
     public class TournamentRequestControllerTest
     {
         private const string ACHIEVEMENTS = "TestAchievements";
@@ -53,8 +55,7 @@
         private Mock<HttpContextBase> _httpContextMock = new Mock<HttpContextBase>();
         private Mock<HttpRequestBase> _httpRequestMock = new Mock<HttpRequestBase>();
 
-        [TestInitialize]
-        public void TestInit()
+        public TournamentRequestControllerTest()
         {
             _requestServiceMock = new Mock<ITournamentRequestService>();
             _tournamentServiceMock = new Mock<ITournamentService>();
@@ -64,7 +65,7 @@
             _httpRequestMock = new Mock<HttpRequestBase>();
         }
 
-        [TestMethod]
+        [Fact]
         public void Index_ExistingRequests_TournamentRequestCollectionViewModelIsReturned()
         {
             // Arrange
@@ -87,10 +88,10 @@
                 .Requests.ToList();
 
             // Assert
-            CollectionAssert.AreEqual(expected, actual, new TournamentRequestViewModelComparer());
+            actual.Should().Equal(expected, new TournamentRequestViewModelComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void TeamDetails_ExistingTeam_TeamViewModelIsReturned()
         {
             // Arrange
@@ -115,7 +116,7 @@
             TestHelper.AreEqual<TeamViewModel>(expected, actual, new TeamViewModelComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void TeamDetails_NonExistentTeam_HttpNotFoundResultIsReturned()
         {
             // Arrange
@@ -126,10 +127,10 @@
             var result = sut.TeamDetails(TEST_TEAM_ID);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
+            Assert.IsType<HttpNotFoundResult>(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void TournamentDetails_NonExistentTournament_HttpNotFoundResultIsReturned()
         {
             // Arrange
@@ -140,10 +141,10 @@
             var result = sut.TournamentDetails(TEST_TOURNAMENT_ID);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
+            Assert.IsType<HttpNotFoundResult>(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void TournamentDetails_ExistingTournament_TournamentViewModelIsReturned()
         {
             // Arrange
@@ -159,7 +160,7 @@
             TournamentViewModelComparer.AssertAreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_AnyRequest_RequestRedirectToIndex()
         {
             // Arrange
@@ -172,7 +173,7 @@
             AssertValidRedirectResult(actionResult, "Index");
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_AnyRequest_RequestConfirmed()
         {
             // Arrange
@@ -185,7 +186,7 @@
             AssertVerifyConfirm(REQUEST_ID);
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_NonExistentRequest_ThrowsMissingEntityException()
         {
             // Arrange
@@ -196,10 +197,10 @@
             var actionResult = sut.Confirm(REQUEST_ID);
 
             // Assert
-            Assert.IsNotNull(actionResult, "InvalidOperation");
+            Assert.NotNull(actionResult);
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_NonExistentRequest_ThrowsMissingEntityException()
         {
             // Arrange
@@ -211,10 +212,10 @@
             var actionResult = sut.Decline(messageViewModel);
 
             // Assert
-            Assert.IsNotNull(actionResult, "InvalidOperation");
+            Assert.NotNull(actionResult);
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_AnyRequest_RequestDeclined()
         {
             // Arrange
@@ -228,7 +229,7 @@
             AssertVerifyDecline(REQUEST_ID);
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_AnyRequest_RequestRedirectToIndex()
         {
             // Arrange
@@ -242,7 +243,7 @@
             AssertValidRedirectResult(actionResult, "Index");
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_AnyRequest_MessageViewModelIsReturned()
         {
             // Arrange
@@ -256,7 +257,7 @@
             TestHelper.AreEqual<MessageViewModel>(expected, actual, new MessageViewModelComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void UserDetails_ExistingUser_UserViewModelIsReturned()
         {
             // Arrange
@@ -270,10 +271,10 @@
             var actual = TestExtensions.GetModel<UserViewModel>(sut.UserDetails(USER_ID));
 
             // Assert
-            TestHelper.AreEqual<UserViewModel>(expected, actual, new Comparers.UserViewModelComparer());
+            TestHelper.AreEqual<UserViewModel>(expected, actual, new UserViewModelComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void UserDetails_NonExistentUser_HttpNotFoundResultIsReturned()
         {
             // Arrange
@@ -284,16 +285,16 @@
             var result = sut.UserDetails(USER_ID);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
+            Assert.IsType<HttpNotFoundResult>(result);
         }
 
         private static void AssertValidRedirectResult(ActionResult actionResult, string view)
         {
             var result = (RedirectToRouteResult)actionResult;
-            Assert.IsNotNull(result, "Method result should be instance of RedirectToRouteResult");
-            Assert.IsFalse(result.Permanent, "Redirect should not be permanent");
-            Assert.AreEqual(1, result.RouteValues.Count, string.Format("Redirect should forward to Requests.{0} action", view));
-            Assert.AreEqual(view, result.RouteValues["action"], string.Format("Redirect should forward to Requests.{0} action", view));
+            Assert.NotNull(result);
+            Assert.False(result.Permanent, "Redirect should not be permanent");
+            result.RouteValues.Count.Should().Be(1, string.Format("Redirect should forward to Requests.{0} action", view));
+            result.RouteValues["action"].Should().Be(view, string.Format("Redirect should forward to Requests.{0} action", view));
         }
 
         private TournamentRequestController BuildSUT()

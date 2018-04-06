@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
-    using VolleyManagement.UI.Areas.Mvc.ViewModels.Tournaments;
+    using UI.Areas.Mvc.ViewModels.Teams;
+    using UI.Areas.Mvc.ViewModels.Tournaments;
 
     /// <summary>
     /// Class for generating Teams with specific Id, Name

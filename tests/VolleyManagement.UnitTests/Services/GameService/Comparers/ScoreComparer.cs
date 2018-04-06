@@ -1,10 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameService
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Services.GameService
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using Domain.GamesAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     /// <summary>
     /// Represents a comparer for <see cref="Score"/> objects.
@@ -21,9 +23,9 @@
         /// If both x and y are null, the method returns true.</returns>
         public bool Equals(Score x, Score y)
         {
-            Assert.AreEqual(x.Home, y.Home, "Home side score should be equal");
-            Assert.AreEqual(x.Away, y.Away, "Away side score should be equal");
-            Assert.AreEqual(x.IsTechnicalDefeat, y.IsTechnicalDefeat, "IsTechnicalDefeat flag should be equal");
+            y.Home.Should().Be(x.Home, "Home side score should be equal");
+            y.Away.Should().Be(x.Away, "Away side score should be equal");
+            y.IsTechnicalDefeat.Should().Be(x.IsTechnicalDefeat, "IsTechnicalDefeat flag should be equal");
             return true;
         }
 

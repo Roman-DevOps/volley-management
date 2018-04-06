@@ -1,9 +1,11 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.Standings
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.WebApi.Standings
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.WebAPI.ViewModels.GameReports;
 
     /// <summary>
@@ -54,21 +56,18 @@
         /// <returns>True if given <see cref="DivisionStandingsViewModel"/> objects are equal.</returns>
         internal bool AreEqual(DivisionStandingsViewModel expected, DivisionStandingsViewModel actual)
         {
-            Assert.AreEqual(expected.LastUpdateTime, actual.LastUpdateTime, "LastTimeUpdated should match");
-            Assert.AreEqual(expected.DivisionName, actual.DivisionName, "DivisionName should match");
+            actual.LastUpdateTime.Should().Be(expected.LastUpdateTime, "LastTimeUpdated should match");
+            actual.DivisionName.Should().Be(expected.DivisionName, "DivisionName should match");
 
             if (expected.StandingsTable != null || actual.StandingsTable != null)
             {
-                if (expected.StandingsTable == null || actual.StandingsTable == null)
-                {
-                    Assert.Fail("One of the Standings colection is null");
-                }
+                Assert.False(expected.StandingsTable == null || actual.StandingsTable == null);
 
-                Assert.AreEqual(expected.StandingsTable.Count, actual.StandingsTable.Count, "Number of Standings divisions should match");
+                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count, "Number of Standings divisions should match");
 
                 for (var i = 0; i < expected.StandingsTable.Count; i++)
                 {
-                    Assert.IsTrue(StandingsEntryViewModelEqualityComparer.AssertAreEqual(
+                    Assert.True(StandingsEntryViewModelEqualityComparer.AssertAreEqual(
                         expected.StandingsTable[i],
                         actual.StandingsTable[i],
                         $"[Standings#{i}] "));

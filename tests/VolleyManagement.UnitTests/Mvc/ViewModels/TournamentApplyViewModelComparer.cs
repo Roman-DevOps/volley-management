@@ -1,11 +1,13 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.Mvc.ViewModels.Tournaments;
 
     /// <summary>
@@ -58,18 +60,18 @@
         {
             var teamComparer = new TeamNameViewModelComparer();
 
-            Assert.AreEqual(x.Id, y.Id, "Id should be equal");
-            Assert.AreEqual(x.TeamId, y.TeamId, "TeamId should be equal");
-            Assert.AreEqual(x.TournamentTitle, y.TournamentTitle, "TournamentTitle should be equal");
+            y.Id.Should().Be(x.Id, "Id should be equal");
+            y.TeamId.Should().Be(x.TeamId, "TeamId should be equal");
+            y.TournamentTitle.Should().Be(x.TournamentTitle, "TournamentTitle should be equal");
 
             var xTeams = x.Teams.OrderBy(t => t.Id).ToList();
             var yTeams = y.Teams.OrderBy(t => t.Id).ToList();
 
-            Assert.AreEqual(xTeams.Count, yTeams.Count, "Number of teams in collection should be equal");
+            yTeams.Count.Should().Be(xTeams.Count, "Number of teams in collection should be equal");
 
             for (var i = 0; i < xTeams.Count; i++)
             {
-                Assert.IsTrue(teamComparer.AreEqual(xTeams[i], yTeams[i]), "Team at position #{i} should match.");
+                Assert.True(teamComparer.AreEqual(xTeams[i], yTeams[i]), "Team at position #{i} should match.");
             }
 
             return true;

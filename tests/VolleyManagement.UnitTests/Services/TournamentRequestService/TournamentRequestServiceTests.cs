@@ -16,7 +16,7 @@
     using Domain.TournamentRequestAggregate;
     using Domain.UsersAggregate;
     using MailService;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using MSTestExtensions;
     using UserManager;
@@ -24,7 +24,7 @@
     using System.Collections;
 
     [ExcludeFromCodeCoverage]
-    [TestClass]
+    
     public class TournamentRequestServiceTests : BaseTest
     {
         private const int EXISTING_ID = 1;
@@ -42,8 +42,7 @@
         private Mock<IMailService> _mailServiceMock;
         private Mock<IUserService> _userServiceMock;
 
-        [TestInitialize]
-        public void TestInit()
+        public TournamentRequestServiceTests()
         {
             _tournamentRequestRepositoryMock
               = new Mock<ITournamentRequestRepository>();
@@ -68,7 +67,7 @@
                 .Returns(_unitOfWorkMock.Object);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAll_RequestsExist_RequestsReturned()
         {
             // Arrange
@@ -85,7 +84,7 @@
             TestHelper.AreEqual(expected, actual, new TournamentRequestComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetAll_NoViewListRights_AuthorizationExceptionThrows()
         {
             // Arrange
@@ -99,7 +98,7 @@
                 "Requested operation is not allowed");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetById_RequestExists_RequestReturned()
         {
             // Arrange
@@ -115,7 +114,7 @@
             TestHelper.AreEqual<TournamentRequest>(expected, actual, new TournamentRequestComparer());
         }
 
-        [TestMethod]
+        [Fact]
         public void Create_InvalidUserId_ExceptionThrows()
         {
             var newTournamentRequest = new TournamentRequestBuilder()
@@ -135,7 +134,7 @@
                 "User's id is wrong");
         }
 
-        [TestMethod]
+        [Fact]
         public void Create_ValidTournamentRequest_RequestAdded()
         {
             // Arrange
@@ -161,7 +160,7 @@
             VerifyCreateTournamentRequest(newTournamentRequest, Times.Once(), "Parameter request is not equal to Instance of request");
         }
 
-        [TestMethod]
+        [Fact]
         public void Create_TournamentRequesExist_RequestNotAdded()
         {
             // Arrange
@@ -188,7 +187,7 @@
             VerifyCreateTournamentRequest(newTournamentRequest, Times.Never(), "Parameter request is not equal to Instance of request");
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_NoConfirmRights_AuthorizationExceptionThrows()
         {
             // Arrange
@@ -202,7 +201,7 @@
                 "Requested operation is not allowed");
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_RequestExists_TeamAdded()
         {
             // Arrange
@@ -224,7 +223,7 @@
             VerifyAddedTeamToTournament(Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void Confirm_RequestDoesNotExist_ExceptionThrown()
         {
             // Arrange
@@ -237,7 +236,7 @@
                 "A tournament request with specified identifier was not found");
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_RequestExist_RequestDeleted()
         {
             // Arrange
@@ -255,7 +254,7 @@
             VerifyDeleteRequest(EXISTING_ID, Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void Decline_RequestDoesNotExist_DbNotChanged()
         {
             // Arrange

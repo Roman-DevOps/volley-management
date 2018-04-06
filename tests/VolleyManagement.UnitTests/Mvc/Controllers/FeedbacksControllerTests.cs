@@ -1,4 +1,6 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Controllers
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.Mvc.Controllers
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -7,7 +9,7 @@
     using Contracts.Authorization;
     using Domain.FeedbackAggregate;
     using Domain.UsersAggregate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using UI.Areas.Mvc.Controllers;
     using UI.Areas.Mvc.ViewModels.FeedbackViewModel;
@@ -19,7 +21,7 @@
     /// Feedbacks controller tests.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [TestClass]
+
     public class FeedbacksControllerTests
     {
         #region Fields
@@ -48,8 +50,7 @@
         /// <summary>
         /// Initializes test data.
         /// </summary>
-        [TestInitialize]
-        public void TestInit()
+        public FeedbacksControllerTests()
         {
             _feedbackServiceMock = new Mock<IFeedbackService>();
             _userServiceMock = new Mock<IUserService>();
@@ -67,7 +68,7 @@
         /// Test for create GET method.
         /// User email is empty if user is not authenticated.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void
             CreateGetAction_UserIsNotAuthentificated_FeedbackHasEmptyEmailField()
         {
@@ -81,14 +82,14 @@
             sut.Create();
 
             // Assert
-            Assert.AreEqual(feedback.UsersEmail, string.Empty);
+            feedback.UsersEmail.Should().BeEmpty();
         }
 
         /// <summary>
         /// Test for create GET method.
         /// User is authenticated. User email returned.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void
             CreateGetAction_UserIsAuthentificated_UsersEmailPrepolulated()
         {
@@ -105,7 +106,7 @@
                 .GetModel<FeedbackViewModel>(sut.Create());
 
             // Assert
-            Assert.AreEqual(TEST_MAIL, feedback.UsersEmail);
+            feedback.UsersEmail.Should().BeEmpty(TEST_MAIL);
         }
 
         #endregion
@@ -116,7 +117,7 @@
         /// Test for create POST method.
         /// Feedback is incorrect, Create view is returned.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void CreatePostAction_ModelIsInvalid_CheckDataMessageReturned()
         {
             // Arrange
@@ -130,14 +131,14 @@
             var returnedDataResult = result.Data as FeedbackMessageViewModel;
 
             // Assert
-            Assert.AreEqual(CHECK_DATA_MESSAGE, returnedDataResult.ResultMessage);
+            returnedDataResult.ResultMessage.Should().Be(CHECK_DATA_MESSAGE);
         }
 
         /// <summary>
         /// Test for create POST method.
         /// Feedback is correct, feedback sent message returned.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void CreatePostAction_ModelIsValid_SuccessSentMessageReturned()
         {
             // Arrange
@@ -149,14 +150,14 @@
             var returnedDataResult = result.Data as FeedbackMessageViewModel;
 
             // Assert
-            Assert.AreEqual(SUCCESS_SENT_MESSAGE, returnedDataResult.ResultMessage);
+            returnedDataResult.ResultMessage.Should().Be(SUCCESS_SENT_MESSAGE);
         }
 
         /// <summary>
         /// Test for Create POST method.
         /// Valid model passed. Feedback created.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void CreatePostAction_ModelIsValid_FeedbackCreated()
         {
             // Arrange
@@ -169,7 +170,7 @@
                 .Callback<Feedback>(a => actualFeedback = a);
 
             // Act
-            sut.Create(feedback);
+            sut.Create(feedback).Wait();
 
             // Assert
             TestHelper.AreEqual(
@@ -183,7 +184,7 @@
         /// While calling IFeedbackService method Create()
         /// argument exception is thrown, ModelState has changed.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void CreatePostAction_ArgumentExceptionThrown_ModelChanged()
         {
             // Arrange
@@ -194,15 +195,15 @@
             var sut = BuildSUT();
 
             // Act
-            sut.Create(feedback);
+            sut.Create(feedback).Wait();
             var res = sut.ModelState[EXCEPTION_MESSAGE].Errors;
 
             // Assert
-            Assert.IsFalse(sut.ModelState.IsValid);
-            Assert.AreEqual(EXCEPTION_MESSAGE, res[0].ErrorMessage);
+            sut.ModelState.IsValid.Should().BeFalse();
+            res[0].ErrorMessage.Should().Be(EXCEPTION_MESSAGE);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreatePostAction_CaptchaIsNotApproved_CheckCaptchaMessageReturned()
         {
             // Arrange
@@ -217,7 +218,7 @@
             var returnedDataResult = res.Data as FeedbackMessageViewModel;
 
             // Assert
-            Assert.AreEqual(CHECK_CAPTCHA_MESSAGE, returnedDataResult.ResultMessage);
+            returnedDataResult.ResultMessage.Should().Be(CHECK_CAPTCHA_MESSAGE);
         }
         #endregion
 

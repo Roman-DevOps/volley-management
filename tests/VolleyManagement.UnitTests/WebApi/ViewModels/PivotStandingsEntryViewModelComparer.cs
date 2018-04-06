@@ -1,9 +1,11 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.WebApi.ViewModels.GameReports;
 
     [ExcludeFromCodeCoverage]
@@ -53,9 +55,7 @@
                 Assert.Fail($"[TeamName{x.TeamName}] Points should match");
             }
 
-            Assert.AreEqual(x.SetsRatio.GetValueOrDefault(),
-                y.SetsRatio.GetValueOrDefault(),
-                0.001, $"[TeamName{x.TeamName}] SetsRatio should match");
+            x.SetsRatio.GetValueOrDefault().Should().BeApproximately(y.SetsRatio.GetValueOrDefault(), 0.001f, $"[TeamName{x.TeamName}] SetsRatio should match");
 
             return 0;
         }

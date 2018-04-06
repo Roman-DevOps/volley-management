@@ -1,8 +1,10 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
+﻿using FluentAssertions;
+
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using UI.Areas.WebApi.ViewModels.GameReports;
 
     /// <summary>
@@ -20,13 +22,13 @@
                     Assert.Fail("One of the pivot standings object is null");
                 }
 
-                Assert.AreEqual(expected.TeamsStandings.Count, actual.TeamsStandings.Count, "Number of Team Standings divisions should match");
-                Assert.AreEqual(expected.LastUpdateTime, actual.LastUpdateTime, "LastUpdateTime for division should match");
-                Assert.AreEqual(expected.DivisionName, actual.DivisionName, "DivisionName for division should match");
+                actual.TeamsStandings.Count.Should().Be(expected.TeamsStandings.Count, "Number of Team Standings divisions should match");
+                actual.LastUpdateTime.Should().Be(expected.LastUpdateTime, "LastUpdateTime for division should match");
+                actual.DivisionName.Should().Be(expected.DivisionName, "DivisionName for division should match");
 
                 TestHelper.AreEqual(expected.TeamsStandings, actual.TeamsStandings, new PivotStandingsEntryViewModelComparer());
 
-                Assert.AreEqual(expected.GamesStandings.Count, actual.GamesStandings.Count, "Number of Games Standings divisions should match");
+                actual.GamesStandings.Count.Should().Be(expected.GamesStandings.Count, "Number of Games Standings divisions should match");
 
                 TestHelper.AreEqual(expected.GamesStandings, actual.GamesStandings, new PivotStandingsGameViewModelComparer());
  
