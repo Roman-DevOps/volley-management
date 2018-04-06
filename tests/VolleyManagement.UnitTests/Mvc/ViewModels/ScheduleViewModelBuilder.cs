@@ -1,47 +1,44 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Domain.TournamentsAggregate;
-    using Services.GameService;
-    using UI.Areas.Mvc.ViewModels.GameResults;
-    using UI.Areas.Mvc.ViewModels.Tournaments;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.Domain.TournamentsAggregate;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameResults;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Tournaments;
+using VolleyManagement.UnitTests.Services.GameService;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Schedule view model builder
+    ///     Schedule view model builder
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class ScheduleViewModelBuilder
     {
         /// <summary>
-        /// Holds test schedule view model instance
+        ///     Holds test schedule view model instance
         /// </summary>
-        private ScheduleViewModel _scheduleViewModel;
+        private readonly ScheduleViewModel _scheduleViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScheduleViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="ScheduleViewModelBuilder" /> class
         /// </summary>
         public ScheduleViewModelBuilder()
         {
-            _scheduleViewModel = new ScheduleViewModel()
-            {
+            _scheduleViewModel = new ScheduleViewModel {
                 TournamentId = 1,
                 TournamentName = "Name",
                 TournamentScheme = TournamentSchemeEnum.One,
                 MaxNumberOfRounds = 3,
                 Rounds = new GameServiceTestFixture().TestGameResults()
-                                     .Build().GroupBy(d => d.Round)
-                                     .ToDictionary(
-                                      d => d.Key,
-                                      c => c.OrderBy(t => t.GameDate)
-                                     .Select(x => GameResultViewModel.Map(x)).ToList())
+                    .Build().GroupBy(d => d.Round)
+                    .ToDictionary(
+                        d => d.Key,
+                        c => c.OrderBy(t => t.GameDate)
+                            .Select(x => GameResultViewModel.Map(x)).ToList())
             };
         }
 
         /// <summary>
-        /// Sets the schedule view model TournamentId
+        ///     Sets the schedule view model TournamentId
         /// </summary>
         /// <param name="tournamentId">Tournament view model TournamentId</param>
         /// <returns>Schedule view model builder object</returns>
@@ -52,7 +49,7 @@
         }
 
         /// <summary>
-        /// Sets the schedule view model TournamentName
+        ///     Sets the schedule view model TournamentName
         /// </summary>
         /// <param name="tournamentName">Tournament view model TournamentName</param>
         /// <returns>Schedule view model builder object</returns>
@@ -63,7 +60,7 @@
         }
 
         /// <summary>
-        /// Sets the schedule view model TournamentScheme
+        ///     Sets the schedule view model TournamentScheme
         /// </summary>
         /// <param name="scheme">Tournament view model TournamentScheme</param>
         /// <returns>Schedule view model builder object</returns>
@@ -74,7 +71,7 @@
         }
 
         /// <summary>
-        /// Sets the schedule view model NumberOfRounds
+        ///     Sets the schedule view model NumberOfRounds
         /// </summary>
         /// <param name="numberOfRounds">Tournament view model NumberOfRounds</param>
         /// <returns>Schedule view model builder object</returns>
@@ -85,7 +82,7 @@
         }
 
         /// <summary>
-        /// Sets the round names to the schedule view model
+        ///     Sets the round names to the schedule view model
         /// </summary>
         /// <param name="roundNames">Array with the round names</param>
         /// <returns>Schedule view model builder object</returns>
@@ -96,7 +93,7 @@
         }
 
         /// <summary>
-        /// Builds a test schedule view model.
+        ///     Builds a test schedule view model.
         /// </summary>
         /// <returns>Test schedule view model.</returns>
         public ScheduleViewModel Build()

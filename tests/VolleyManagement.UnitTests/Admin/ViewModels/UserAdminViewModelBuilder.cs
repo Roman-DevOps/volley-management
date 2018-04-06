@@ -1,48 +1,43 @@
-﻿namespace VolleyManagement.UnitTests.Admin.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.RolesAggregate;
-    using Domain.UsersAggregate;
-    using UI.Areas.Admin.Models;
-    using UI.Areas.Mvc.ViewModels.Players;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.RolesAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using VolleyManagement.UI.Areas.Admin.Models;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Players;
 
+namespace VolleyManagement.UnitTests.Admin.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC user view models
+    ///     Builder for test MVC user view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class UserAdminViewModelBuilder
     {
         /// <summary>
-        /// Holds test user view model instance
+        ///     Holds test user view model instance
         /// </summary>
-        private UserViewModel _userViewModel;
+        private readonly UserViewModel _userViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserAdminViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="UserAdminViewModelBuilder" /> class
         /// </summary>
         public UserAdminViewModelBuilder()
         {
-            _userViewModel = new UserViewModel()
-            {
+            _userViewModel = new UserViewModel {
                 Id = 1,
                 Name = "Player",
                 Email = "example@i.ua",
                 PersonName = "Eugene",
                 Phone = "068-11-22-333",
                 IsBlocked = false,
-                LoginProviders = new List<LoginProviderInfo>
-                {
-                    new LoginProviderInfo
-                    {
+                LoginProviders = new List<LoginProviderInfo> {
+                    new LoginProviderInfo {
                         LoginProvider = "Google",
                         ProviderKey = "11111111111111"
                     }
                 },
-                Roles = new List<Role>
-                {
-                    new Role
-                    {
+                Roles = new List<Role> {
+                    new Role {
                         Id = 1,
                         Name = "Administrator"
                     }
@@ -51,7 +46,7 @@
         }
 
         /// <summary>
-        /// Sets id of test user view model
+        ///     Sets id of test user view model
         /// </summary>
         /// <param name="id">Id for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -62,7 +57,7 @@
         }
 
         /// <summary>
-        /// Sets name of test user view model
+        ///     Sets name of test user view model
         /// </summary>
         /// <param name="name">Name for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -73,7 +68,7 @@
         }
 
         /// <summary>
-        /// Sets Username of user view model
+        ///     Sets Username of user view model
         /// </summary>
         /// <param name="userName">Username for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -84,7 +79,7 @@
         }
 
         /// <summary>
-        /// Sets Cellphone of user view model
+        ///     Sets Cellphone of user view model
         /// </summary>
         /// <param name="cellphone">Cellphone for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -95,7 +90,7 @@
         }
 
         /// <summary>
-        /// Sets login providers of test user view model
+        ///     Sets login providers of test user view model
         /// </summary>
         /// <param name="providers">Login providers for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -106,7 +101,7 @@
         }
 
         /// <summary>
-        /// Sets roles of test user view model
+        ///     Sets roles of test user view model
         /// </summary>
         /// <param name="roles">Roles for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -117,7 +112,7 @@
         }
 
         /// <summary>
-        /// Sets player belongs to user
+        ///     Sets player belongs to user
         /// </summary>
         /// <param name="player">Player instance</param>
         /// <returns>User view model builder object</returns>
@@ -128,7 +123,7 @@
         }
 
         /// <summary>
-        /// Builds test user view model
+        ///     Builds test user view model
         /// </summary>
         /// <returns>test user view model</returns>
         public UserViewModel Build()

@@ -1,29 +1,28 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GamesAggregate;
-    using UI.Areas.Mvc.ViewModels.GameResults;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.GamesAggregate;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameResults;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC game result view models
+    ///     Builder for test MVC game result view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GameResultViewModelBuilder
     {
         /// <summary>
-        /// Holds test Game result view model instance
+        ///     Holds test Game result view model instance
         /// </summary>
-        private GameResultViewModel _gameResultsViewModel;
+        private readonly GameResultViewModel _gameResultsViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameResultViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="GameResultViewModelBuilder" /> class
         /// </summary>
         public GameResultViewModelBuilder()
         {
-            _gameResultsViewModel = new GameResultViewModel()
-            {
+            _gameResultsViewModel = new GameResultViewModel {
                 HomeTeamId = 1,
                 AwayTeamId = 2,
                 HomeTeamName = "HomeTeam",
@@ -32,22 +31,21 @@
                 Round = 1,
                 GameNumber = 0,
                 GameScore = new ScoreViewModel(3, 1),
-                SetScores = new List<ScoreViewModel>()
-                    {
-                        new ScoreViewModel(27, 25),
-                        new ScoreViewModel(33, 31),
-                        new ScoreViewModel(27, 25),
-                        new ScoreViewModel(24, 26),
-                        new ScoreViewModel(),
-                    },
+                SetScores = new List<ScoreViewModel> {
+                    new ScoreViewModel(27, 25),
+                    new ScoreViewModel(33, 31),
+                    new ScoreViewModel(27, 25),
+                    new ScoreViewModel(24, 26),
+                    new ScoreViewModel()
+                },
                 IsTechnicalDefeat = false,
                 TournamentId = 1,
-                UrlToGameVideo = "http://test-url-a.com",
+                UrlToGameVideo = "http://test-url-a.com"
             };
         }
 
         /// <summary>
-        /// Sets id of test test results view model
+        ///     Sets id of test test results view model
         /// </summary>
         /// <param name="id">Id for test user view model</param>
         /// <returns>Game result view model builder object</returns>
@@ -58,7 +56,7 @@
         }
 
         /// <summary>
-        /// Sets name of test game results view model
+        ///     Sets name of test game results view model
         /// </summary>
         /// <param name="tournamentId">Tournament id</param>
         /// <returns>Game result view model builder object</returns>
@@ -69,7 +67,7 @@
         }
 
         /// <summary>
-        /// Sets technical defeat value of test game results view model
+        ///     Sets technical defeat value of test game results view model
         /// </summary>
         /// <param name="technicalDefeat">Value indicates technical defeat</param>
         /// <returns>Game result view model builder object</returns>
@@ -80,7 +78,7 @@
         }
 
         /// <summary>
-        /// Sets home team id of test game results view model
+        ///     Sets home team id of test game results view model
         /// </summary>
         /// <param name="homeTeamId">Value indicates home team id</param>
         /// <returns>Game result view model builder object</returns>
@@ -91,7 +89,7 @@
         }
 
         /// <summary>
-        /// Sets away team id of test game results view model
+        ///     Sets away team id of test game results view model
         /// </summary>
         /// <param name="awayTeamId">Value indicates away team id</param>
         /// <returns>Game result view model builder object</returns>
@@ -102,7 +100,7 @@
         }
 
         /// <summary>
-        /// Sets away team name of test game results view model
+        ///     Sets away team name of test game results view model
         /// </summary>
         /// <param name="awayTeamName">Value indicates away team name</param>
         /// <returns>Game result view model builder object</returns>
@@ -113,7 +111,7 @@
         }
 
         /// <summary>
-        /// Sets home team name of test game results view model
+        ///     Sets home team name of test game results view model
         /// </summary>
         /// <param name="homeTeamName">Value indicates home team name</param>
         /// <returns>Game result view model builder object</returns>
@@ -124,7 +122,7 @@
         }
 
         /// <summary>
-        /// Sets date of game
+        ///     Sets date of game
         /// </summary>
         /// <param name="date">Value indicates game's date</param>
         /// <returns>Game result view model builder object</returns>
@@ -135,7 +133,7 @@
         }
 
         /// <summary>
-        /// Sets round for game
+        ///     Sets round for game
         /// </summary>
         /// <param name="round">Value indicates round for particular game</param>
         /// <returns>Game result view model builder object</returns>
@@ -146,7 +144,7 @@
         }
 
         /// <summary>
-        /// Sets home and away sets score for game
+        ///     Sets home and away sets score for game
         /// </summary>
         /// <param name="homeSetScore">Value indicates sets score for home team</param>
         /// <param name="awaySetsScore">Value indicates sets score for away team</param>
@@ -158,7 +156,7 @@
         }
 
         /// <summary>
-        /// Sets home and away set scores for game
+        ///     Sets home and away set scores for game
         /// </summary>
         /// <param name="setScores">Value indicates set scores of game results</param>
         /// <returns>Game result view model builder object</returns>
@@ -178,7 +176,7 @@
         }
 
         /// <summary>
-        /// Builds test game results view model
+        ///     Builds test game results view model
         /// </summary>
         /// <returns>test game results view model</returns>
         public GameResultViewModel Build()

@@ -1,12 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Services.FeedbackService
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.FeedbackAggregate;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.FeedbackAggregate;
 
+namespace VolleyManagement.UnitTests.Services.FeedbackService
+{
     /// <summary>
-    /// Represents a builder of <see cref="Feedback"/> objects for unit
-    /// tests for <see cref="FeedbackService"/>.
+    ///     Represents a builder of <see cref="Feedback" /> objects for unit
+    ///     tests for <see cref="FeedbackService" />.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class FeedbackBuilder
@@ -14,12 +14,11 @@
         private readonly Feedback _feedback;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FeedbackBuilder"/> class.
+        ///     Initializes a new instance of the <see cref="FeedbackBuilder" /> class.
         /// </summary>
         public FeedbackBuilder()
         {
-            _feedback = new Feedback
-            {
+            _feedback = new Feedback {
                 Id = 1,
                 UsersEmail = "qwerty@gmail.com",
                 Content = "A perfect application",
@@ -30,10 +29,10 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the feedback.
+        ///     Sets the identifier of the feedback.
         /// </summary>
         /// <param name="id">Identifier of the feedback.</param>
-        /// <returns>Instance of <see cref="FeedbackBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="FeedbackBuilder" />.</returns>
         public FeedbackBuilder WithId(int id)
         {
             _feedback.Id = id;
@@ -41,7 +40,7 @@
         }
 
         /// <summary>
-        /// Sets the user email.
+        ///     Sets the user email.
         /// </summary>
         /// <param name="email">User email</param>
         /// <returns>Feedback object</returns>
@@ -52,7 +51,7 @@
         }
 
         /// <summary>
-        /// Sets the feedback content.
+        ///     Sets the feedback content.
         /// </summary>
         /// <param name="content">Feedback content</param>
         /// <returns>Feedback object</returns>
@@ -63,7 +62,7 @@
         }
 
         /// <summary>
-        /// Sets the feedback date
+        ///     Sets the feedback date
         /// </summary>
         /// <param name="date">Feedback date</param>
         /// <returns>Feedback object</returns>
@@ -74,7 +73,7 @@
         }
 
         /// <summary>
-        /// Sets the feedback status
+        ///     Sets the feedback status
         /// </summary>
         /// <param name="status">Feedback status</param>
         /// <returns>Feedback object</returns>
@@ -85,7 +84,7 @@
         }
 
         /// <summary>
-        /// Sets the feedback environment.
+        ///     Sets the feedback environment.
         /// </summary>
         /// <param name="environment">Feedback environment</param>
         /// <returns>Feedback object</returns>
@@ -96,7 +95,7 @@
         }
 
         /// <summary>
-        /// Builds test feedback.
+        ///     Builds test feedback.
         /// </summary>
         /// <returns>Test feedback</returns>
         public Feedback Build()

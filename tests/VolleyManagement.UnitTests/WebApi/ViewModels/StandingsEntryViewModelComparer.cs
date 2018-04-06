@@ -1,29 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.GameReports;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.GameReports;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Represents an equality comparer for <see cref="StandingsEntryViewModel"/> objects.
+    ///     Represents an equality comparer for <see cref="StandingsEntryViewModel" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class StandingsEntryViewModelComparer : IComparer<StandingsEntryViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two standing entries objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of entries.</returns>
-        public int Compare(StandingsEntryViewModel x, StandingsEntryViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two standing entries objects (non-generic implementation).
+        ///     Compares two standing entries objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -37,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondEntry == null)
+
+            if (secondEntry == null)
             {
                 return 1;
             }
@@ -46,7 +36,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two standings entries objects have the same properties.
+        ///     Compares two standing entries objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of entries.</returns>
+        public int Compare(StandingsEntryViewModel x, StandingsEntryViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two standings entries objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -54,23 +55,23 @@
         private bool AreEqual(StandingsEntryViewModel x, StandingsEntryViewModel y)
         {
             return x.TeamName == y.TeamName
-                && x.Position == y.Position
-                && x.Points == y.Points
-                && x.GamesTotal == y.GamesTotal
-                && x.GamesWon == y.GamesWon
-                && x.GamesLost == y.GamesLost
-                && x.GamesWithScoreThreeNil == y.GamesWithScoreThreeNil
-                && x.GamesWithScoreThreeOne == y.GamesWithScoreThreeOne
-                && x.GamesWithScoreThreeTwo == y.GamesWithScoreThreeTwo
-                && x.GamesWithScoreTwoThree == y.GamesWithScoreTwoThree
-                && x.GamesWithScoreOneThree == y.GamesWithScoreOneThree
-                && x.GamesWithScoreNilThree == y.GamesWithScoreNilThree
-                && x.SetsWon == y.SetsWon
-                && x.SetsLost == y.SetsLost
-                && x.SetsRatio == y.SetsRatio
-                && x.BallsWon == y.BallsWon
-                && x.BallsLost == y.BallsLost
-                && x.BallsRatio == y.BallsRatio;
+                   && x.Position == y.Position
+                   && x.Points == y.Points
+                   && x.GamesTotal == y.GamesTotal
+                   && x.GamesWon == y.GamesWon
+                   && x.GamesLost == y.GamesLost
+                   && x.GamesWithScoreThreeNil == y.GamesWithScoreThreeNil
+                   && x.GamesWithScoreThreeOne == y.GamesWithScoreThreeOne
+                   && x.GamesWithScoreThreeTwo == y.GamesWithScoreThreeTwo
+                   && x.GamesWithScoreTwoThree == y.GamesWithScoreTwoThree
+                   && x.GamesWithScoreOneThree == y.GamesWithScoreOneThree
+                   && x.GamesWithScoreNilThree == y.GamesWithScoreNilThree
+                   && x.SetsWon == y.SetsWon
+                   && x.SetsLost == y.SetsLost
+                   && x.SetsRatio == y.SetsRatio
+                   && x.BallsWon == y.BallsWon
+                   && x.BallsLost == y.BallsLost
+                   && x.BallsRatio == y.BallsRatio;
         }
     }
 }

@@ -1,36 +1,24 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.WebAPI.ViewModels.GameReports;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.WebApi.Standings
 {
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using UI.Areas.WebAPI.ViewModels.GameReports;
-
     /// <summary>
-    /// Represents a comparer for <see cref="DivisionStandingsViewModel"/> objects.
+    ///     Represents a comparer for <see cref="DivisionStandingsViewModel" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class DivisionStandingsViewModelComparer : IComparer<DivisionStandingsViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two <see cref="DivisionStandingsViewModel"/> objects.
+        ///     Compares two <see cref="DivisionStandingsViewModel" /> objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="DivisionStandingsViewModel"/> x and y.</returns>
-        public int Compare(DivisionStandingsViewModel x, DivisionStandingsViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two <see cref="DivisionStandingsViewModel"/> objects (non-generic implementation).
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="DivisionStandingsViewModel"/> x and y.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="DivisionStandingsViewModel" /> x and y.</returns>
         public int Compare(object x, object y)
         {
             var firstStandingsViewModel = x as DivisionStandingsViewModel;
@@ -40,7 +28,8 @@ namespace VolleyManagement.UnitTests.WebApi.Standings
             {
                 return -1;
             }
-            else if (secondStandingsViewModel == null)
+
+            if (secondStandingsViewModel == null)
             {
                 return 1;
             }
@@ -49,11 +38,22 @@ namespace VolleyManagement.UnitTests.WebApi.Standings
         }
 
         /// <summary>
-        /// Finds out whether two <see cref="DivisionStandingsViewModel"/> objects are equal.
+        ///     Compares two <see cref="DivisionStandingsViewModel" /> objects.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>True if given <see cref="DivisionStandingsViewModel"/> objects are equal.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="DivisionStandingsViewModel" /> x and y.</returns>
+        public int Compare(DivisionStandingsViewModel x, DivisionStandingsViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two <see cref="DivisionStandingsViewModel" /> objects are equal.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>True if given <see cref="DivisionStandingsViewModel" /> objects are equal.</returns>
         internal bool AreEqual(DivisionStandingsViewModel expected, DivisionStandingsViewModel actual)
         {
             actual.LastUpdateTime.Should().Be(expected.LastUpdateTime, "LastTimeUpdated should match");
@@ -63,7 +63,8 @@ namespace VolleyManagement.UnitTests.WebApi.Standings
             {
                 Assert.False(expected.StandingsTable == null || actual.StandingsTable == null);
 
-                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count, "Number of Standings divisions should match");
+                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count,
+                    "Number of Standings divisions should match");
 
                 for (var i = 0; i < expected.StandingsTable.Count; i++)
                 {

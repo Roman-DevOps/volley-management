@@ -1,43 +1,23 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Data.Contracts;
+using VolleyManagement.Data.Queries.Common;
+using VolleyManagement.Data.Queries.User;
+using VolleyManagement.Domain.PlayersAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Services.UserService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Contracts.Authorization;
-    using Data.Contracts;
-    using Data.Queries.User;
-    using Domain.PlayersAggregate;
-    using Xunit;
-    using Moq;
-    using Contracts;
-    using Contracts.Exceptions;
-    using Data.Queries.Common;
-    using Domain.UsersAggregate;
-    using VolleyManagement.Services.Authorization;
-
     [ExcludeFromCodeCoverage]
     public class BlockUserServiceTests
     {
-        private const int INVALID_USER_ID = -1;
-        private const int VALID_USER_ID = 1;
-        private const string TEST_NAME = "Test Name";
-        private const bool USER_STATUS_IS_BLOCKED = true;
-        private const bool USER_STATUS_IS_UNBLOCKED = false;
-
-        private Mock<IUserRepository> _userRepositoryMock;
-
-        private Mock<IAuthorizationService> _authorizationServiceMock;
-        private Mock<IUserService> _userServiceMock;
-        private Mock<ICacheProvider> _cacheProviderMock;
-        private Mock<IUnitOfWork> _unitOfWorkMock;
-        private Mock<IQuery<User, FindByIdCriteria>> _getUserByIdQueryMock;
-        private Mock<IQuery<Player, FindByIdCriteria>> _getPlayerByIdQueryMock;
-        private Mock<IQuery<ICollection<User>, GetAllCriteria>> _getAllUserQueryMock;
-        private Mock<IQuery<List<User>, UniqueUserCriteria>> _getUserListQueryMock;
-        private Mock<ICurrentUserService> _currentUserServiceMock;
-
         public BlockUserServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
@@ -52,120 +32,30 @@ namespace VolleyManagement.UnitTests.Services.UserService
             _currentUserServiceMock = new Mock<ICurrentUserService>();
 
             _userRepositoryMock.Setup(fr => fr.UnitOfWork)
-                    .Returns(_unitOfWorkMock.Object);
+                .Returns(_unitOfWorkMock.Object);
         }
 
-        [Fact]
-        public void SetUserBlocked_UserExist_UpdatedUserReturned()
+        private const int INVALID_USER_ID = -1;
+        private const int VALID_USER_ID = 1;
+        private const string TEST_NAME = "Test Name";
+        private const bool USER_STATUS_IS_BLOCKED = true;
+        private const bool USER_STATUS_IS_UNBLOCKED = false;
+
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+
+        private readonly Mock<IAuthorizationService> _authorizationServiceMock;
+        private readonly Mock<IUserService> _userServiceMock;
+        private readonly Mock<ICacheProvider> _cacheProviderMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IQuery<User, FindByIdCriteria>> _getUserByIdQueryMock;
+        private readonly Mock<IQuery<Player, FindByIdCriteria>> _getPlayerByIdQueryMock;
+        private readonly Mock<IQuery<ICollection<User>, GetAllCriteria>> _getAllUserQueryMock;
+        private readonly Mock<IQuery<List<User>, UniqueUserCriteria>> _getUserListQueryMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+
+        private VolleyManagement.Services.Authorization.UserService BuildSUT()
         {
-            // Arrange
-            var user = new BlockUserBuilder().WithId(VALID_USER_ID).Build();
-            MockCurrentUser(user, VALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            sut.ChangeUserBlocked(VALID_USER_ID, true);
-
-            // Assert
-            VerifyEditUser(user, Times.Once());
-        }
-
-        [Fact]
-        public void SetUserBlocked_UserExist_UserStatusIsBlocked()
-        {
-            // Arrange
-            var user = new BlockUserBuilder().WithBlockStatus(USER_STATUS_IS_BLOCKED).Build();
-            MockCurrentUser(user, VALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            sut.ChangeUserBlocked(VALID_USER_ID, true);
-
-            // Assert
-            VerifyEditUser(user, Times.Once());
-        }
-
-        [Fact]
-        public void SetUserBlocked_UserDoesNotExist_ExceptionThrown()
-        {
-            // Arrange
-            Exception exception = null;
-            MockUserServiceThrowsException(INVALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            try
-            {
-                sut.ChangeUserBlocked(INVALID_USER_ID, true);
-            }
-            catch (MissingEntityException ex)
-            {
-                exception = ex;
-            }
-
-            // Assert
-            VerifyExceptionThrown(
-                exception,
-                "A user with specified identifier was not found");
-        }
-
-        [Fact]
-        public void SetUserUnblocked_UserExist_UpdatedUserReturned()
-        {
-            // Arrange
-            var user = new BlockUserBuilder().WithId(VALID_USER_ID).Build();
-            MockCurrentUser(user, VALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            sut.ChangeUserBlocked(VALID_USER_ID, false);
-
-            // Assert
-            VerifyEditUser(user, Times.Once());
-        }
-
-        [Fact]
-        public void SetUserUnblocked_UserExist_UserStatusIsUnblocked()
-        {
-            // Arrange
-            var user = new BlockUserBuilder().WithBlockStatus(USER_STATUS_IS_UNBLOCKED).Build();
-            MockCurrentUser(user, VALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            sut.ChangeUserBlocked(VALID_USER_ID, false);
-
-            // Assert
-            VerifyEditUser(user, Times.Once());
-        }
-
-        [Fact]
-        public void SetUserUnblocked_UserDoesNotExist_ExceptionThrown()
-        {
-            // Arrange
-            Exception exception = null;
-            MockUserServiceThrowsException(INVALID_USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            try
-            {
-                sut.ChangeUserBlocked(INVALID_USER_ID, false);
-            }
-            catch (MissingEntityException ex)
-            {
-                exception = ex;
-            }
-
-            // Assert
-            VerifyExceptionThrown(
-                exception,
-                "A user with specified identifier was not found");
-        }
-
-        private UserService BuildSUT()
-        {
-            return new UserService(
+            return new VolleyManagement.Services.Authorization.UserService(
                 _authorizationServiceMock.Object,
                 _getUserByIdQueryMock.Object,
                 _getAllUserQueryMock.Object,
@@ -209,6 +99,114 @@ namespace VolleyManagement.UnitTests.Services.UserService
             _userServiceMock
                 .Setup(tr => tr.GetUser(userId))
                 .Throws<MissingEntityException>();
+        }
+
+        [Fact]
+        public void SetUserBlocked_UserDoesNotExist_ExceptionThrown()
+        {
+            // Arrange
+            Exception exception = null;
+            MockUserServiceThrowsException(INVALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            try
+            {
+                sut.ChangeUserBlocked(INVALID_USER_ID, true);
+            }
+            catch (MissingEntityException ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            VerifyExceptionThrown(
+                exception,
+                "A user with specified identifier was not found");
+        }
+
+        [Fact]
+        public void SetUserBlocked_UserExist_UpdatedUserReturned()
+        {
+            // Arrange
+            var user = new BlockUserBuilder().WithId(VALID_USER_ID).Build();
+            MockCurrentUser(user, VALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            sut.ChangeUserBlocked(VALID_USER_ID, true);
+
+            // Assert
+            VerifyEditUser(user, Times.Once());
+        }
+
+        [Fact]
+        public void SetUserBlocked_UserExist_UserStatusIsBlocked()
+        {
+            // Arrange
+            var user = new BlockUserBuilder().WithBlockStatus(USER_STATUS_IS_BLOCKED).Build();
+            MockCurrentUser(user, VALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            sut.ChangeUserBlocked(VALID_USER_ID, true);
+
+            // Assert
+            VerifyEditUser(user, Times.Once());
+        }
+
+        [Fact]
+        public void SetUserUnblocked_UserDoesNotExist_ExceptionThrown()
+        {
+            // Arrange
+            Exception exception = null;
+            MockUserServiceThrowsException(INVALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            try
+            {
+                sut.ChangeUserBlocked(INVALID_USER_ID, false);
+            }
+            catch (MissingEntityException ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            VerifyExceptionThrown(
+                exception,
+                "A user with specified identifier was not found");
+        }
+
+        [Fact]
+        public void SetUserUnblocked_UserExist_UpdatedUserReturned()
+        {
+            // Arrange
+            var user = new BlockUserBuilder().WithId(VALID_USER_ID).Build();
+            MockCurrentUser(user, VALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            sut.ChangeUserBlocked(VALID_USER_ID, false);
+
+            // Assert
+            VerifyEditUser(user, Times.Once());
+        }
+
+        [Fact]
+        public void SetUserUnblocked_UserExist_UserStatusIsUnblocked()
+        {
+            // Arrange
+            var user = new BlockUserBuilder().WithBlockStatus(USER_STATUS_IS_UNBLOCKED).Build();
+            MockCurrentUser(user, VALID_USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            sut.ChangeUserBlocked(VALID_USER_ID, false);
+
+            // Assert
+            VerifyEditUser(user, Times.Once());
         }
     }
 }

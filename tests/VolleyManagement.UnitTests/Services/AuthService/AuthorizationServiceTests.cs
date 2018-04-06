@@ -1,26 +1,29 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using Moq;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Data.Contracts;
+using VolleyManagement.Data.Queries.Common;
+using VolleyManagement.Domain.RolesAggregate;
+using VolleyManagement.Services.Authorization;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Services.AuthService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using Moq;
-    using Contracts.Authorization;
-    using Contracts.Exceptions;
-    using Data.Contracts;
-    using Data.Queries.Common;
-    using Domain.RolesAggregate;
-    using VolleyManagement.Services.Authorization;
-
     /// <summary>
-    /// Tests <see cref="IAuthorizationService"/> implementation
+    ///     Tests <see cref="IAuthorizationService" /> implementation
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class AuthorizationServiceTests
     {
-        #region Fields
+        public AuthorizationServiceTests()
+        {
+            _getByIdQueryMock = new Mock<IQuery<ICollection<AuthOperation>, FindByUserIdCriteria>>();
+            _currentUserService = new Mock<ICurrentUserService>();
+        }
 
         private const byte AREA_1_ID = 1;
         private const byte AREA_2_ID = 2;
@@ -31,361 +34,61 @@ namespace VolleyManagement.UnitTests.Services.AuthService
 
         private const byte BYTE_SIZE_SHIFT = 8;
 
-        private Mock<IQuery<ICollection<AuthOperation>, FindByUserIdCriteria>> _getByIdQueryMock;
-        private Mock<ICurrentUserService> _currentUserService;
-        private Type[] _authOperationsAreas = typeof(AuthOperations).GetNestedTypes();
+        private readonly Mock<IQuery<ICollection<AuthOperation>, FindByUserIdCriteria>> _getByIdQueryMock;
+        private readonly Mock<ICurrentUserService> _currentUserService;
+        private readonly Type[] _authOperationsAreas = typeof(AuthOperations).GetNestedTypes();
 
-        #endregion
-
-        #region Init
-
-        public AuthorizationServiceTests()
+        private AuthorizationService BuildSUT()
         {
-            _getByIdQueryMock = new Mock<IQuery<ICollection<AuthOperation>, FindByUserIdCriteria>>();
-            _currentUserService = new Mock<ICurrentUserService>();
+            return new AuthorizationService(_currentUserService.Object, _getByIdQueryMock.Object);
         }
 
-        #endregion
-
-        #region Service tests
-
-        [Fact]
-        public void CheckAccess_OperationNotPermitted_AuthorizationExceptionThrown()
+        private void MockAllowedOperations(List<AuthOperation> operations)
         {
-            // Arrange
-            var allowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-
-            MockAllowedOperations(allowedOperations);
-
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_4_ID);
-            var service = BuildSUT();
-
-            // Act
-            Action act = () => service.CheckAccess(operationToCheck);
-
-            // Assert
-            act.Should().Throw<AuthorizationException>();
+            _getByIdQueryMock.Setup(q => q.Execute(It.IsAny<FindByUserIdCriteria>())).Returns(operations);
         }
 
         [Fact]
-        public void CheckAccess_NoOperationsPermitted_AuthorizationExceptionThrown()
+        public void AuthOperation_DifferenAreaIdSameOperationId_OperationsNotEquals()
         {
             // Arrange
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            var allowedOperations = new List<AuthOperation>();
-            MockAllowedOperations(allowedOperations);
-
-            var service = BuildSUT();
+            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            AuthOperation operation2 = Tuple.Create(AREA_2_ID, OPERATION_1_ID);
 
             // Act
-            Action act = () => service.CheckAccess(operationToCheck);
-
-            // Assert
-            act.Should().Throw<AuthorizationException>();
-        }
-
-        [Fact]
-        public void CheckAccess_OperationPermitted_AuthorizationExceptionNotThrown()
-        {
-            // Arrange
-            var allowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-
-            MockAllowedOperations(allowedOperations);
-
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
-            var service = BuildSUT();
-
-            // Act
-            service.CheckAccess(operationToCheck);
-        }
-
-        [Fact]
-        public void GetAllowedOperations_AllAllowedOperationsSpecified_AllAllowed()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            var requestedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            foreach (var item in requestedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeTrue();
-            }
-        }
-
-        [Fact]
-        public void GetAllowedOperations_NotAllAllowedOperationsSpecified_OnlySpecifiedAllowed()
-        {
-            // Arrange
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                operationToCheck,
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            var requestedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            allowedOperations.IsAllowed(operationToCheck).Should().BeFalse();
-            foreach (var item in requestedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeTrue();
-            }
-        }
-
-        [Fact]
-        public void GetAllowedOperations_NotAllowedOperationsSpecified_NoOperationsAllowed()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            var requestedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_4_ID)
-            };
-
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            foreach (var item in allAllowedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeFalse();
-            }
-
-            foreach (var item in requestedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeFalse();
-            }
-        }
-
-        [Fact]
-        public void GetAllowedOperations_EmptyListSpecified_NoOneAllowed()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            var requestedOperations = new List<AuthOperation>();
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            foreach (var item in allAllowedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeFalse();
-            }
-        }
-
-        [Fact]
-        public void GetAllowedOperations_NullListSpecified_ArgumentNullExceptionThrown()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            List<AuthOperation> requestedOperations = null;
-            var service = BuildSUT();
-
-            // Act
-            Action act = () => service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
-        public void GetAllowedOperations_OneAllowedOperationSpecified_OnlySpecifiedAllowed()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            var requestedOperation = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperation);
-
-            // Assert
-            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_1_ID)).Should().BeFalse();
-            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_3_ID)).Should().BeFalse();
-            allowedOperations.IsAllowed(requestedOperation).Should().BeTrue();
-        }
-
-        [Fact]
-        public void GetAllowedOperations_NotAllowedOperationSpecified_NoOneAllowed()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-            var requestedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_3_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_4_ID)
-            };
-
-            var service = BuildSUT();
-
-            // Act
-            var allowedOperations = service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            foreach (var item in allAllowedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeFalse();
-            }
-
-            foreach (var item in requestedOperations)
-            {
-                allowedOperations.IsAllowed(item).Should().BeFalse();
-            }
-        }
-
-        [Fact]
-        public void GetAllowedOperations_NullSpecified_ArgumentNullExceptionThrown()
-        {
-            // Arrange
-            var allAllowedOperations = new List<AuthOperation>()
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            };
-            MockAllowedOperations(allAllowedOperations);
-
-            AuthOperation requestedOperations = null;
-            var service = BuildSUT();
-
-            // Act
-            Action act = () => service.GetAllowedOperations(requestedOperations);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>();
-        }
-
-        #endregion
-
-        #region AllowedOperations tests
-
-        [Fact]
-        public void IsAllowed_OperationNotPermitted_OperationIsNotAllowed()
-        {
-            // Arrange
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_3_ID);
-            var allowedOperations = new AllowedOperations(new List<AuthOperation>
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            });
-
-            // Act
-            var result = allowedOperations.IsAllowed(operationToCheck);
+            var result = operation1 == operation2;
 
             // Assert
             result.Should().BeFalse();
         }
 
         [Fact]
-        public void IsAllowed_NoOperationsPermitted_OperationIsNotAllowed()
+        public void AuthOperation_SameAreaIdDifferentOperationId_OperationsNotEquals()
         {
             // Arrange
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_3_ID);
-            var allowedOperations = new AllowedOperations(new List<AuthOperation>());
+            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            AuthOperation operation2 = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
 
             // Act
-            var result = allowedOperations.IsAllowed(operationToCheck);
+            var result = operation1 == operation2;
 
             // Assert
             result.Should().BeFalse();
         }
 
         [Fact]
-        public void IsAllowed_OperationPermitted_OperationIsAllowed()
+        public void AuthOperation_SameAreaIdOperationId_OperationsEquals()
         {
             // Arrange
-            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            var allowedOperations = new AllowedOperations(new List<AuthOperation>
-            {
-                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
-                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
-            });
+            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            AuthOperation operation2 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
 
             // Act
-            var result = allowedOperations.IsAllowed(operationToCheck);
+            var result = operation1 == operation2;
 
             // Assert
             result.Should().BeTrue();
         }
-
-        #endregion
-
-        #region AuthOperations tests
 
         [Fact]
         public void AuthOperations_AllAreas_AllAreasHasDifferentId()
@@ -401,8 +104,8 @@ namespace VolleyManagement.UnitTests.Services.AuthService
                 var areaName = area.Name;
                 foreach (var operation in areaOperations)
                 {
-                    short operationId = (AuthOperation)operation.GetValue(null);
-                    var areaId = (byte)(operationId >> BYTE_SIZE_SHIFT);
+                    short operationId = (AuthOperation) operation.GetValue(null);
+                    var areaId = (byte) (operationId >> BYTE_SIZE_SHIFT);
                     if (processedAreas.ContainsKey(areaId))
                     {
                         if (processedAreas[areaId] != areaName)
@@ -435,8 +138,8 @@ namespace VolleyManagement.UnitTests.Services.AuthService
                 var processed = new List<int>();
                 foreach (var operation in areaOperations)
                 {
-                    var operationId = (AuthOperation)operation.GetValue(null);
-                    var operationKeyId = (byte)((operationId << BYTE_SIZE_SHIFT) >> BYTE_SIZE_SHIFT);
+                    var operationId = (AuthOperation) operation.GetValue(null);
+                    var operationKeyId = (byte) ((operationId << BYTE_SIZE_SHIFT) >> BYTE_SIZE_SHIFT);
 
                     if (processed.Contains(operationKeyId))
                     {
@@ -467,8 +170,8 @@ namespace VolleyManagement.UnitTests.Services.AuthService
                 byte? areaId = null;
                 foreach (var operation in areaOperations)
                 {
-                    short operationId = (AuthOperation)operation.GetValue(null);
-                    var operationAreaId = (byte)(operationId >> BYTE_SIZE_SHIFT);
+                    short operationId = (AuthOperation) operation.GetValue(null);
+                    var operationAreaId = (byte) (operationId >> BYTE_SIZE_SHIFT);
 
                     if (areaId.HasValue && areaId.Value != operationAreaId)
                     {
@@ -486,61 +189,317 @@ namespace VolleyManagement.UnitTests.Services.AuthService
         }
 
         [Fact]
-        public void AuthOperation_SameAreaIdOperationId_OperationsEquals()
+        public void CheckAccess_NoOperationsPermitted_AuthorizationExceptionThrown()
         {
             // Arrange
-            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            AuthOperation operation2 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            var allowedOperations = new List<AuthOperation>();
+            MockAllowedOperations(allowedOperations);
+
+            var service = BuildSUT();
 
             // Act
-            var result = operation1 == operation2;
+            Action act = () => service.CheckAccess(operationToCheck);
+
+            // Assert
+            act.Should().Throw<AuthorizationException>();
+        }
+
+        [Fact]
+        public void CheckAccess_OperationNotPermitted_AuthorizationExceptionThrown()
+        {
+            // Arrange
+            var allowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+
+            MockAllowedOperations(allowedOperations);
+
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_4_ID);
+            var service = BuildSUT();
+
+            // Act
+            Action act = () => service.CheckAccess(operationToCheck);
+
+            // Assert
+            act.Should().Throw<AuthorizationException>();
+        }
+
+        [Fact]
+        public void CheckAccess_OperationPermitted_AuthorizationExceptionNotThrown()
+        {
+            // Arrange
+            var allowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+
+            MockAllowedOperations(allowedOperations);
+
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
+            var service = BuildSUT();
+
+            // Act
+            service.CheckAccess(operationToCheck);
+        }
+
+        [Fact]
+        public void GetAllowedOperations_AllAllowedOperationsSpecified_AllAllowed()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            var requestedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            foreach (var item in requestedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeTrue();
+            }
+        }
+
+        [Fact]
+        public void GetAllowedOperations_EmptyListSpecified_NoOneAllowed()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            var requestedOperations = new List<AuthOperation>();
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            foreach (var item in allAllowedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public void GetAllowedOperations_NotAllAllowedOperationsSpecified_OnlySpecifiedAllowed()
+        {
+            // Arrange
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            var allAllowedOperations = new List<AuthOperation> {
+                operationToCheck,
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            var requestedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            allowedOperations.IsAllowed(operationToCheck).Should().BeFalse();
+            foreach (var item in requestedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeTrue();
+            }
+        }
+
+        [Fact]
+        public void GetAllowedOperations_NotAllowedOperationSpecified_NoOneAllowed()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+            var requestedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_4_ID)
+            };
+
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            foreach (var item in allAllowedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeFalse();
+            }
+
+            foreach (var item in requestedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public void GetAllowedOperations_NotAllowedOperationsSpecified_NoOperationsAllowed()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            var requestedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_4_ID)
+            };
+
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            foreach (var item in allAllowedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeFalse();
+            }
+
+            foreach (var item in requestedOperations)
+            {
+                allowedOperations.IsAllowed(item).Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public void GetAllowedOperations_NullListSpecified_ArgumentNullExceptionThrown()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            List<AuthOperation> requestedOperations = null;
+            var service = BuildSUT();
+
+            // Act
+            Action act = () => service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void GetAllowedOperations_NullSpecified_ArgumentNullExceptionThrown()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            AuthOperation requestedOperations = null;
+            var service = BuildSUT();
+
+            // Act
+            Action act = () => service.GetAllowedOperations(requestedOperations);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void GetAllowedOperations_OneAllowedOperationSpecified_OnlySpecifiedAllowed()
+        {
+            // Arrange
+            var allAllowedOperations = new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_3_ID)
+            };
+            MockAllowedOperations(allAllowedOperations);
+
+            var requestedOperation = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
+            var service = BuildSUT();
+
+            // Act
+            var allowedOperations = service.GetAllowedOperations(requestedOperation);
+
+            // Assert
+            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_1_ID)).Should().BeFalse();
+            allowedOperations.IsAllowed(Tuple.Create(AREA_1_ID, OPERATION_3_ID)).Should().BeFalse();
+            allowedOperations.IsAllowed(requestedOperation).Should().BeTrue();
+        }
+
+        [Fact]
+        public void IsAllowed_NoOperationsPermitted_OperationIsNotAllowed()
+        {
+            // Arrange
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_3_ID);
+            var allowedOperations = new AllowedOperations(new List<AuthOperation>());
+
+            // Act
+            var result = allowedOperations.IsAllowed(operationToCheck);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void IsAllowed_OperationNotPermitted_OperationIsNotAllowed()
+        {
+            // Arrange
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_3_ID);
+            var allowedOperations = new AllowedOperations(new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            });
+
+            // Act
+            var result = allowedOperations.IsAllowed(operationToCheck);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void IsAllowed_OperationPermitted_OperationIsAllowed()
+        {
+            // Arrange
+            var operationToCheck = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
+            var allowedOperations = new AllowedOperations(new List<AuthOperation> {
+                Tuple.Create(AREA_1_ID, OPERATION_1_ID),
+                Tuple.Create(AREA_1_ID, OPERATION_2_ID)
+            });
+
+            // Act
+            var result = allowedOperations.IsAllowed(operationToCheck);
 
             // Assert
             result.Should().BeTrue();
         }
-
-        [Fact]
-        public void AuthOperation_DifferenAreaIdSameOperationId_OperationsNotEquals()
-        {
-            // Arrange
-            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            AuthOperation operation2 = Tuple.Create(AREA_2_ID, OPERATION_1_ID);
-
-            // Act
-            var result = operation1 == operation2;
-
-            // Assert
-            result.Should().BeFalse();
-        }
-
-        [Fact]
-        public void AuthOperation_SameAreaIdDifferentOperationId_OperationsNotEquals()
-        {
-            // Arrange
-            AuthOperation operation1 = Tuple.Create(AREA_1_ID, OPERATION_1_ID);
-            AuthOperation operation2 = Tuple.Create(AREA_1_ID, OPERATION_2_ID);
-
-            // Act
-            var result = operation1 == operation2;
-
-            // Assert
-            result.Should().BeFalse();
-        }
-
-        #endregion
-
-        #region Private
-
-        private AuthorizationService BuildSUT()
-        {
-            return new AuthorizationService(_currentUserService.Object, _getByIdQueryMock.Object);
-        }
-
-        private void MockAllowedOperations(List<AuthOperation> operations)
-        {
-            _getByIdQueryMock.Setup(q => q.Execute(It.IsAny<FindByUserIdCriteria>())).Returns(operations);
-        }
-
-        #endregion
     }
 }

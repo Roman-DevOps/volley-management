@@ -1,11 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using VolleyManagement.Domain.GameReportsAggregate;
 
 namespace VolleyManagement.UnitTests.Services.GameReportService
 {
-    using System.Collections.Generic;
-    using Domain.GameReportsAggregate;
-    using Xunit;
-
     public class StandingsDtoComparer : IComparer<StandingsDto>
     {
         private StandingsEntryComparer standingsComparer;
@@ -23,7 +21,8 @@ namespace VolleyManagement.UnitTests.Services.GameReportService
         {
             y.DivisionId.Should().Be(x.DivisionId, "Division Ids do not match");
             y.DivisionName.Should().Be(x.DivisionName, $"[DivisionId={x.DivisionId}] Division Names do not match");
-            y.LastUpdateTime.Should().Be(x.LastUpdateTime, $"[DivisionId={x.DivisionId}] Last Update time do not match");
+            y.LastUpdateTime.Should()
+                .Be(x.LastUpdateTime, $"[DivisionId={x.DivisionId}] Last Update time do not match");
 
             TestHelper.AreEqual(x.Standings, y.Standings, new StandingsEntryComparer());
 

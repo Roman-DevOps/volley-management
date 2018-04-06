@@ -1,35 +1,34 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.Users;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Users;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC user edit view models
+    ///     Builder for test MVC user edit view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class UserEditMvcViewModelBuilder
     {
         /// <summary>
-        /// Holds test user edit view model instance
+        ///     Holds test user edit view model instance
         /// </summary>
-        private UserEditViewModel _userEditViewModel;
+        private readonly UserEditViewModel _userEditViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserEditMvcViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="UserEditMvcViewModelBuilder" /> class
         /// </summary>
         public UserEditMvcViewModelBuilder()
         {
-            _userEditViewModel = new UserEditViewModel()
-            {
+            _userEditViewModel = new UserEditViewModel {
                 Id = 1,
                 FullName = "Name",
                 CellPhone = "068-11-22-777",
-                Email = "exampler@i.ua",
+                Email = "exampler@i.ua"
             };
         }
 
         /// <summary>
-        /// Sets id of test user edit view model
+        ///     Sets id of test user edit view model
         /// </summary>
         /// <param name="id">Id for test user edit view model</param>
         /// <returns>User edit view model builder object</returns>
@@ -40,7 +39,7 @@
         }
 
         /// <summary>
-        /// Sets name of test user edit view model
+        ///     Sets name of test user edit view model
         /// </summary>
         /// <param name="name">Name for test user edit view model</param>
         /// <returns>User edit view model builder object</returns>
@@ -51,7 +50,7 @@
         }
 
         /// <summary>
-        /// Sets Cellphone of user edit view model
+        ///     Sets Cellphone of user edit view model
         /// </summary>
         /// <param name="cellphone">Cellphone for test user edit view model</param>
         /// <returns>User edit view model builder object</returns>
@@ -62,7 +61,7 @@
         }
 
         /// <summary>
-        /// Sets email of user edit view model
+        ///     Sets email of user edit view model
         /// </summary>
         /// <param name="email">Email for test user edit view model</param>
         /// <returns>User edit view model builder object</returns>
@@ -73,7 +72,7 @@
         }
 
         /// <summary>
-        /// Builds test user edit view model
+        ///     Builds test user edit view model
         /// </summary>
         /// <returns>test user edit view model</returns>
         public UserEditViewModel Build()

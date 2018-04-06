@@ -1,37 +1,63 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using FluentAssertions;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Domain.ContributorsAggregate;
+using VolleyManagement.UI.Areas.Mvc.Controllers;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.ContributorsTeam;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
+using VolleyManagement.UnitTests.Services.ContributorService;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Mvc.Controllers
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Contracts;
-    using Xunit;
-    using Moq;
-    using Domain.ContributorsAggregate;
-    using UI.Areas.Mvc.Controllers;
-    using UI.Areas.Mvc.ViewModels.ContributorsTeam;
-    using ViewModels;
-    using Services.ContributorService;
-
     /// <summary>
-    /// Tests for MVC ContributorTeamController class.
+    ///     Tests for MVC ContributorTeamController class.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class ContributorsTeamControllerTests
     {
-        private Mock<IContributorTeamService> _contributorTeamServiceMock;
-
         /// <summary>
-        /// Initializes test data.
+        ///     Initializes test data.
         /// </summary>
         public ContributorsTeamControllerTests()
         {
             _contributorTeamServiceMock = new Mock<IContributorTeamService>();
         }
 
+        private readonly Mock<IContributorTeamService> _contributorTeamServiceMock;
+
+        private List<ContributorTeam> MakeTestContributorTeams()
+        {
+            return new ContributorTeamServiceTestFixture().TestContributors().Build();
+        }
+
+        private List<ContributorsTeamViewModel> MakeTestContributorTeamViewModels(
+            List<ContributorTeam> contributorTeams)
+        {
+            return contributorTeams.Select(ct => new ContributorTeamMvcViewModelBuilder()
+                    .WithId(ct.Id)
+                    .WithName(ct.Name)
+                    .WithCourseDirection(ct.CourseDirection)
+                    .WithContributors(ct.Contributors.ToList())
+                    .Build())
+                .ToList();
+        }
+
+        private void SetupGetAll(List<ContributorTeam> teams)
+        {
+            _contributorTeamServiceMock.Setup(cts => cts.Get()).Returns(teams);
+        }
+
+        private ContributorsTeamController BuildSUT()
+        {
+            return new ContributorsTeamController(_contributorTeamServiceMock.Object);
+        }
+
         /// <summary>
-        /// Test for Index method. All contributors are requested. All contributors are returned.
+        ///     Test for Index method. All contributors are requested. All contributors are returned.
         /// </summary>
         [Fact]
         public void Index_GetAllContributors_AllContributorsAreReturned()
@@ -47,33 +73,7 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
             var actual = TestExtensions.GetModel<IEnumerable<ContributorsTeamViewModel>>(sut.Index()).ToList();
 
             // Assert
-            actual.Should().Equal(expected, new ContributorTeamViewModelComparer());
-        }
-
-        private List<ContributorTeam> MakeTestContributorTeams()
-        {
-            return new ContributorTeamServiceTestFixture().TestContributors().Build();
-        }
-
-        private List<ContributorsTeamViewModel> MakeTestContributorTeamViewModels(List<ContributorTeam> contributorTeams)
-        {
-            return contributorTeams.Select(ct => new ContributorTeamMvcViewModelBuilder()
-                .WithId(ct.Id)
-                .WithName(ct.Name)
-                .WithCourseDirection(ct.CourseDirection)
-                .WithContributors(ct.Contributors.ToList())
-                .Build())
-                .ToList();
-        }
-
-        private void SetupGetAll(List<ContributorTeam> teams)
-        {
-            _contributorTeamServiceMock.Setup(cts => cts.Get()).Returns(teams);
-        }
-
-        private ContributorsTeamController BuildSUT()
-        {
-            return new ContributorsTeamController(_contributorTeamServiceMock.Object);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

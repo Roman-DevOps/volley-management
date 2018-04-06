@@ -1,7 +1,7 @@
 ﻿namespace VolleyManagement.UnitTests.Services.GameService
 {
     /// <summary>
-    /// Container for expected exception messages.
+    ///     Container for expected exception messages.
     /// </summary>
     public static class ExpectedExceptionMessages
     {
@@ -31,7 +31,7 @@
             + "In case of a technical defeat score of an optional game should be 25: 0 or 0: 25";
 
         public const string GAME_PREVIOUS_OPTIONAL_SET_UNPLAYED =
-        "Enter a score of the previous optional game";
+            "Enter a score of the previous optional game";
 
         public const string CONCURRENCY_EXCEPTION = "Игра с указаным идентификатором не была найдена";
 
@@ -40,9 +40,9 @@
         public const string WRONG_DELETING_GAME = "Game can not be deleted because it has already ended";
 
         public const string GAME_REQUIRED_SET_SCORES_15_0 =
-        "In fifth set, the number of points for one team must be at least 15"
-        + " and the points difference should be at least 2. If the score exceeds 15,"
-        + " the points difference must be equal to 2.";
+            "In fifth set, the number of points for one team must be at least 15"
+            + " and the points difference should be at least 2. If the score exceeds 15,"
+            + " the points difference must be equal to 2.";
 
         public const string GAME_DATE_NOT_SET = "Game date not set.";
 

@@ -1,29 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Players;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Players;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Comparer for player objects.
+    ///     Comparer for player objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PlayerViewModelComparer : IComparer<PlayerViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two players objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of players.</returns>
-        public int Compare(PlayerViewModel x, PlayerViewModel y)
-        {
-            return IsEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two player objects (non-generic implementation).
+        ///     Compares two player objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -37,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondPlayer == null)
+
+            if (secondPlayer == null)
             {
                 return 1;
             }
@@ -46,7 +36,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two player objects have the same properties.
+        ///     Compares two players objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of players.</returns>
+        public int Compare(PlayerViewModel x, PlayerViewModel y)
+        {
+            return IsEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two player objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -54,11 +55,11 @@
         private bool IsEqual(PlayerViewModel x, PlayerViewModel y)
         {
             return x.Id == y.Id &&
-                x.FirstName == y.FirstName &&
-                x.LastName == y.LastName &&
-                x.BirthYear == y.BirthYear &&
-                x.Height == y.Height &&
-                x.Weight == y.Weight;
+                   x.FirstName == y.FirstName &&
+                   x.LastName == y.LastName &&
+                   x.BirthYear == y.BirthYear &&
+                   x.Height == y.Height &&
+                   x.Weight == y.Weight;
         }
     }
 }

@@ -1,44 +1,31 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameService
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GamesAggregate;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.GamesAggregate;
 
+namespace VolleyManagement.UnitTests.Services.GameService
+{
     /// <summary>
-    /// Represents a builder of <see cref="Game"/> objects for unit tests for <see cref="GameService"/>.
+    ///     Represents a builder of <see cref="Game" /> objects for unit tests for <see cref="GameService" />.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class GameBuilder
     {
-        #region Fields
-
-        private const string DATE = "2016-04-03 10:00";
-
-        private const int MAX_SETS_COUNT = 5;
-
-        private Game _game;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameBuilder"/> class.
+        ///     Initializes a new instance of the <see cref="GameBuilder" /> class.
         /// </summary>
         public GameBuilder()
         {
-            _game = new Game
-            {
+            _game = new Game {
                 Id = 1,
                 TournamentId = 1,
                 HomeTeamId = 1,
                 AwayTeamId = 2,
-                Result = new Result
-                {
+                Result = new Result {
                     GameScore = new Score(3, 0, false),
-                    SetScores = new List<Score>
-                    {
+                    SetScores = new List<Score> {
                         new Score(25, 20),
                         new Score(26, 24),
                         new Score(30, 28),
@@ -54,6 +41,16 @@
 
         #endregion
 
+        #region Fields
+
+        private const string DATE = "2016-04-03 10:00";
+
+        private const int MAX_SETS_COUNT = 5;
+
+        private readonly Game _game;
+
+        #endregion
+
         #region Main setter methods
 
         public GameBuilder New()
@@ -64,10 +61,10 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the game.
+        ///     Sets the identifier of the game.
         /// </summary>
         /// <param name="id">Identifier of the game.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithId(int id)
         {
             _game.Id = id;
@@ -75,10 +72,10 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the tournament where game belongs.
+        ///     Sets the identifier of the tournament where game belongs.
         /// </summary>
         /// <param name="id">Identifier of the tournament.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTournamentId(int id)
         {
             _game.TournamentId = id;
@@ -86,10 +83,10 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the home team which played the game.
+        ///     Sets the identifier of the home team which played the game.
         /// </summary>
         /// <param name="id">Identifier of the home team.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithHomeTeamId(int? id)
         {
             _game.HomeTeamId = id;
@@ -97,10 +94,10 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the away team which played the game.
+        ///     Sets the identifier of the away team which played the game.
         /// </summary>
         /// <param name="id">Identifier of the away team.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithAwayTeamId(int? id)
         {
             _game.AwayTeamId = id;
@@ -113,9 +110,9 @@
         }
 
         /// <summary>
-        /// Sets empty null result in game.
+        ///     Sets empty null result in game.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithNullResult()
         {
             _game.GameDate = DateTime.Parse(DATE);
@@ -124,9 +121,9 @@
         }
 
         /// <summary>
-        /// Sets empty initialized result in game.
+        ///     Sets empty initialized result in game.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithDefaultResult()
         {
             _game.Result.GameScore = new Score(0, 0, false);
@@ -140,10 +137,10 @@
         }
 
         /// <summary>
-        /// Sets the final score of the game.
+        ///     Sets the final score of the game.
         /// </summary>
         /// <param name="score">Final score of the game.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetsScore(Score score)
         {
             _game.Result.GameScore = score;
@@ -151,9 +148,9 @@
         }
 
         /// <summary>
-        /// Sets a value of technical defeat to true.
+        ///     Sets a value of technical defeat to true.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeat()
         {
             _game.Result.GameScore.IsTechnicalDefeat = true;
@@ -161,9 +158,9 @@
         }
 
         /// <summary>
-        /// Sets a value of technical defeat to false.
+        ///     Sets a value of technical defeat to false.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithNoTechnicalDefeat()
         {
             _game.Result.GameScore.IsTechnicalDefeat = false;
@@ -171,11 +168,11 @@
         }
 
         /// <summary>
-        /// Sets set score by the specified set number.
+        ///     Sets set score by the specified set number.
         /// </summary>
         /// <param name="setNumber">Set number.</param>
         /// <param name="score">Set score.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetScore(byte setNumber, Score score)
         {
             _game.Result.SetScores[setNumber - 1] = score;
@@ -183,10 +180,10 @@
         }
 
         /// <summary>
-        /// Sets the set scores of the game.
+        ///     Sets the set scores of the game.
         /// </summary>
         /// <param name="scores">Set scores.</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetScores(IEnumerable<Score> scores)
         {
             _game.Result.SetScores.Clear();
@@ -195,15 +192,16 @@
             {
                 _game.Result.SetScores.Add(scoresEnumerator.Current);
             }
+
             scoresEnumerator.Dispose();
             return this;
         }
 
         /// <summary>
-        /// Sets the game date to given date
+        ///     Sets the game date to given date
         /// </summary>
         /// <param name="date">Date to set</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithStartDate(DateTime date)
         {
             _game.GameDate = date;
@@ -224,8 +222,7 @@
 
         public GameBuilder WithAPenalty()
         {
-            _game.Result.Penalty = new Penalty
-            {
+            _game.Result.Penalty = new Penalty {
                 IsHomeTeam = true,
                 Amount = 2,
                 Description = "Penalty reason"
@@ -234,9 +231,9 @@
         }
 
         /// <summary>
-        /// Builds instance of <see cref="GameBuilder"/>.
+        ///     Builds instance of <see cref="GameBuilder" />.
         /// </summary>
-        /// <returns>Instance of <see cref="Game"/>.</returns>
+        /// <returns>Instance of <see cref="Game" />.</returns>
         public Game Build()
         {
             return _game;
@@ -247,9 +244,9 @@
         #region Helper setter methods
 
         /// <summary>
-        /// Sets the same home and away teams.
+        ///     Sets the same home and away teams.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTheSameTeams()
         {
             _game.HomeTeamId = 1;
@@ -258,9 +255,9 @@
         }
 
         /// <summary>
-        /// Sets the final score of the game in a way that it is invalid.
+        ///     Sets the final score of the game in a way that it is invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithInvalidSetsScore()
         {
             _game.Result.GameScore = new Score(1, 0);
@@ -268,14 +265,13 @@
         }
 
         /// <summary>
-        /// Sets the final score of the game in a way that it does not match set scores.
+        ///     Sets the final score of the game in a way that it does not match set scores.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetsScoreNoMatchSetScores()
         {
             _game.Result.GameScore = new Score(3, 1);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 20),
                 new Score(24, 26),
                 new Score(28, 30),
@@ -287,13 +283,12 @@
         }
 
         /// <summary>
-        /// Sets the required set scores in a way that they are invalid.
+        ///     Sets the required set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithInvalidRequiredSetScores()
         {
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(10, 0),
                 new Score(10, 0),
                 new Score(10, 0),
@@ -305,14 +300,13 @@
         }
 
         /// <summary>
-        /// Sets the optional set scores in a way that they are invalid.
+        ///     Sets the optional set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithInvalidOptionalSetScores()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 20),
                 new Score(24, 26),
                 new Score(28, 30),
@@ -324,14 +318,13 @@
         }
 
         /// <summary>
-        /// Sets the previous optional set score to 0:0.
+        ///     Sets the previous optional set score to 0:0.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithPreviousOptionalSetUnplayed()
         {
             _game.Result.GameScore = new Score(3, 1);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 23),
                 new Score(20, 25),
                 new Score(25, 21),
@@ -343,14 +336,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores in a way that they are not listed in the correct order.
+        ///     Sets the set scores in a way that they are not listed in the correct order.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetScoresUnorderedForHomeTeam()
         {
             _game.Result.GameScore = new Score(3, 1);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 20),
                 new Score(25, 21),
                 new Score(25, 18),
@@ -362,10 +354,10 @@
         }
 
         /// <summary>
-        /// Sets the round number for game
+        ///     Sets the round number for game
         /// </summary>
         /// <param name="roundNumber">number of the round</param>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithRound(byte roundNumber)
         {
             _game.Round = roundNumber;
@@ -403,33 +395,31 @@
         }
 
         /// <summary>
-        /// Sets the set scores in a way that they are not listed in the correct order.
+        ///     Sets the set scores in a way that they are not listed in the correct order.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetScoresUnorderedForAwayTeam()
         {
             _game.Result.GameScore = new Score(2, 3);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
-                new Score(15, 0),
+                new Score(15, 0)
             };
 
             return this;
         }
 
         /// <summary>
-        /// Sets the set scores for home team win with a technical win in a way that they are valid.
+        ///     Sets the set scores for home team win with a technical win in a way that they are valid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeatValidSetScoresHomeTeamWin()
         {
             _game.Result.GameScore = new Score(3, 0, true);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 0),
                 new Score(25, 0),
                 new Score(25, 0),
@@ -441,14 +431,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores for away team win with a technical win in a way that they are valid.
+        ///     Sets the set scores for away team win with a technical win in a way that they are valid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeatValidSetScoresAwayTeamWin()
         {
             _game.Result.GameScore = new Score(0, 3, true);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(0, 25),
@@ -460,14 +449,13 @@
         }
 
         /// <summary>
-        /// Sets the sets score for home team win with a technical win in a way that they are invalid.
+        ///     Sets the sets score for home team win with a technical win in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeatInvalidSetsScore()
         {
             _game.Result.GameScore = new Score(2, 0, true);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 0),
                 new Score(25, 0),
                 new Score(0, 0),
@@ -479,14 +467,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores for home team win with a technical win in a way that they are invalid.
+        ///     Sets the set scores for home team win with a technical win in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeatInvalidSetScores()
         {
             _game.Result.GameScore = new Score(3, 0, true);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(25, 0),
                 new Score(25, 0),
                 new Score(24, 0),
@@ -498,14 +485,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores for home team win with a technical win in a way that they are valid.
+        ///     Sets the set scores for home team win with a technical win in a way that they are valid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithTechnicalDefeatValidOptional()
         {
             _game.Result.GameScore = new Score(3, 0, true);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 0),
                 new Score(0, 0),
                 new Score(0, 0),
@@ -517,9 +503,9 @@
         }
 
         /// <summary>
-        /// Sets the set scores for away team win in a way that they are invalid.
+        ///     Sets the set scores for away team win in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithSetScoresNull()
         {
             _game.Result.GameScore = new Score(0, 3, true);
@@ -529,14 +515,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores in a way that they are invalid.
+        ///     Sets the set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithOrdinarySetsScoreInvalid()
         {
             _game.Result.GameScore = new Score(4, 1);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(0, 25),
@@ -548,14 +533,13 @@
         }
 
         /// <summary>
-        /// Sets the fifth set scores in a way that they are invalid.
+        ///     Sets the fifth set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithFifthSetScoreAsUsualSetScore()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
@@ -567,14 +551,13 @@
         }
 
         /// <summary>
-        /// Sets the fifth set scores in a way that they are valid.
+        ///     Sets the fifth set scores in a way that they are valid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithFifthSetScoreMoreThanMaxWithValidDifference()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
@@ -586,14 +569,13 @@
         }
 
         /// <summary>
-        /// Sets the fifth set scores in a way that they are invalid.
+        ///     Sets the fifth set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithFifthSetScoreMoreThanMaxWithInvalidDifference()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
@@ -605,14 +587,13 @@
         }
 
         /// <summary>
-        /// Sets the fifth set scores in a way that they are invalid.
+        ///     Sets the fifth set scores in a way that they are invalid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithFifthSetScoreLessThanMax()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
@@ -624,14 +605,13 @@
         }
 
         /// <summary>
-        /// Sets the set scores in a way that they are valid.
+        ///     Sets the set scores in a way that they are valid.
         /// </summary>
-        /// <returns>Instance of <see cref="GameBuilder"/>.</returns>
+        /// <returns>Instance of <see cref="GameBuilder" />.</returns>
         public GameBuilder WithFifthSetScoreValid()
         {
             _game.Result.GameScore = new Score(3, 2);
-            _game.Result.SetScores = new List<Score>
-            {
+            _game.Result.SetScores = new List<Score> {
                 new Score(0, 25),
                 new Score(0, 25),
                 new Score(25, 0),
@@ -641,6 +621,7 @@
 
             return this;
         }
+
         #endregion
     }
 }

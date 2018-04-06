@@ -1,24 +1,21 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using Xunit;
-    using UI.Areas.Mvc.ViewModels.Teams;
-
     /// <summary>
-    /// Comparer for team name view model objects.
+    ///     Comparer for team name view model objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    internal class TeamNameViewModelComparer : IComparer<TeamNameViewModel>, IComparer, IEqualityComparer<TeamNameViewModel>
+    internal class TeamNameViewModelComparer : IComparer<TeamNameViewModel>, IComparer,
+        IEqualityComparer<TeamNameViewModel>
     {
         /// <summary>
-        /// Compares two team objects (non-generic implementation).
+        ///     Compares two team objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -32,7 +29,8 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             {
                 return -1;
             }
-            else if (secondTeam == null)
+
+            if (secondTeam == null)
             {
                 return 1;
             }
@@ -41,7 +39,7 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Compares two teams objects.
+        ///     Compares two teams objects.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -52,14 +50,39 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Finds out whether two team objects have the same properties.
+        ///     Finds out whether two team objects have the same properties.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>True if given team have the same properties.</returns>
+        public bool Equals(TeamNameViewModel x, TeamNameViewModel y)
+        {
+            return AreEqual(x, y);
+        }
+
+        /// <summary>
+        ///     Get objects hash code
+        /// </summary>
+        /// <param name="obj">object for getting hash code</param>
+        /// <returns>integer hash code</returns>
+        public int GetHashCode(TeamNameViewModel obj)
+        {
+            var builder = new StringBuilder();
+
+            builder.Append(obj.Id);
+            builder.Append(obj.Name);
+
+            return builder.ToString().GetHashCode();
+        }
+
+        /// <summary>
+        ///     Finds out whether two team objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
         /// <returns>True if given team have the same properties.</returns>
         public bool AreEqual(TeamNameViewModel x, TeamNameViewModel y)
         {
-
             y.Id.Should().Be(x.Id, "Id should be equal");
             y.Name.Should().Be(x.Name, "Name should be equal");
             y.DivisionName.Should().Be(x.DivisionName, "DivisionName should be equal");
@@ -69,7 +92,7 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Finds out whether two lists of team objects have the same properties.
+        ///     Finds out whether two lists of team objects have the same properties.
         /// </summary>
         /// <param name="x">The first list of object to compare.</param>
         /// <param name="y">The second list of object to compare.</param>
@@ -85,32 +108,6 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Finds out whether two team objects have the same properties.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>True if given team have the same properties.</returns>
-        public bool Equals(TeamNameViewModel x, TeamNameViewModel y)
-        {
-            return AreEqual(x, y);
-        }
-
-        /// <summary>
-        /// Get objects hash code
-        /// </summary>
-        /// <param name="obj">object for getting hash code</param>
-        /// <returns>integer hash code</returns>
-        public int GetHashCode(TeamNameViewModel obj)
-        {
-            var builder = new StringBuilder();
-
-            builder.Append(obj.Id);
-            builder.Append(obj.Name);
-
-            return builder.ToString().GetHashCode();
         }
     }
 }

@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Teams;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Teams;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Builder for test team view models
+    ///     Builder for test team view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TeamViewModelBuilder
     {
         /// <summary>
-        /// Holds test team view model instance
+        ///     Holds test team view model instance
         /// </summary>
-        private TeamViewModel _teamViewModel;
+        private readonly TeamViewModel _teamViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TeamViewModelBuilder" /> class
+        ///     Initializes a new instance of the <see cref="TeamViewModelBuilder" /> class
         /// </summary>
         public TeamViewModelBuilder()
         {
-            _teamViewModel = new TeamViewModel()
-            {
+            _teamViewModel = new TeamViewModel {
                 Id = 1,
                 Name = "TeamNameA",
                 CaptainId = 1,
@@ -30,7 +29,7 @@
         }
 
         /// <summary>
-        /// Sets id of test team view model
+        ///     Sets id of test team view model
         /// </summary>
         /// <param name="id">Id for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -41,7 +40,7 @@
         }
 
         /// <summary>
-        /// Sets the captain id of test team view model
+        ///     Sets the captain id of test team view model
         /// </summary>
         /// <param name="captainId">Captain id for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -52,7 +51,7 @@
         }
 
         /// <summary>
-        /// Sets the name of test team view model
+        ///     Sets the name of test team view model
         /// </summary>
         /// <param name="name">Name for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -63,7 +62,7 @@
         }
 
         /// <summary>
-        /// Sets the coach of test team view model
+        ///     Sets the coach of test team view model
         /// </summary>
         /// <param name="coach">Coach for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -74,7 +73,7 @@
         }
 
         /// <summary>
-        /// Sets the achievements of test team view model
+        ///     Sets the achievements of test team view model
         /// </summary>
         /// <param name="achievements">Achievements for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -85,7 +84,7 @@
         }
 
         /// <summary>
-        /// Builds test team view model
+        ///     Builds test team view model
         /// </summary>
         /// <returns>Test team view model</returns>
         public TeamViewModel Build()

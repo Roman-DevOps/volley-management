@@ -1,35 +1,50 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Controllers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using System.Linq;
-    using System.Web;
-    using System.Web.Mvc;
-    using System.Web.Routing;
-    using Contracts;
-    using Xunit;
-    using Moq;
-    using Contracts.Authorization;
-    using Contracts.Exceptions;
-    using Domain.PlayersAggregate;
-    using Domain.TeamsAggregate;
-    using UI.Areas.Mvc.Controllers;
-    using UI.Areas.Mvc.ViewModels.Players;
-    using UI.Areas.Mvc.ViewModels.Teams;
-    using ViewModels;
-    using Services.PlayerService;
-    using Services.TeamService;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Domain.PlayersAggregate;
+using VolleyManagement.Domain.TeamsAggregate;
+using VolleyManagement.UI.Areas.Mvc.Controllers;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Players;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
+using VolleyManagement.UnitTests.Services.PlayerService;
+using VolleyManagement.UnitTests.Services.TeamService;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Mvc.Controllers
+{
     /// <summary>
-    /// Tests for MVC TeamsController class.
+    ///     Tests for MVC TeamsController class.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    
     public class TeamsControllerTests
     {
+        /// <summary>
+        ///     Initializes test data
+        /// </summary>
+        public TeamsControllerTests()
+        {
+            _teamServiceMock = new Mock<ITeamService>();
+            _httpContextMock = new Mock<HttpContextBase>();
+            _httpRequestMock = new Mock<HttpRequestBase>();
+            _httpPostedFileBaseMock = new Mock<HttpPostedFileBase>();
+            _authServiceMock = new Mock<IAuthorizationService>();
+            _fileServiceMock = new Mock<IFileService>();
+            _playerServiceMock = new Mock<IPlayerService>();
+
+            _httpContextMock.SetupGet(c => c.Request).Returns(_httpRequestMock.Object);
+        }
+
         private const int TEAM_UNEXISTING_ID_TO_DELETE = 4;
         private const int SPECIFIED_TEAM_ID = 4;
         private const int TEAM_ID = 1;
@@ -49,598 +64,13 @@
         private const string FILE_NOT_FOUND_EX_MESSAGE = "File not found";
         private const string FILE_LOAD_EX_MESSAGE = "File size must be less then 1 MB and greater then 0 MB";
 
-        private Mock<ITeamService> _teamServiceMock;
-        private Mock<HttpContextBase> _httpContextMock;
-        private Mock<HttpRequestBase> _httpRequestMock;
-        private Mock<HttpPostedFileBase> _httpPostedFileBaseMock;
-        private Mock<IAuthorizationService> _authServiceMock;
-        private Mock<IFileService> _fileServiceMock;
-        private Mock<IPlayerService> _playerServiceMock;
-
-        /// <summary>
-        /// Initializes test data
-        /// </summary>
-        public TeamsControllerTests()
-        {
-            _teamServiceMock = new Mock<ITeamService>();
-            _httpContextMock = new Mock<HttpContextBase>();
-            _httpRequestMock = new Mock<HttpRequestBase>();
-            _httpPostedFileBaseMock = new Mock<HttpPostedFileBase>();
-            _authServiceMock = new Mock<IAuthorizationService>();
-            _fileServiceMock = new Mock<IFileService>();
-            _playerServiceMock = new Mock<IPlayerService>();
-
-            _httpContextMock.SetupGet(c => c.Request).Returns(_httpRequestMock.Object);
-        }
-
-        /// <summary>
-        /// Delete method test. The method should invoke Delete() method of ITeamService
-        /// and return result as JavaScript Object Notation.
-        /// </summary>
-        [Fact]
-        public void Delete_PlayerExists_PlayerIsDeleted()
-        {
-            // Act
-            var sut = BuildSUT();
-            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE) as JsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ps => ps.Delete(It.Is<int>(id => id == TEAM_UNEXISTING_ID_TO_DELETE)), Times.Once());
-            Assert.NotNull(actual);
-        }
-
-        /// <summary>
-        /// Delete method test. Input parameter is team id, which doesn't exist in database.
-        /// The method should return message as JavaScript Object Notation.
-        /// </summary>
-        [Fact]
-        public void Delete_PlayerDoesntExist_JsonReturned()
-        {
-            // Arrange
-            _teamServiceMock.Setup(ps => ps.Delete(TEAM_UNEXISTING_ID_TO_DELETE)).Throws<MissingEntityException>();
-
-            // Act
-            var sut = BuildSUT();
-            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE) as JsonResult;
-
-            // Assert
-            Assert.NotNull(actual);
-        }
-
-        /// <summary>
-        /// Delete method test. Model state is not valid.
-        /// The method should return message as JavaScript Object Notation.
-        /// </summary>
-        [Fact]
-        public void Delete_TeamNotValid_JsonReturned()
-        {
-            // Arrange
-            _teamServiceMock.Setup(ps => ps.Delete(TEAM_UNEXISTING_ID_TO_DELETE)).Throws<MissingEntityException>();
-
-            // Act
-            var sut = BuildSUT();
-            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE) as JsonResult;
-
-            // Assert
-            Assert.NotNull(actual);
-        }
-
-        /// <summary>
-        /// Create method test. Positive test
-        /// </summary>
-        [Fact]
-        public void Create_TeamPassed_EntityIdIsSet()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().WithId(0).Build();
-            var expectedDomain = viewModel.ToDomain();
-            var comparer = new TeamComparer();
-            _teamServiceMock.Setup(ts => ts.Create(It.Is<Team>(t => comparer.AreEqual(t, expectedDomain))))
-                                           .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
-
-            // Act
-            var sut = BuildSUT();
-            sut.Create(viewModel);
-
-            // Assert
-            Assert.Equal(viewModel.Id, SPECIFIED_TEAM_ID);
-        }
-
-        /// <summary>
-        /// Create method test. Team is not valid. Argument exception is thrown.
-        /// Json is Returned
-        /// </summary>
-        [Fact]
-        public void Create_TeamNotValid_ArgumentExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
-                                           .Throws(new ArgumentException(SPECIFIED_EXCEPTION_MESSAGE));
-            var sut = BuildSUT();
-
-            // Act
-            var jsonResult = sut.Create(viewModel);
-            var actualMessage = jsonResult.Data.ToString();
-            var expetedMessage = $"{{ Success = False, Message = {SPECIFIED_EXCEPTION_MESSAGE} }}";
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
-            Assert.Equal(actualMessage, expetedMessage);
-        }
-
-        /// <summary>
-        /// Create method test. Model state is invalid.
-        /// Json is Returned
-        /// </summary>
-        [Fact]
-        public void Create_InValidTeamViewModel_JsonReturned()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            var sut = BuildSUT();
-            sut.ModelState.AddModelError(string.Empty, string.Empty);
-
-            // Act
-            var result = sut.Create(viewModel) as JsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Never());
-            Assert.NotNull(result);
-        }
-
-        /// <summary>
-        /// Create method test. Invalid captain Id
-        /// </summary>
-        [Fact]
-        public void Create_InvalidCaptainId_MissingEntityExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
-                                           .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Create(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Never());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Create method test. Captain of another team
-        /// </summary>
-        [Fact]
-        public void Create_CaptainOfAnotherTeam_ValidationExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
-                                           .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Create(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Never());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Create method test. Invalid player Id
-        /// </summary>
-        [Fact]
-        public void Create_InvalidRosterPlayerId_MissingEntityExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            var comparer = new TeamComparer();
-            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
-                                           .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Create(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Once());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Create method test. Captain of another team
-        /// </summary>
-        [Fact]
-        public void Create_RosterPlayerIsCaptainOfAnotherTeam_ValidationExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
-                                           .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Create(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Once());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Create method test. Roster players updated
-        /// </summary>
-        [Fact]
-        public void Create_RosterPlayerPassed_PlayersUpdated()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var rosterDomain = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(rosterDomain.ToList());
-
-            var rosterPlayer = new PlayerNameViewModel() { Id = SPECIFIED_PLAYER_ID, FirstName = SPECIFIED_FIRST_PLAYER_NAME, LastName = SPECIFIED_LAST_PLAYER_NAME };
-            var roster = new List<PlayerNameViewModel>() { rosterPlayer };
-            var viewModel = new TeamMvcViewModelBuilder().WithRoster(roster).Build();
-
-            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
-                                           .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
-
-            // Act
-            var sut = BuildSUT();
-            sut.Create(viewModel);
-
-            // Assert
-            _teamServiceMock.Verify(
-                             ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
-                             Times.Once());
-        }
-
-        /// <summary>
-        /// Edit method test. Positive test
-        /// </summary>
-        [Fact]
-        public void Edit_TeamPassed_EntityIdIsSet()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var roster = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
-
-            var viewModel = CreateViewModel();
-            var expectedDomain = viewModel.ToDomain();
-            var comparer = new TeamComparer();
-            _teamServiceMock.Setup(ts => ts.Create(It.Is<Team>(t => comparer.AreEqual(t, expectedDomain))))
-                                           .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
-
-            // Act
-            var sut = BuildSUT();
-            sut.Edit(viewModel);
-
-            // Assert
-            Assert.Equal(viewModel.Id, SPECIFIED_TEAM_ID);
-        }
-
-        /// <summary>
-        /// Edit method test. Team is not valid. Argument exception is thrown.
-        /// Json is Returned
-        /// </summary>
-        [Fact]
-        public void Edit_TeamNotValid_ArgumentExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
-                                           .Throws(new ArgumentException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Edit(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Edit method test. Model state is invalid.
-        /// Json is Returned
-        /// </summary>
-        [Fact]
-        public void Edit_InValidTeamViewModel_JsonReturned()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            var sut = BuildSUT();
-            sut.ModelState.AddModelError(string.Empty, string.Empty);
-
-            // Act
-            var result = sut.Edit(viewModel) as JsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Never());
-            Assert.NotNull(result);
-        }
-
-        /// <summary>
-        /// Edit method test. Invalid captain Id
-        /// </summary>
-        [Fact]
-        public void Edit_InvalidCaptainId_MissingEntityExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
-                                           .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Edit(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Never());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Edit method test. Captain of another team
-        /// </summary>
-        [Fact]
-        public void Edit_CaptainOfAnotherTeam_ValidationExceptionThrown()
-        {
-            // Arrange
-            var viewModel = new TeamMvcViewModelBuilder().Build();
-            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
-                                           .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Edit(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Never());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Edit method test. Invalid player Id
-        /// </summary>
-        [Fact]
-        public void Edit_InvalidRosterPlayerId_MissingEntityExceptionThrown()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var roster = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
-
-            var viewModel = CreateViewModel();
-            var comparer = new TeamComparer();
-            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
-                                           .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Edit(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Once());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Edit method test. Captain of another team
-        /// </summary>
-        [Fact]
-        public void Edit_RosterPlayerIsCaptainOfAnotherTeam_ValidationExceptionThrown()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var roster = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
-
-            var viewModel = CreateViewModel();
-            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
-                                           .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
-
-            // Act
-            var sut = BuildSUT();
-            var jsonResult = sut.Edit(viewModel);
-            var modelResult = jsonResult;
-
-            // Assert
-            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()), Times.Once());
-            Assert.NotNull(modelResult);
-        }
-
-        /// <summary>
-        /// Edit method test. Roster players updated
-        /// </summary>
-        [Fact]
-        public void Edit_RosterPlayerPassed_PlayersUpdated()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var rosterDomain = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(rosterDomain.ToList());
-
-            var rosterPlayer = new PlayerNameViewModel() { Id = SPECIFIED_PLAYER_ID, FirstName = SPECIFIED_FIRST_PLAYER_NAME, LastName = SPECIFIED_LAST_PLAYER_NAME };
-            var roster = new List<PlayerNameViewModel>() { rosterPlayer };
-            var viewModel = new TeamMvcViewModelBuilder().WithRoster(roster).Build();
-
-            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
-                                           .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
-
-            // Act
-            var sut = BuildSUT();
-            sut.Edit(viewModel);
-
-            // Assert
-            _teamServiceMock.Verify(
-                             ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
-                             Times.Once());
-        }
-
-        /// <summary>
-        /// Test for Details method. Team with specified identifier does not exist. HttpNotFoundResult is returned.
-        /// </summary>
-        [Fact]
-        public void Details_NonExistentTeam_HttpNotFoundResultIsReturned()
-        {
-            // Arrange
-            SetupGet(TEST_TEAM_ID, null);
-
-            // Act
-            var sut = BuildSUT();
-            var result = sut.Details(TEST_TEAM_ID);
-
-            // Assert
-            Assert.IsType<HttpNotFoundResult>(result);
-        }
-
-        /// <summary>
-        /// Test for Details method. Team with specified identifier exists. View model of Team is returned.
-        /// </summary>
-        [Fact]
-        public void Details_ExistingTeam_TeamViewModelIsReturned()
-        {
-            // Arrange
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var roster = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
-            SetupRequestRawUrl("/Teams");
-            var sut = BuildSUT();
-
-            SetupControllerContext(sut);
-
-            var expected = CreateViewModel();
-
-            // Act
-            var actual = TestExtensions.GetModel<TeamRefererViewModel>(sut.Details(SPECIFIED_TEAM_ID));
-
-            // Assert
-            TestHelper.AreEqual<TeamViewModel>(expected, actual.Model, new TeamViewModelComparer());
-            Assert.Equal(actual.CurrentReferrer, sut.Request.RawUrl);
-        }
-
-        /// <summary>
-        /// Test for Edit method (GET action). Valid team id.  Team view model is returned.
-        /// </summary>
-        [Fact]
-        public void EditGetAction_TeamId_TeamViewModelIsReturned()
-        {
-            var team = CreateTeam();
-            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
-            var roster = new PlayerServiceTestFixture()
-                                .TestPlayers()
-                                .AddPlayer(captain)
-                                .Build();
-
-            MockTeamServiceGetTeam(team);
-            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
-            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
-
-            var sut = BuildSUT();
-            SetupControllerContext(sut);
-
-            var expected = CreateViewModel();
-
-            // Act
-            var actual = TestExtensions.GetModel<TeamViewModel>(sut.Edit(SPECIFIED_TEAM_ID));
-
-            // Assert
-            TestHelper.AreEqual<TeamViewModel>(expected, actual, new TeamViewModelComparer());
-        }
-
-        /// <summary>
-        /// Test for Edit method. Team with specified identifier does not exist. HttpNotFoundResult is returned.
-        /// </summary>
-        [Fact]
-        public void Edit_NotExistedTeam_HttpNotFoundResultIsReturned()
-        {
-            // Arrange
-            SetupGet(TEAM_ID, null as Team);
-
-            // Act
-            var sut = BuildSUT();
-            var result = sut.Edit(TEAM_ID);
-
-            // Assert
-            Assert.IsType<HttpNotFoundResult>(result);
-        }
-
-        /// <summary>
-        /// Test for GetAllTeams method. All teams are requested. JsonResult with all teams is returned.
-        /// </summary>
-        [Fact]
-        public void GetAllTeams_GetTeams_JsonResultIsReturned()
-        {
-            // Arrange
-            var testData = MakeTestTeams();
-            SetupGetAllTeams(testData);
-
-            // Act
-            var sut = BuildSUT();
-            var result = sut.GetAllTeams();
-
-            // Assert
-            Assert.NotNull(result);
-        }
+        private readonly Mock<ITeamService> _teamServiceMock;
+        private readonly Mock<HttpContextBase> _httpContextMock;
+        private readonly Mock<HttpRequestBase> _httpRequestMock;
+        private readonly Mock<HttpPostedFileBase> _httpPostedFileBaseMock;
+        private readonly Mock<IAuthorizationService> _authServiceMock;
+        private readonly Mock<IFileService> _fileServiceMock;
+        private readonly Mock<IPlayerService> _playerServiceMock;
 
         private TeamsController BuildSUT()
         {
@@ -654,28 +84,27 @@
         private Team CreateTeam()
         {
             return new TeamBuilder()
-                         .WithId(SPECIFIED_TEAM_ID)
-                         .WithCaptain(SPECIFIED_PLAYER_ID)
-                         .WithCoach(COACH)
-                         .WithAchievements(ACHIEVEMENTS)
-                         .WithName(TEAM_NAME)
-                         .Build();
+                .WithId(SPECIFIED_TEAM_ID)
+                .WithCaptain(SPECIFIED_PLAYER_ID)
+                .WithCoach(COACH)
+                .WithAchievements(ACHIEVEMENTS)
+                .WithName(TEAM_NAME)
+                .Build();
         }
 
         private Player CreatePlayer(int id)
         {
             return new PlayerBuilder()
-                        .WithId(id)
-                        .WithFirstName(PLAYER_FIRSTNAME)
-                        .WithLastName(PLAYER_LASTNAME)
-                        .WithTeamId(SPECIFIED_TEAM_ID)
-                        .Build();
+                .WithId(id)
+                .WithFirstName(PLAYER_FIRSTNAME)
+                .WithLastName(PLAYER_LASTNAME)
+                .WithTeamId(SPECIFIED_TEAM_ID)
+                .Build();
         }
 
         private PlayerNameViewModel CreatePlayerNameModel(string firstname, string lastname, int id)
         {
-            return new PlayerNameViewModel()
-            {
+            return new PlayerNameViewModel {
                 FirstName = firstname,
                 LastName = lastname,
                 Id = id
@@ -693,8 +122,7 @@
             const int THIRD_PLAYER_ID = 3;
             const string THIRD_PLAYER_FIRSTNAME = "FirstNameC";
             const string THIRD_PLAYER_LASTNAME = "LastNameC";
-            var roster = new List<PlayerNameViewModel>()
-            {
+            var roster = new List<PlayerNameViewModel> {
                 CreatePlayerNameModel(FIRST_PLAYER_FIRSTNAME, FIRST_PLAYER_LASTNAME, FIRST_PLAYER_ID),
                 CreatePlayerNameModel(SECOND_PLAYER_FIRSTNAME, SECOND_PLAYER_LASTNAME, SECOND_PLAYER_ID),
                 CreatePlayerNameModel(THIRD_PLAYER_FIRSTNAME, THIRD_PLAYER_LASTNAME, THIRD_PLAYER_ID),
@@ -709,25 +137,25 @@
             var cap = CreatePlayerNameModel(PLAYER_FIRSTNAME, PLAYER_LASTNAME, SPECIFIED_PLAYER_ID);
             var players = CreateRoster();
             return new TeamMvcViewModelBuilder()
-                          .WithId(SPECIFIED_TEAM_ID)
-                          .WithCoach(COACH)
-                          .WithAchievements(ACHIEVEMENTS)
-                          .WithName(TEAM_NAME)
-                          .WithCaptain(cap)
-                          .WithRoster(players)
-                          .Build();
+                .WithId(SPECIFIED_TEAM_ID)
+                .WithCoach(COACH)
+                .WithAchievements(ACHIEVEMENTS)
+                .WithName(TEAM_NAME)
+                .WithCaptain(cap)
+                .WithRoster(players)
+                .Build();
         }
 
         private List<TeamViewModel> MakeTestTeamViewModels(List<Team> teams)
         {
             return teams.Select(ct => new TeamMvcViewModelBuilder()
-                .WithId(ct.Id)
-                .WithName(ct.Name)
-                .WithAchievements(ct.Achievements)
-                .WithCoach(ct.Coach)
-                .WithRoster(CreateRoster())
-                .WithCaptain(CreatePlayerNameModel(PLAYER_FIRSTNAME, PLAYER_LASTNAME, SPECIFIED_PLAYER_ID))
-                .Build())
+                    .WithId(ct.Id)
+                    .WithName(ct.Name)
+                    .WithAchievements(ct.Achievements)
+                    .WithCoach(ct.Coach)
+                    .WithRoster(CreateRoster())
+                    .WithCaptain(CreatePlayerNameModel(PLAYER_FIRSTNAME, PLAYER_LASTNAME, SPECIFIED_PLAYER_ID))
+                    .Build())
                 .ToList();
         }
 
@@ -796,6 +224,592 @@
         private List<Team> MakeTestTeams()
         {
             return new TeamServiceTestFixture().TestTeams().Build();
+        }
+
+        /// <summary>
+        ///     Create method test. Captain of another team
+        /// </summary>
+        [Fact]
+        public void Create_CaptainOfAnotherTeam_ValidationExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
+                .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Create(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Never());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Create method test. Invalid captain Id
+        /// </summary>
+        [Fact]
+        public void Create_InvalidCaptainId_MissingEntityExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
+                .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Create(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Never());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Create method test. Invalid player Id
+        /// </summary>
+        [Fact]
+        public void Create_InvalidRosterPlayerId_MissingEntityExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            var comparer = new TeamComparer();
+            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
+                .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Create(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Create method test. Model state is invalid.
+        ///     Json is Returned
+        /// </summary>
+        [Fact]
+        public void Create_InValidTeamViewModel_JsonReturned()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            var sut = BuildSUT();
+            sut.ModelState.AddModelError(string.Empty, string.Empty);
+
+            // Act
+            var result = sut.Create(viewModel);
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Never());
+            Assert.NotNull(result);
+        }
+
+        /// <summary>
+        ///     Create method test. Captain of another team
+        /// </summary>
+        [Fact]
+        public void Create_RosterPlayerIsCaptainOfAnotherTeam_ValidationExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
+                .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Create(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Create method test. Roster players updated
+        /// </summary>
+        [Fact]
+        public void Create_RosterPlayerPassed_PlayersUpdated()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var rosterDomain = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(rosterDomain.ToList());
+
+            var rosterPlayer = new PlayerNameViewModel {
+                Id = SPECIFIED_PLAYER_ID,
+                FirstName = SPECIFIED_FIRST_PLAYER_NAME,
+                LastName = SPECIFIED_LAST_PLAYER_NAME
+            };
+            var roster = new List<PlayerNameViewModel> {rosterPlayer};
+            var viewModel = new TeamMvcViewModelBuilder().WithRoster(roster).Build();
+
+            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
+                .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
+
+            // Act
+            var sut = BuildSUT();
+            sut.Create(viewModel);
+
+            // Assert
+            _teamServiceMock.Verify(
+                ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+        }
+
+        /// <summary>
+        ///     Create method test. Team is not valid. Argument exception is thrown.
+        ///     Json is Returned
+        /// </summary>
+        [Fact]
+        public void Create_TeamNotValid_ArgumentExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Create(It.IsAny<Team>()))
+                .Throws(new ArgumentException(SPECIFIED_EXCEPTION_MESSAGE));
+            var sut = BuildSUT();
+
+            // Act
+            var jsonResult = sut.Create(viewModel);
+            var actualMessage = jsonResult.Data.ToString();
+            var expetedMessage = $"{{ Success = False, Message = {SPECIFIED_EXCEPTION_MESSAGE} }}";
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Create(It.IsAny<Team>()), Times.Once());
+            Assert.Equal(actualMessage, expetedMessage);
+        }
+
+        /// <summary>
+        ///     Create method test. Positive test
+        /// </summary>
+        [Fact]
+        public void Create_TeamPassed_EntityIdIsSet()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().WithId(0).Build();
+            var expectedDomain = viewModel.ToDomain();
+            var comparer = new TeamComparer();
+            _teamServiceMock.Setup(ts => ts.Create(It.Is<Team>(t => comparer.AreEqual(t, expectedDomain))))
+                .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
+
+            // Act
+            var sut = BuildSUT();
+            sut.Create(viewModel);
+
+            // Assert
+            Assert.Equal(viewModel.Id, SPECIFIED_TEAM_ID);
+        }
+
+        /// <summary>
+        ///     Delete method test. Input parameter is team id, which doesn't exist in database.
+        ///     The method should return message as JavaScript Object Notation.
+        /// </summary>
+        [Fact]
+        public void Delete_PlayerDoesntExist_JsonReturned()
+        {
+            // Arrange
+            _teamServiceMock.Setup(ps => ps.Delete(TEAM_UNEXISTING_ID_TO_DELETE)).Throws<MissingEntityException>();
+
+            // Act
+            var sut = BuildSUT();
+            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE);
+
+            // Assert
+            Assert.NotNull(actual);
+        }
+
+        /// <summary>
+        ///     Delete method test. The method should invoke Delete() method of ITeamService
+        ///     and return result as JavaScript Object Notation.
+        /// </summary>
+        [Fact]
+        public void Delete_PlayerExists_PlayerIsDeleted()
+        {
+            // Act
+            var sut = BuildSUT();
+            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE);
+
+            // Assert
+            _teamServiceMock.Verify(ps => ps.Delete(It.Is<int>(id => id == TEAM_UNEXISTING_ID_TO_DELETE)),
+                Times.Once());
+            Assert.NotNull(actual);
+        }
+
+        /// <summary>
+        ///     Delete method test. Model state is not valid.
+        ///     The method should return message as JavaScript Object Notation.
+        /// </summary>
+        [Fact]
+        public void Delete_TeamNotValid_JsonReturned()
+        {
+            // Arrange
+            _teamServiceMock.Setup(ps => ps.Delete(TEAM_UNEXISTING_ID_TO_DELETE)).Throws<MissingEntityException>();
+
+            // Act
+            var sut = BuildSUT();
+            var actual = sut.Delete(TEAM_UNEXISTING_ID_TO_DELETE);
+
+            // Assert
+            Assert.NotNull(actual);
+        }
+
+        /// <summary>
+        ///     Test for Details method. Team with specified identifier exists. View model of Team is returned.
+        /// </summary>
+        [Fact]
+        public void Details_ExistingTeam_TeamViewModelIsReturned()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var roster = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
+            SetupRequestRawUrl("/Teams");
+            var sut = BuildSUT();
+
+            SetupControllerContext(sut);
+
+            var expected = CreateViewModel();
+
+            // Act
+            var actual = TestExtensions.GetModel<TeamRefererViewModel>(sut.Details(SPECIFIED_TEAM_ID));
+
+            // Assert
+            TestHelper.AreEqual(expected, actual.Model, new TeamViewModelComparer());
+            Assert.Equal(actual.CurrentReferrer, sut.Request.RawUrl);
+        }
+
+        /// <summary>
+        ///     Test for Details method. Team with specified identifier does not exist. HttpNotFoundResult is returned.
+        /// </summary>
+        [Fact]
+        public void Details_NonExistentTeam_HttpNotFoundResultIsReturned()
+        {
+            // Arrange
+            SetupGet(TEST_TEAM_ID, null);
+
+            // Act
+            var sut = BuildSUT();
+            var result = sut.Details(TEST_TEAM_ID);
+
+            // Assert
+            Assert.IsType<HttpNotFoundResult>(result);
+        }
+
+        /// <summary>
+        ///     Edit method test. Captain of another team
+        /// </summary>
+        [Fact]
+        public void Edit_CaptainOfAnotherTeam_ValidationExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
+                .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Edit(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Never());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Edit method test. Invalid captain Id
+        /// </summary>
+        [Fact]
+        public void Edit_InvalidCaptainId_MissingEntityExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
+                .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Edit(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Never());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Edit method test. Invalid player Id
+        /// </summary>
+        [Fact]
+        public void Edit_InvalidRosterPlayerId_MissingEntityExceptionThrown()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var roster = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
+
+            var viewModel = CreateViewModel();
+            var comparer = new TeamComparer();
+            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
+                .Throws(new MissingEntityException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Edit(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Edit method test. Model state is invalid.
+        ///     Json is Returned
+        /// </summary>
+        [Fact]
+        public void Edit_InValidTeamViewModel_JsonReturned()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            var sut = BuildSUT();
+            sut.ModelState.AddModelError(string.Empty, string.Empty);
+
+            // Act
+            var result = sut.Edit(viewModel);
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Never());
+            Assert.NotNull(result);
+        }
+
+        /// <summary>
+        ///     Test for Edit method. Team with specified identifier does not exist. HttpNotFoundResult is returned.
+        /// </summary>
+        [Fact]
+        public void Edit_NotExistedTeam_HttpNotFoundResultIsReturned()
+        {
+            // Arrange
+            SetupGet(TEAM_ID, null);
+
+            // Act
+            var sut = BuildSUT();
+            var result = sut.Edit(TEAM_ID);
+
+            // Assert
+            Assert.IsType<HttpNotFoundResult>(result);
+        }
+
+        /// <summary>
+        ///     Edit method test. Captain of another team
+        /// </summary>
+        [Fact]
+        public void Edit_RosterPlayerIsCaptainOfAnotherTeam_ValidationExceptionThrown()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var roster = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
+
+            var viewModel = CreateViewModel();
+            _teamServiceMock.Setup(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()))
+                .Throws(new ValidationException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Edit(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Edit method test. Roster players updated
+        /// </summary>
+        [Fact]
+        public void Edit_RosterPlayerPassed_PlayersUpdated()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var rosterDomain = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(rosterDomain.ToList());
+
+            var rosterPlayer = new PlayerNameViewModel {
+                Id = SPECIFIED_PLAYER_ID,
+                FirstName = SPECIFIED_FIRST_PLAYER_NAME,
+                LastName = SPECIFIED_LAST_PLAYER_NAME
+            };
+            var roster = new List<PlayerNameViewModel> {rosterPlayer};
+            var viewModel = new TeamMvcViewModelBuilder().WithRoster(roster).Build();
+
+            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
+                .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
+
+            // Act
+            var sut = BuildSUT();
+            sut.Edit(viewModel);
+
+            // Assert
+            _teamServiceMock.Verify(
+                ts => ts.UpdateRosterTeamId(It.IsAny<List<Player>>(), It.IsAny<int>()),
+                Times.Once());
+        }
+
+        /// <summary>
+        ///     Edit method test. Team is not valid. Argument exception is thrown.
+        ///     Json is Returned
+        /// </summary>
+        [Fact]
+        public void Edit_TeamNotValid_ArgumentExceptionThrown()
+        {
+            // Arrange
+            var viewModel = new TeamMvcViewModelBuilder().Build();
+            _teamServiceMock.Setup(ts => ts.Edit(It.IsAny<Team>()))
+                .Throws(new ArgumentException(SPECIFIED_EXCEPTION_MESSAGE));
+
+            // Act
+            var sut = BuildSUT();
+            var jsonResult = sut.Edit(viewModel);
+            var modelResult = jsonResult;
+
+            // Assert
+            _teamServiceMock.Verify(ts => ts.Edit(It.IsAny<Team>()), Times.Once());
+            Assert.NotNull(modelResult);
+        }
+
+        /// <summary>
+        ///     Edit method test. Positive test
+        /// </summary>
+        [Fact]
+        public void Edit_TeamPassed_EntityIdIsSet()
+        {
+            // Arrange
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var roster = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
+
+            var viewModel = CreateViewModel();
+            var expectedDomain = viewModel.ToDomain();
+            var comparer = new TeamComparer();
+            _teamServiceMock.Setup(ts => ts.Create(It.Is<Team>(t => comparer.AreEqual(t, expectedDomain))))
+                .Callback<Team>(t => t.Id = SPECIFIED_TEAM_ID);
+
+            // Act
+            var sut = BuildSUT();
+            sut.Edit(viewModel);
+
+            // Assert
+            Assert.Equal(viewModel.Id, SPECIFIED_TEAM_ID);
+        }
+
+        /// <summary>
+        ///     Test for Edit method (GET action). Valid team id.  Team view model is returned.
+        /// </summary>
+        [Fact]
+        public void EditGetAction_TeamId_TeamViewModelIsReturned()
+        {
+            var team = CreateTeam();
+            var captain = CreatePlayer(SPECIFIED_PLAYER_ID);
+            var roster = new PlayerServiceTestFixture()
+                .TestPlayers()
+                .AddPlayer(captain)
+                .Build();
+
+            MockTeamServiceGetTeam(team);
+            _teamServiceMock.Setup(ts => ts.GetTeamCaptain(It.IsAny<Team>())).Returns(captain);
+            _teamServiceMock.Setup(ts => ts.GetTeamRoster(It.IsAny<int>())).Returns(roster.ToList());
+
+            var sut = BuildSUT();
+            SetupControllerContext(sut);
+
+            var expected = CreateViewModel();
+
+            // Act
+            var actual = TestExtensions.GetModel<TeamViewModel>(sut.Edit(SPECIFIED_TEAM_ID));
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new TeamViewModelComparer());
+        }
+
+        /// <summary>
+        ///     Test for GetAllTeams method. All teams are requested. JsonResult with all teams is returned.
+        /// </summary>
+        [Fact]
+        public void GetAllTeams_GetTeams_JsonResultIsReturned()
+        {
+            // Arrange
+            var testData = MakeTestTeams();
+            SetupGetAllTeams(testData);
+
+            // Act
+            var sut = BuildSUT();
+            var result = sut.GetAllTeams();
+
+            // Assert
+            Assert.NotNull(result);
         }
     }
 }

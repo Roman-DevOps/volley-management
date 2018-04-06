@@ -1,11 +1,11 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameService
-{
-    using System.Linq;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GamesAggregate;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.Domain.GamesAggregate;
 
+namespace VolleyManagement.UnitTests.Services.GameService
+{
     [ExcludeFromCodeCoverage]
     public class GameTestFixture
     {
@@ -19,16 +19,15 @@
 
         private const string DATE_PLAYOFF_START = "2018-02-26 02:00";
 
-        private List<Game> _games = new List<Game>();
+        private readonly List<Game> _games = new List<Game>();
 
         /// <summary>
-        /// Generates <see cref="Game"/> objects filled with test data.
+        ///     Generates <see cref="Game" /> objects filled with test data.
         /// </summary>
-        /// <returns>Instance of <see cref="GameTestFixture"/>.</returns>
+        /// <returns>Instance of <see cref="GameTestFixture" />.</returns>
         public GameTestFixture TestGames()
         {
-            _games.Add(new Game 
-            {
+            _games.Add(new Game {
                 Id = 1,
                 TournamentId = 1,
                 HomeTeamId = null,
@@ -38,8 +37,7 @@
                 Round = 1,
                 GameNumber = 1
             });
-            _games.Add(new Game 
-            {
+            _games.Add(new Game {
                 Id = 2,
                 TournamentId = 1,
                 HomeTeamId = null,
@@ -49,8 +47,7 @@
                 Round = 1,
                 GameNumber = 2
             });
-            _games.Add(new Game 
-            {
+            _games.Add(new Game {
                 Id = 3,
                 TournamentId = 1,
                 HomeTeamId = null,
@@ -60,8 +57,7 @@
                 Round = 2,
                 GameNumber = 3
             });
-            _games.Add(new Game 
-            {
+            _games.Add(new Game {
                 Id = 4,
                 TournamentId = 1,
                 HomeTeamId = null,
@@ -76,12 +72,12 @@
         }
 
         /// <summary>
-        /// Generates <see cref="Game"/> objects filled with test data.
+        ///     Generates <see cref="Game" /> objects filled with test data.
         /// </summary>
-        /// <returns>Instance of <see cref="GameTestFixture"/>.</returns>
+        /// <returns>Instance of <see cref="GameTestFixture" />.</returns>
         public GameTestFixture TestGamesWithResults()
         {
-            var r=new Result(){GameScore = new Score(3,2)};
+            var r = new Result {GameScore = new Score(3, 2)};
             _games.Add(new Game {
                 Id = 1,
                 TournamentId = 1,
@@ -136,10 +132,8 @@
         {
             _games.Clear();
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
                         Id = 1,
                         HomeTeamId = 1,
                         AwayTeamId = 2,
@@ -148,8 +142,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 2,
                         HomeTeamId = 3,
                         AwayTeamId = 4,
@@ -158,8 +151,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 3,
                         HomeTeamId = 5,
                         AwayTeamId = 6,
@@ -168,8 +160,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 4,
                         Round = 1,
                         HomeTeamId = 7,
@@ -178,32 +169,28 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 5,
                         Round = 2,
                         GameNumber = 5,
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 6,
                         Round = 2,
                         GameNumber = 6,
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 7,
                         Round = 3,
                         GameNumber = 7,
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 8,
                         Round = 3,
                         GameNumber = 8,
@@ -220,10 +207,8 @@
             _games.Clear();
 
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
                         Id = 1,
                         HomeTeamId = 1,
                         AwayTeamId = 2,
@@ -232,8 +217,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 2,
                         HomeTeamId = 3,
                         AwayTeamId = 4,
@@ -242,16 +226,14 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 3,
                         Round = 2,
                         GameNumber = 3,
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 4,
                         Round = 2,
                         GameNumber = 4,
@@ -268,10 +250,8 @@
             _games.Clear();
 
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
                         Id = 1,
                         HomeTeamId = 1,
                         AwayTeamId = 1,
@@ -280,8 +260,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 2,
                         HomeTeamId = 3,
                         AwayTeamId = 4,
@@ -290,16 +269,14 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 3,
                         Round = 2,
                         GameNumber = 3,
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 4,
                         Round = 2,
                         GameNumber = 4,
@@ -317,77 +294,66 @@
 
             var round1Date = DateTime.Parse(DATE_PLAYOFF_START);
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
                         Id = 1,
                         GameNumber = 1,
                         HomeTeamId = 1,
                         AwayTeamId = null,
                         Round = 1,
-                        GameDate = round1Date,
+                        GameDate = round1Date
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 2,
                         GameNumber = 2,
                         HomeTeamId = 3,
                         AwayTeamId = 4,
                         Round = 1,
-                        GameDate = round1Date.AddHours(1),
+                        GameDate = round1Date.AddHours(1)
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 3,
                         GameNumber = 3,
                         HomeTeamId = 5,
                         AwayTeamId = 6,
                         Round = 1,
-                        GameDate = round1Date.AddHours(2),
+                        GameDate = round1Date.AddHours(2)
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 4,
                         GameNumber = 4,
                         HomeTeamId = null,
                         AwayTeamId = 8,
                         Round = 1,
-                        GameDate = round1Date.AddHours(3),
-                    },
-                });
-
-            _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
-                        Id = 5,
-                        GameNumber = 5,
-                        Round = 4,
-                    },
-                    new Game
-                    {
-                        Id = 6,
-                        GameNumber = 6,
-                        Round = 4,
+                        GameDate = round1Date.AddHours(3)
                     }
                 });
 
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
+                        Id = 5,
+                        GameNumber = 5,
+                        Round = 4
+                    },
+                    new Game {
+                        Id = 6,
+                        GameNumber = 6,
+                        Round = 4
+                    }
+                });
+
+            _games.AddRange(
+                new List<Game> {
+                    new Game {
                         Id = 7,
                         GameNumber = 7,
-                        Round = 5,
+                        Round = 5
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 8,
                         GameNumber = 8,
-                        Round = 5,
+                        Round = 5
                     }
                 });
 
@@ -406,27 +372,22 @@
             _games.Clear();
 
             _games.AddRange(
-                new List<Game>
-                {
-                    new Game
-                    {
+                new List<Game> {
+                    new Game {
                         Id = 1,
                         HomeTeamId = 3,
                         AwayTeamId = null,
                         GameNumber = 2,
                         Round = 1,
                         TournamentId = 1,
-                        Result = new Result
-                        {
-                            GameScore = new Score
-                            {
+                        Result = new Result {
+                            GameScore = new Score {
                                 Home = 3,
                                 Away = 0
                             }
                         }
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 2,
                         HomeTeamId = 1,
                         AwayTeamId = 2,
@@ -435,8 +396,7 @@
                         TournamentId = 1,
                         Result = new Result()
                     },
-                    new Game
-                    {
+                    new Game {
                         Id = 3,
                         Round = 2,
                         GameNumber = 3,
@@ -449,16 +409,16 @@
         }
 
         /// <summary>
-        /// Builds instance of <see cref="GameTestFixture"/>.
+        ///     Builds instance of <see cref="GameTestFixture" />.
         /// </summary>
-        /// <returns>Collection of <see cref="Game"/> objects filled with test data.</returns>
+        /// <returns>Collection of <see cref="Game" /> objects filled with test data.</returns>
         public List<Game> Build()
         {
             return _games;
         }
 
         /// <summary>
-        /// Resets game to default state in playoff tournament
+        ///     Resets game to default state in playoff tournament
         /// </summary>
         public GameTestFixture ResetPlayoffGame(int gameId)
         {

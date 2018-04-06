@@ -1,11 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.WebAPI.ViewModels.Schedule;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.WebApi.ViewModels.Schedule
 {
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using UI.Areas.WebAPI.ViewModels.Schedule;
-
     [ExcludeFromCodeCoverage]
     internal static class WeekViewModelComparer
     {
@@ -22,7 +21,8 @@ namespace VolleyManagement.UnitTests.WebApi.ViewModels.Schedule
 
             for (var i = 0; i < expected.Days.Count; i++)
             {
-                ScheduleDayViewModelComparer.AssertAreEqual(expected.Days[i], actual.Days[i], $"{messagePrefix}[Day#{i}]");
+                ScheduleDayViewModelComparer.AssertAreEqual(expected.Days[i], actual.Days[i],
+                    $"{messagePrefix}[Day#{i}]");
             }
         }
     }

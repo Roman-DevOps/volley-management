@@ -1,11 +1,11 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.GameResults;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameResults;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC game view models
+    ///     Builder for test MVC game view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GameViewModelBuilder
@@ -17,17 +17,16 @@
         private const int DEFAULT_ROUND = 1;
 
         /// <summary>
-        /// Holds test game view model instance
+        ///     Holds test game view model instance
         /// </summary>
-        private GameViewModel _gameViewModel;
+        private readonly GameViewModel _gameViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="GameViewModelBuilder" /> class
         /// </summary>
         public GameViewModelBuilder()
         {
-            _gameViewModel = new GameViewModel
-            {
+            _gameViewModel = new GameViewModel {
                 TournamentId = TOURNAMENT_DEFAULT_ID,
                 AwayTeamId = AWAY_TEAM_DEFAULT_ID,
                 HomeTeamId = HOME_TEAM_DEFAULT_ID,
@@ -38,7 +37,7 @@
         }
 
         /// <summary>
-        /// Builds test game view model
+        ///     Builds test game view model
         /// </summary>
         /// <returns>Test game view model</returns>
         public GameViewModel Build()

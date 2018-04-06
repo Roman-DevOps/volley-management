@@ -1,23 +1,24 @@
-﻿using Xunit;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using VolleyManagement.UI.Areas.WebApi.ViewModels.GameReports;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    class ShortGameResultViewModelComparer : IComparer, IComparer<ShortGameResultViewModel>
+    internal class ShortGameResultViewModelComparer : IComparer, IComparer<ShortGameResultViewModel>
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as ShortGameResultViewModel, y as ShortGameResultViewModel);
+        }
+
         public int Compare(ShortGameResultViewModel x, ShortGameResultViewModel y)
         {
             if (x == null && y == null)
             {
                 return 0;
             }
+
             if (x == null)
             {
                 return -1;
@@ -29,11 +30,6 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             }
 
             return CompareInternal(x, y);
-        }
-
-        public int Compare(object x, object y)
-        {
-            return Compare(x as ShortGameResultViewModel, y as ShortGameResultViewModel);
         }
 
         private int CompareInternal(ShortGameResultViewModel x, ShortGameResultViewModel y)

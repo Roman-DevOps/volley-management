@@ -1,16 +1,21 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Comparers
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Admin.Models;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Admin.Models;
 
+namespace VolleyManagement.UnitTests.Mvc.Comparers
+{
     /// <summary>
-    /// Compares Role instances
+    ///     Compares Role instances
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class RoleViewModelComparer : IComparer<RoleViewModel>, IComparer
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as RoleViewModel, y as RoleViewModel);
+        }
+
         public int Compare(RoleViewModel x, RoleViewModel y)
         {
             if (x == null && y == null)
@@ -29,11 +34,6 @@
             }
 
             return CompareInternal(x, y);
-        }
-
-        public int Compare(object x, object y)
-        {
-            return Compare(x as RoleViewModel, y as RoleViewModel);
         }
 
         private int CompareInternal(RoleViewModel x, RoleViewModel y)

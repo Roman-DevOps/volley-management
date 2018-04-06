@@ -1,23 +1,19 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameReports;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using Xunit;
-    using UI.Areas.Mvc.ViewModels.GameReports;
-
     /// <summary>
-    /// Represents an equality comparer for <see cref="PivotTeamStandingsViewModel"/> objects.
+    ///     Represents an equality comparer for <see cref="PivotTeamStandingsViewModel" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PivotTeamStandingsViewModelEqualityComparer : IEqualityComparer<PivotTeamStandingsViewModel>
     {
         /// <summary>
-        /// Determines whether the specified object instances are considered equal.
+        ///     Determines whether the specified object instances are considered equal.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -28,10 +24,10 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Gets hash code for the specified <see cref="PivotTeamStandingsViewModel"/> object.
+        ///     Gets hash code for the specified <see cref="PivotTeamStandingsViewModel" /> object.
         /// </summary>
-        /// <param name="obj"><see cref="PivotTeamStandingsViewModel"/> object.</param>
-        /// <returns>Hash code for the specified <see cref="PivotTeamStandingsViewModel"/>.</returns>
+        /// <param name="obj"><see cref="PivotTeamStandingsViewModel" /> object.</param>
+        /// <returns>Hash code for the specified <see cref="PivotTeamStandingsViewModel" />.</returns>
         public int GetHashCode(PivotTeamStandingsViewModel obj)
         {
             var stringBuilder = new StringBuilder();
@@ -46,14 +42,17 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             return stringBuilder.ToString().GetHashCode();
         }
 
-        public static bool AssertAreEqual(PivotTeamStandingsViewModel expected, PivotTeamStandingsViewModel actual, string messagePrefix = "")
+        public static bool AssertAreEqual(PivotTeamStandingsViewModel expected, PivotTeamStandingsViewModel actual,
+            string messagePrefix = "")
         {
             actual.TeamId.Should().Be(expected.TeamId, $"{messagePrefix} TeamId should match");
             actual.TeamName.Should().Be(expected.TeamName, $"{messagePrefix} TeamName should match");
             actual.Points.Should().Be(expected.Points, $"{messagePrefix} Points should match");
-            AssertFloatNullablesAreEqual(expected.SetsRatio, actual.SetsRatio, $"{messagePrefix} SetsRatio should match");
+            AssertFloatNullablesAreEqual(expected.SetsRatio, actual.SetsRatio,
+                $"{messagePrefix} SetsRatio should match");
             actual.Position.Should().Be(expected.Position, $"{messagePrefix} Position should match");
-            AssertFloatNullablesAreEqual(expected.BallsRatio, actual.BallsRatio, $"{messagePrefix} BallsRatio should match");
+            AssertFloatNullablesAreEqual(expected.BallsRatio, actual.BallsRatio,
+                $"{messagePrefix} BallsRatio should match");
             return true;
         }
 
@@ -62,9 +61,8 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             if (!expected.HasValue && !actual.HasValue)
             {
                 return true;
-            }
-
-            (!expected.HasValue || !actual.HasValue).Should().BeFalse($"{message}. Expected: <{expected}>, Actual: <{actual}>");
+            } (!expected.HasValue || !actual.HasValue).Should()
+                .BeFalse($"{message}. Expected: <{expected}>, Actual: <{actual}>");
 
             actual.Should().BeApproximately(expected.GetValueOrDefault(), 0.001f, message);
             return true;

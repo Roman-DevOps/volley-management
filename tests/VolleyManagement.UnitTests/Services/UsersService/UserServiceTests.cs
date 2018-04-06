@@ -1,43 +1,27 @@
-﻿namespace VolleyManagement.UnitTests.Services.UsersService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Xunit;
-    using Moq;
-    using MSTestExtensions;
-    using System.Collections;
-    using Contracts;
-    using Contracts.Authorization;
-    using Contracts.Exceptions;
-    using Data.Contracts;
-    using Data.Queries.Common;
-    using Data.Queries.User;
-    using Domain.PlayersAggregate;
-    using Domain.RolesAggregate;
-    using Domain.UsersAggregate;
-    using VolleyManagement.Services.Authorization;
-    using PlayerService;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Moq;
+using MSTestExtensions;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Data.Contracts;
+using VolleyManagement.Data.Queries.Common;
+using VolleyManagement.Data.Queries.User;
+using VolleyManagement.Domain.PlayersAggregate;
+using VolleyManagement.Domain.RolesAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using VolleyManagement.UnitTests.Services.PlayerService;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Services.UsersService
+{
     [ExcludeFromCodeCoverage]
-    
     public class UserServiceTests : BaseTest
     {
-        private const int EXISTING_ID = 1;
-
-        private Mock<IAuthorizationService> _authServiceMock;
-        private Mock<IUserRepository> _userRepositoryMock;
-        private Mock<ICacheProvider> _cacheProviderMock;
-        private Mock<IQuery<ICollection<User>, GetAllCriteria>> _getAllQueryMock;
-        private Mock<IQuery<Player, FindByIdCriteria>> _getPlayerByIdQueryMock;
-        private Mock<IQuery<User, FindByIdCriteria>> _getByIdQueryMock;
-        private Mock<IQuery<ICollection<User>, UniqueUserCriteria>> _getAdminsListQueryMock;
-        private Mock<ICurrentUserService> _currentUserServiceMock;
-
-        private UserServiceTestFixture _testFixture = new UserServiceTestFixture();
-
         /// <summary>
-        /// Initializes test data.
+        ///     Initializes test data.
         /// </summary>
         public UserServiceTests()
         {
@@ -51,118 +35,22 @@
             _currentUserServiceMock = new Mock<ICurrentUserService>();
         }
 
-        [Fact]
-        public void GetAll_UsersExist_UsersReturned()
+        private const int EXISTING_ID = 1;
+
+        private readonly Mock<IAuthorizationService> _authServiceMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<ICacheProvider> _cacheProviderMock;
+        private readonly Mock<IQuery<ICollection<User>, GetAllCriteria>> _getAllQueryMock;
+        private readonly Mock<IQuery<Player, FindByIdCriteria>> _getPlayerByIdQueryMock;
+        private readonly Mock<IQuery<User, FindByIdCriteria>> _getByIdQueryMock;
+        private readonly Mock<IQuery<ICollection<User>, UniqueUserCriteria>> _getAdminsListQueryMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+
+        private readonly UserServiceTestFixture _testFixture = new UserServiceTestFixture();
+
+        private VolleyManagement.Services.Authorization.UserService BuildSUT()
         {
-            // Arrange
-            var testData = _testFixture.TestUsers().Build();
-            MockGetAllUsersQuery(testData);
-
-            var expected = new UserServiceTestFixture()
-                                            .TestUsers()
-                                            .Build();
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.GetAllUsers();
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new UserComparer());
-        }
-
-        [Fact]
-        public void GetAll_NoViewRights_AuthorizationExceptionThrown()
-        {
-            // Arrange
-            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewList);
-
-            var sut = BuildSUT();
-
-            // Act => Assert
-            Assert.Throws<AuthorizationException>(() => sut.GetAllUsers(), "Requested operation is not allowed");
-        }
-
-        [Fact]
-        public void GetAllActiveUsers_NoViewRights_AuthorizationExceptionThrown()
-        {
-            // Arrange
-            var testData = _testFixture.TestUsers().Build();
-            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewActiveList);
-
-            var sut = BuildSUT();
-
-            // Act => Assert
-            Assert.Throws<AuthorizationException>(() => sut.GetAllActiveUsers(), "Requested operation is not allowed");
-        }
-
-        [Fact]
-        public void GetById_UserExists_UserReturned()
-        {
-            // Arrange
-            var expected = new UserBuilder().WithId(EXISTING_ID).Build();
-            MockGetUserByIdQuery(expected);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.GetUser(EXISTING_ID);
-
-            // Assert
-            TestHelper.AreEqual<User>(expected, actual, new UserComparer());
-        }
-
-        [Fact]
-        public void GetUserDetails_NoViewRights_AuthorizationExceptionThrown()
-        {
-            // Arrange
-            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewDetails);
-
-            var sut = BuildSUT();
-
-            // Act => Assert
-            Assert.Throws<AuthorizationException>(() => sut.GetUserDetails(EXISTING_ID), "Requested operation is not allowed");
-        }
-
-        [Fact]
-        public void GetUserDetails_UserExists_UserReturned()
-        {
-            // Arrange
-            var player = new PlayerBuilder().WithId(EXISTING_ID).Build();
-            var expected = new UserBuilder().WithId(EXISTING_ID).WithPlayer(player).Build();
-            MockGetUserByIdQuery(expected);
-            MockGetPlayerByIdQuery(player);
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.GetUserDetails(EXISTING_ID);
-
-            // Assert
-            TestHelper.AreEqual<User>(expected, actual, new UserComparer());
-        }
-
-        [Fact]
-        public void GetAdminsList_UsersExist_UsersReturned()
-        {
-            // Arrange
-            var testData = _testFixture.TestUsers().Build();
-            MockGetAdminsListQuery(testData);
-
-            var expected = new UserServiceTestFixture()
-                                            .TestUsers()
-                                            .Build();
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.GetAdminsList();
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new UserComparer());
-        }
-
-        private UserService BuildSUT()
-        {
-            return new UserService(
+            return new VolleyManagement.Services.Authorization.UserService(
                 _authServiceMock.Object,
                 _getByIdQueryMock.Object,
                 _getAllQueryMock.Object,
@@ -196,6 +84,116 @@
         private void MockGetAdminsListQuery(IEnumerable<User> testData)
         {
             _getAdminsListQueryMock.Setup(tr => tr.Execute(It.IsAny<UniqueUserCriteria>())).Returns(testData.ToList());
+        }
+
+        [Fact]
+        public void GetAdminsList_UsersExist_UsersReturned()
+        {
+            // Arrange
+            var testData = _testFixture.TestUsers().Build();
+            MockGetAdminsListQuery(testData);
+
+            var expected = new UserServiceTestFixture()
+                .TestUsers()
+                .Build();
+            var sut = BuildSUT();
+
+            // Act
+            var actual = sut.GetAdminsList();
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new UserComparer());
+        }
+
+        [Fact]
+        public void GetAll_NoViewRights_AuthorizationExceptionThrown()
+        {
+            // Arrange
+            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewList);
+
+            var sut = BuildSUT();
+
+            // Act => Assert
+            Assert.Throws<AuthorizationException>(() => sut.GetAllUsers(), "Requested operation is not allowed");
+        }
+
+        [Fact]
+        public void GetAll_UsersExist_UsersReturned()
+        {
+            // Arrange
+            var testData = _testFixture.TestUsers().Build();
+            MockGetAllUsersQuery(testData);
+
+            var expected = new UserServiceTestFixture()
+                .TestUsers()
+                .Build();
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual = sut.GetAllUsers();
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new UserComparer());
+        }
+
+        [Fact]
+        public void GetAllActiveUsers_NoViewRights_AuthorizationExceptionThrown()
+        {
+            // Arrange
+            var testData = _testFixture.TestUsers().Build();
+            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewActiveList);
+
+            var sut = BuildSUT();
+
+            // Act => Assert
+            Assert.Throws<AuthorizationException>(() => sut.GetAllActiveUsers(), "Requested operation is not allowed");
+        }
+
+        [Fact]
+        public void GetById_UserExists_UserReturned()
+        {
+            // Arrange
+            var expected = new UserBuilder().WithId(EXISTING_ID).Build();
+            MockGetUserByIdQuery(expected);
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual = sut.GetUser(EXISTING_ID);
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new UserComparer());
+        }
+
+        [Fact]
+        public void GetUserDetails_NoViewRights_AuthorizationExceptionThrown()
+        {
+            // Arrange
+            MockAuthServiceThrowsException(AuthOperations.AllUsers.ViewDetails);
+
+            var sut = BuildSUT();
+
+            // Act => Assert
+            Assert.Throws<AuthorizationException>(() => sut.GetUserDetails(EXISTING_ID),
+                "Requested operation is not allowed");
+        }
+
+        [Fact]
+        public void GetUserDetails_UserExists_UserReturned()
+        {
+            // Arrange
+            var player = new PlayerBuilder().WithId(EXISTING_ID).Build();
+            var expected = new UserBuilder().WithId(EXISTING_ID).WithPlayer(player).Build();
+            MockGetUserByIdQuery(expected);
+            MockGetPlayerByIdQuery(player);
+            var sut = BuildSUT();
+
+            // Act
+            var actual = sut.GetUserDetails(EXISTING_ID);
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new UserComparer());
         }
     }
 }

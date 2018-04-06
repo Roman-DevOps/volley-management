@@ -1,29 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.Services.TeamService
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TeamsAggregate;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TeamsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TeamService
+{
     /// <summary>
-    /// Comparer for team objects.
+    ///     Comparer for team objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TeamComparer : IComparer<Team>, IComparer
     {
         /// <summary>
-        /// Compares two player objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of players.</returns>
-        public int Compare(Team x, Team y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two team objects (non-generic implementation).
+        ///     Compares two team objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -37,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondTeam == null)
+
+            if (secondTeam == null)
             {
                 return 1;
             }
@@ -46,7 +36,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two team objects have the same properties.
+        ///     Compares two player objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of players.</returns>
+        public int Compare(Team x, Team y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two team objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>

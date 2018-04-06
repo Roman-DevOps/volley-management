@@ -1,11 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using VolleyManagement.Domain.GameReportsAggregate;
 
 namespace VolleyManagement.UnitTests.Services.GameReportService
 {
-    using System.Collections.Generic;
-    using Domain.GameReportsAggregate;
-    using Xunit;
-
     internal class ShortGameResultDtoComparer : IComparer<ShortGameResultDto>
     {
         public int Compare(ShortGameResultDto x, ShortGameResultDto y)

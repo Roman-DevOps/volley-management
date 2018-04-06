@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.Services.TeamService
-{
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TeamsAggregate;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TeamsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TeamService
+{
     /// <summary>
-    /// Team domain object builder
+    ///     Team domain object builder
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TeamBuilder
     {
         /// <summary>
-        /// Holds test player instance
+        ///     Holds test player instance
         /// </summary>
-        private Team _team;
+        private readonly Team _team;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TeamBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TeamBuilder" /> class
         /// </summary>
         public TeamBuilder()
         {
-            _team = new Team
-            {
+            _team = new Team {
                 Id = 1,
                 Name = "TeamNameA",
                 CaptainId = 1,
@@ -30,7 +29,7 @@
         }
 
         /// <summary>
-        /// Sets team test Id
+        ///     Sets team test Id
         /// </summary>
         /// <param name="id">Test team Id</param>
         /// <returns>Team builder object</returns>
@@ -41,7 +40,7 @@
         }
 
         /// <summary>
-        /// Sets team test first name
+        ///     Sets team test first name
         /// </summary>
         /// <param name="name">Test team name</param>
         /// <returns>Team builder object</returns>
@@ -52,7 +51,7 @@
         }
 
         /// <summary>
-        /// Sets team test coach
+        ///     Sets team test coach
         /// </summary>
         /// <param name="coach">Test team coach</param>
         /// <returns>Team builder object</returns>
@@ -63,7 +62,7 @@
         }
 
         /// <summary>
-        /// Sets team test achievements
+        ///     Sets team test achievements
         /// </summary>
         /// <param name="achievements">Test team achievements</param>
         /// <returns>Team builder object</returns>
@@ -74,7 +73,7 @@
         }
 
         /// <summary>
-        /// Sets team test captain
+        ///     Sets team test captain
         /// </summary>
         /// <param name="captainId">Test team captain</param>
         /// <returns>Team builder object</returns>
@@ -85,7 +84,7 @@
         }
 
         /// <summary>
-        /// Builds test team
+        ///     Builds test team
         /// </summary>
         /// <returns>Test team</returns>
         public Team Build()

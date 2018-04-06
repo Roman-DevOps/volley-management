@@ -1,74 +1,64 @@
-﻿namespace VolleyManagement.UnitTests.Services.ContributorService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.ContributorsAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.ContributorsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.ContributorService
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class ContributorTeamServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of contributors team
+        ///     Holds collection of contributors team
         /// </summary>
-        private List<ContributorTeam> _contributorsTeam = new List<ContributorTeam>();
+        private readonly List<ContributorTeam> _contributorsTeam = new List<ContributorTeam>();
 
         /// <summary>
-        /// Adds contributors to collection team
+        ///     Adds contributors to collection team
         /// </summary>
         /// <returns>Builder object with collection teams of contributors</returns>
         public ContributorTeamServiceTestFixture TestContributors()
         {
-            _contributorsTeam.Add(new ContributorTeam()
-            {
+            _contributorsTeam.Add(new ContributorTeam {
                 Id = 1,
                 Name = "FirstName1",
                 CourseDirection = "Course",
-                Contributors = new List<Contributor>
-                {
-                    new Contributor
-                    {
+                Contributors = new List<Contributor> {
+                    new Contributor {
                         Id = 1,
                         Name = "FirstNameA",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 2,
                         Name = "FirstNameB",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 3,
                         Name = "FirstNameC",
                         ContributorTeamId = 1
                     }
                 }
             });
-            _contributorsTeam.Add(new ContributorTeam()
-            {
+            _contributorsTeam.Add(new ContributorTeam {
                 Id = 2,
                 Name = "FirstName2",
                 CourseDirection = "Course",
-                Contributors = new List<Contributor>
-                {
-                    new Contributor
-                    {
+                Contributors = new List<Contributor> {
+                    new Contributor {
                         Id = 4,
                         Name = "FirstNameD",
                         ContributorTeamId = 2
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 5,
                         Name = "FirstNameE",
                         ContributorTeamId = 2
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 6,
                         Name = "FirstNameF",
                         ContributorTeamId = 2
@@ -79,7 +69,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Contributors team collection</returns>
         public List<ContributorTeam> Build()

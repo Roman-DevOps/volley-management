@@ -1,30 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using UI.Areas.Mvc.ViewModels.Teams;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Comparer for team objects.
+    ///     Comparer for team objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TeamViewModelComparer : IComparer<TeamViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two player objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of players.</returns>
-        public int Compare(TeamViewModel x, TeamViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two team objects (non-generic implementation).
+        ///     Compares two team objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -38,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondTeam == null)
+
+            if (secondTeam == null)
             {
                 return 1;
             }
@@ -47,7 +36,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two team objects have the same properties.
+        ///     Compares two player objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of players.</returns>
+        public int Compare(TeamViewModel x, TeamViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two team objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -57,15 +57,15 @@
             var playerComparer = new PlayerNameViewModelComparer();
 
             var result = x.Id == y.Id &&
-                   x.Name == y.Name &&
-                   x.Coach == y.Coach &&
-                   x.Achievements == y.Achievements &&
-                   playerComparer.AreEqual(x.Captain, y.Captain);
+                         x.Name == y.Name &&
+                         x.Coach == y.Coach &&
+                         x.Achievements == y.Achievements &&
+                         playerComparer.AreEqual(x.Captain, y.Captain);
 
             if (result)
             {
-                if ((x.Roster != null && y.Roster == null)
-                    || (x.Roster == null && y.Roster != null)
+                if (x.Roster != null && y.Roster == null
+                    || x.Roster == null && y.Roster != null
                     || x.Roster.Count != y.Roster.Count)
                 {
                     result = false;

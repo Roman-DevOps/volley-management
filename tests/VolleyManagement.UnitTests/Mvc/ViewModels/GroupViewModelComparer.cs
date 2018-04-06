@@ -1,23 +1,24 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
+﻿using System.Collections;
+using System.Collections.Generic;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Division;
+
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using Xunit;
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using UI.Areas.Mvc.ViewModels.Division;
-
-
-    class GroupViewModelComparer : IComparer, IComparer<GroupViewModel>
+    internal class GroupViewModelComparer : IComparer, IComparer<GroupViewModel>
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as GroupViewModel, y as GroupViewModel);
+        }
+
         public int Compare(GroupViewModel x, GroupViewModel y)
         {
             if (x == null && y == null)
             {
                 return 0;
             }
+
             if (x == null)
             {
                 return -1;
@@ -31,24 +32,10 @@
             return CompareInternal(x, y);
         }
 
-        public int Compare(object x, object y)
-        {
-            return Compare(x as GroupViewModel, y as GroupViewModel);
-        }
-
         public int CompareInternal(GroupViewModel x, GroupViewModel y)
         {
-            var result = x.Id.CompareTo(y.Id);
-            if (result != 0)
-            {
-                Assert.Fail("Ids should be equal.");
-            }
-
-            result = x.Name.CompareTo(y.Name);
-            if (result != 0)
-            {
-                Assert.Fail($"[Id:{x.Id}]Name should be equal.");
-            }
+            x.Id.Should().Be(y.Id, "Id does not match");
+            x.Name.Should().Be(y.Name, "Name does not match");
 
             return 0;
         }

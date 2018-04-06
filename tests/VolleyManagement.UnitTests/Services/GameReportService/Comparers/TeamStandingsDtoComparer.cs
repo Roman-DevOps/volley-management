@@ -1,24 +1,24 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using FluentAssertions;
+using VolleyManagement.Domain.GameReportsAggregate;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Services.GameReportService
 {
-    using System;
-    using System.Collections.Generic;
-    using Domain.GameReportsAggregate;
-    using Xunit;
-
     internal class TeamStandingsDtoComparer : IComparer<TeamStandingsDto>
     {
-        public bool HasComparerByPoints { get; set; }
-        public bool HasComparerBySets { get; set; }
-        public bool HasComparerByBalls { get; set; }
-
         public TeamStandingsDtoComparer()
         {
             HasComparerByPoints = true;
             HasComparerBySets = true;
             HasComparerByBalls = true;
         }
+
+        public bool HasComparerByPoints { get; set; }
+        public bool HasComparerBySets { get; set; }
+        public bool HasComparerByBalls { get; set; }
+
         public int Compare(TeamStandingsDto x, TeamStandingsDto y)
         {
             y.TeamName.Should().Be(x.TeamName, "TeamName do not match");
@@ -28,13 +28,17 @@ namespace VolleyManagement.UnitTests.Services.GameReportService
             {
                 y.Points.Should().Be(x.Points, $"[Team:{x.TeamName}] Points do not match");
             }
+
             if (HasComparerBySets)
             {
-                Assert.True(AreNullableFloatsEqual(x.SetsRatio, y.SetsRatio), $"[Team:{x.TeamName}] SetsRatio do not match. Actual:<{x.SetsRatio}>, Expected:<{y.SetsRatio}>");
+                Assert.True(AreNullableFloatsEqual(x.SetsRatio, y.SetsRatio),
+                    $"[Team:{x.TeamName}] SetsRatio do not match. Actual:<{x.SetsRatio}>, Expected:<{y.SetsRatio}>");
             }
+
             if (HasComparerByBalls)
             {
-                Assert.True(AreNullableFloatsEqual(x.BallsRatio, y.BallsRatio), $"[Team:{x.TeamName}] SetsRatio do not match. Actual:<{x.BallsRatio}>, Expected:<{y.BallsRatio}>");
+                Assert.True(AreNullableFloatsEqual(x.BallsRatio, y.BallsRatio),
+                    $"[Team:{x.TeamName}] SetsRatio do not match. Actual:<{x.BallsRatio}>, Expected:<{y.BallsRatio}>");
             }
 
             return 0;

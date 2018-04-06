@@ -1,68 +1,62 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.GameReports;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.GameReports;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Generates <see cref="PivotStandingsGameViewModel"/> test data for unit tests.
+    ///     Generates <see cref="PivotStandingsGameViewModel" /> test data for unit tests.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PivotStandingsGameViewModelServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of entries
+        ///     Holds collection of entries
         /// </summary>
-        private IList<PivotStandingsGameViewModel> _games = new List<PivotStandingsGameViewModel>();
+        private readonly IList<PivotStandingsGameViewModel> _games = new List<PivotStandingsGameViewModel>();
 
         /// <summary>
-        /// Adds entries to collection
+        ///     Adds entries to collection
         /// </summary>
         /// <returns>Builder object with collection of entries</returns>
         public PivotStandingsGameViewModelServiceTestFixture TestEntries()
         {
             var firstResultCollection = new List<ShortGameResultViewModel>();
             firstResultCollection.Add(
-                new ShortGameResultViewModel
-                {
+                new ShortGameResultViewModel {
                     HomeSetsScore = 3,
                     AwaySetsScore = 2,
                     IsTechnicalDefeat = false
                 });
             var secondResultCollection = new List<ShortGameResultViewModel>();
             secondResultCollection.Add(
-              new ShortGameResultViewModel
-              {
-                  HomeSetsScore = 3,
-                  AwaySetsScore = 0,
-                  IsTechnicalDefeat = true
-              });
+                new ShortGameResultViewModel {
+                    HomeSetsScore = 3,
+                    AwaySetsScore = 0,
+                    IsTechnicalDefeat = true
+                });
             var thirdResultCollection = new List<ShortGameResultViewModel>();
             thirdResultCollection.Add(
-              new ShortGameResultViewModel
-              {
-                  HomeSetsScore = 1,
-                  AwaySetsScore = 3,
-                  IsTechnicalDefeat = false
-              });
+                new ShortGameResultViewModel {
+                    HomeSetsScore = 1,
+                    AwaySetsScore = 3,
+                    IsTechnicalDefeat = false
+                });
 
             _games.Add(
-                new PivotStandingsGameViewModel
-                {
+                new PivotStandingsGameViewModel {
                     HomeTeamId = 1,
                     AwayTeamId = 3,
                     Results = firstResultCollection
                 });
             _games.Add(
-                 new PivotStandingsGameViewModel
-                 {
-                     HomeTeamId = 3,
-                     AwayTeamId = 1,
-                     Results = secondResultCollection
-                 });
+                new PivotStandingsGameViewModel {
+                    HomeTeamId = 3,
+                    AwayTeamId = 1,
+                    Results = secondResultCollection
+                });
             _games.Add(
-                new PivotStandingsGameViewModel
-                {
+                new PivotStandingsGameViewModel {
                     HomeTeamId = 2,
                     AwayTeamId = 1,
                     Results = thirdResultCollection
@@ -71,7 +65,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Entries collection</returns>
         public IList<PivotStandingsGameViewModel> Build()

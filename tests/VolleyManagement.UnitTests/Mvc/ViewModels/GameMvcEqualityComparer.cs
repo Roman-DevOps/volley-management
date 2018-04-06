@@ -1,42 +1,43 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
-    using Domain.GamesAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using VolleyManagement.Domain.GamesAggregate;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Comparer for game objects.
+    ///     Comparer for game objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GameMvcEqualityComparer : IEqualityComparer<Game>
     {
-          /// <summary>
-        /// Determines whether the specified object instances are considered equal.
+        /// <summary>
+        ///     Determines whether the specified object instances are considered equal.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>True if the objects are considered equal; otherwise, false.
-        /// If both x and y are null, the method returns true.</returns>
+        /// <returns>
+        ///     True if the objects are considered equal; otherwise, false.
+        ///     If both x and y are null, the method returns true.
+        /// </returns>
         public bool Equals(Game x, Game y)
         {
             return x.AwayTeamId == y.AwayTeamId
-                && x.HomeTeamId == y.HomeTeamId
-                && x.Id == y.Id
-                && x.TournamentId == y.TournamentId
-                && x.GameDate == y.GameDate
-                && x.Round == y.Round
-                && x.AwayTeamId == y.AwayTeamId
-                && x.Result == x.Result
-                && x.UrlToGameVideo == y.UrlToGameVideo;
+                   && x.HomeTeamId == y.HomeTeamId
+                   && x.Id == y.Id
+                   && x.TournamentId == y.TournamentId
+                   && x.GameDate == y.GameDate
+                   && x.Round == y.Round
+                   && x.AwayTeamId == y.AwayTeamId
+                   && x.Result == x.Result
+                   && x.UrlToGameVideo == y.UrlToGameVideo;
         }
 
         /// <summary>
-        /// Gets hash code for the specified <see cref="Game"/> object.
+        ///     Gets hash code for the specified <see cref="Game" /> object.
         /// </summary>
-        /// <param name="obj"><see cref="Game"/> object.</param>
-        /// <returns>Hash code for the specified <see cref="Game"/>.</returns>
+        /// <param name="obj"><see cref="Game" /> object.</param>
+        /// <returns>Hash code for the specified <see cref="Game" />.</returns>
         public int GetHashCode(Game obj)
         {
             var stringBuilder = new StringBuilder();

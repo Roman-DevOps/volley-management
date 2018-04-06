@@ -1,39 +1,36 @@
-﻿namespace VolleyManagement.UnitTests.Services.RequestsService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.RequestsAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.RequestsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.RequestsService
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class RequestServiceTestFixture
     {
-        private List<Request> _requests = new List<Request>();
+        private readonly List<Request> _requests = new List<Request>();
 
         /// <summary>
-        /// Return test collection of teams
+        ///     Return test collection of teams
         /// </summary>
         /// <returns>Builder object with collection of teams</returns>
         public RequestServiceTestFixture TestRequests()
         {
-            _requests.Add(new Request()
-            {
+            _requests.Add(new Request {
                 Id = 1,
                 UserId = 1,
                 PlayerId = 1
             });
 
-            _requests.Add(new Request()
-            {
+            _requests.Add(new Request {
                 Id = 2,
                 UserId = 2,
                 PlayerId = 2
             });
 
-            _requests.Add(new Request()
-            {
+            _requests.Add(new Request {
                 Id = 3,
                 UserId = 3,
                 PlayerId = 3
@@ -43,7 +40,7 @@
         }
 
         /// <summary>
-        /// Add request to collection.
+        ///     Add request to collection.
         /// </summary>
         /// <param name="newRequest">Request to add.</param>
         /// <returns>Builder object with collection of requests.</returns>
@@ -54,7 +51,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Request collection</returns>
         public List<Request> Build()

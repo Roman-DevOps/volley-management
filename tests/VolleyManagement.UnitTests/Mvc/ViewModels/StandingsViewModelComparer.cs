@@ -1,38 +1,24 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameReports;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Xunit;
-    using UI.Areas.Mvc.ViewModels.GameReports;
-
     /// <summary>
-    /// Represents a comparer for <see cref="StandingsViewModel"/> objects.
+    ///     Represents a comparer for <see cref="StandingsViewModel" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class StandingsViewModelComparer : IComparer<StandingsViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two <see cref="StandingsViewModel"/> objects.
+        ///     Compares two <see cref="StandingsViewModel" /> objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsViewModel"/> x and y.</returns>
-        public int Compare(StandingsViewModel x, StandingsViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two <see cref="StandingsViewModel"/> objects (non-generic implementation).
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsViewModel"/> x and y.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsViewModel" /> x and y.</returns>
         public int Compare(object x, object y)
         {
             var firstStandingsViewModel = x as StandingsViewModel;
@@ -42,7 +28,8 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             {
                 return -1;
             }
-            else if (secondStandingsViewModel == null)
+
+            if (secondStandingsViewModel == null)
             {
                 return 1;
             }
@@ -51,11 +38,22 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Finds out whether two <see cref="StandingsViewModel"/> objects are equal.
+        ///     Compares two <see cref="StandingsViewModel" /> objects.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>True if given <see cref="StandingsViewModel"/> objects are equal.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsViewModel" /> x and y.</returns>
+        public int Compare(StandingsViewModel x, StandingsViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two <see cref="StandingsViewModel" /> objects are equal.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>True if given <see cref="StandingsViewModel" /> objects are equal.</returns>
         internal bool AreEqual(StandingsViewModel expected, StandingsViewModel actual)
         {
             actual.TournamentId.Should().Be(expected.TournamentId, "TournamentId should match");
@@ -65,21 +63,22 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
 
             if (expected.StandingsTable != null || actual.StandingsTable != null)
             {
-                if (expected.StandingsTable == null || actual.StandingsTable == null)
-                {
-                    Assert.Fail("One of the Standings colection is null");
-                }
+                (expected.StandingsTable == null || actual.StandingsTable == null).Should()
+                    .BeFalse("One of the Standings colection is null");
 
-                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count, "Number of Standings divisions should match");
+                actual.StandingsTable.Count.Should().Be(expected.StandingsTable.Count,
+                    "Number of Standings divisions should match");
 
                 for (var i = 0; i < expected.StandingsTable.Count; i++)
                 {
                     var expectedStandings = expected.StandingsTable[i];
                     var actualStandings = actual.StandingsTable[i];
 
-                    actualStandings.LastUpdateTime.Should().Be(expectedStandings.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
+                    actualStandings.LastUpdateTime.Should().Be(expectedStandings.LastUpdateTime,
+                        $"[Div#{i}] LastTimeUpdated should match");
 
-                    actualStandings.StandingsEntries.Count.Should().Be(actualStandings.StandingsEntries.Count, $"[Div#{i}] Number of Standings should match");
+                    actualStandings.StandingsEntries.Count.Should().Be(actualStandings.StandingsEntries.Count,
+                        $"[Div#{i}] Number of Standings should match");
                     for (var j = 0; j < actualStandings.StandingsEntries.Count; j++)
                     {
                         Assert.True(StandingsEntryViewModelEqualityComparer.AssertAreEqual(
@@ -92,21 +91,23 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
 
             if (expected.PivotTable != null || actual.PivotTable != null)
             {
-                if (expected.PivotTable == null || actual.PivotTable == null)
-                {
-                    Assert.Fail("One of the PivotTable colection is null");
-                }
+                (expected.PivotTable == null || actual.PivotTable == null).Should()
+                    .BeFalse("One of the PivotTable colection is null");
 
-                actual.PivotTable.Count.Should().Be(expected.PivotTable.Count, "Number of PivotTable divisions should match");
+
+                actual.PivotTable.Count.Should()
+                    .Be(expected.PivotTable.Count, "Number of PivotTable divisions should match");
 
                 for (var i = 0; i < expected.PivotTable.Count; i++)
                 {
                     var expectedPivot = expected.PivotTable[i];
                     var actualPivot = actual.PivotTable[i];
 
-                    actualPivot.LastUpdateTime.Should().Be(expectedPivot.LastUpdateTime, $"[Div#{i}] LastTimeUpdated should match");
+                    actualPivot.LastUpdateTime.Should().Be(expectedPivot.LastUpdateTime,
+                        $"[Div#{i}] LastTimeUpdated should match");
 
-                    actualPivot.TeamsStandings.Count.Should().Be(expectedPivot.TeamsStandings.Count, $"[Div#{i}] Number of teams in pivot table should match");
+                    actualPivot.TeamsStandings.Count.Should().Be(expectedPivot.TeamsStandings.Count,
+                        $"[Div#{i}] Number of teams in pivot table should match");
 
                     for (var j = 0; j < expectedPivot.TeamsStandings.Count; j++)
                     {

@@ -1,17 +1,17 @@
-﻿namespace VolleyManagement.UnitTests.Services.ContributorService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.ContributorsAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.ContributorsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.ContributorService
+{
     /// <summary>
-    /// Equality comparer for contributor objects.
+    ///     Equality comparer for contributor objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class ContributorEqualityComparer : IEqualityComparer<Contributor>
     {
         /// <summary>
-        /// Check if objects are equal
+        ///     Check if objects are equal
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -26,7 +26,7 @@
         }
 
         /// <summary>
-        /// Get hash code for the contributor object
+        ///     Get hash code for the contributor object
         /// </summary>
         /// <param name="obj">Contributor object</param>
         /// <returns>Contributor's Id as hash code</returns>

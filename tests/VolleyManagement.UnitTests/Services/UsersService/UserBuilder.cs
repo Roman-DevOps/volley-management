@@ -1,48 +1,42 @@
-﻿namespace VolleyManagement.UnitTests.Services.UsersService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.PlayersAggregate;
-    using Domain.RolesAggregate;
-    using Domain.UsersAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.PlayersAggregate;
+using VolleyManagement.Domain.RolesAggregate;
+using VolleyManagement.Domain.UsersAggregate;
 
+namespace VolleyManagement.UnitTests.Services.UsersService
+{
     /// <summary>
-    /// Builder for test users
+    ///     Builder for test users
     /// </summary>
     [ExcludeFromCodeCoverage]
-
     internal class UserBuilder
     {
         /// <summary>
-        /// Holds test user instance
+        ///     Holds test user instance
         /// </summary>
-        private User _user;
+        private readonly User _user;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserBuilder"/> class
+        ///     Initializes a new instance of the <see cref="UserBuilder" /> class
         /// </summary>
         public UserBuilder()
         {
-            _user = new User
-            {
+            _user = new User {
                 Id = 1,
                 UserName = "Player",
                 Email = "example@i.ua",
                 PersonName = "Eugene",
                 PhoneNumber = "068-11-22-333",
                 IsBlocked = false,
-                LoginProviders = new List<LoginProviderInfo>
-                {
-                    new LoginProviderInfo
-                    {
+                LoginProviders = new List<LoginProviderInfo> {
+                    new LoginProviderInfo {
                         LoginProvider = "Google",
                         ProviderKey = "11111111111111"
                     }
                 },
-                Roles = new List<Role>
-                {
-                      new Role
-                    {
+                Roles = new List<Role> {
+                    new Role {
                         Id = 1,
                         Name = "Administrator"
                     }
@@ -51,7 +45,7 @@
         }
 
         /// <summary>
-        /// Sets id of test user
+        ///     Sets id of test user
         /// </summary>
         /// <param name="id">Id for test user</param>
         /// <returns>user builder object</returns>
@@ -62,7 +56,7 @@
         }
 
         /// <summary>
-        /// Sets username of test user
+        ///     Sets username of test user
         /// </summary>
         /// <param name="username">Username for test user</param>
         /// <returns>User builder object</returns>
@@ -73,7 +67,7 @@
         }
 
         /// <summary>
-        /// Sets email of test user
+        ///     Sets email of test user
         /// </summary>
         /// <param name="email">email for test user</param>
         /// <returns>User builder object</returns>
@@ -84,7 +78,7 @@
         }
 
         /// <summary>
-        /// Sets phone number of test user
+        ///     Sets phone number of test user
         /// </summary>
         /// <param name="phoneNumber">Phone Number for test user</param>
         /// <returns>User builder object</returns>
@@ -95,7 +89,7 @@
         }
 
         /// <summary>
-        /// Sets person name of test user
+        ///     Sets person name of test user
         /// </summary>
         /// <param name="personName">Person name for test user</param>
         /// <returns>User builder object</returns>
@@ -106,7 +100,7 @@
         }
 
         /// <summary>
-        /// Sets login providers of test user
+        ///     Sets login providers of test user
         /// </summary>
         /// <param name="providers">Login providers for test user</param>
         /// <returns>User builder object</returns>
@@ -117,7 +111,7 @@
         }
 
         /// <summary>
-        /// Sets roles of test user
+        ///     Sets roles of test user
         /// </summary>
         /// <param name="roles">Roles for test user</param>
         /// <returns>User builder object</returns>
@@ -128,7 +122,7 @@
         }
 
         /// <summary>
-        /// Sets player of test user
+        ///     Sets player of test user
         /// </summary>
         /// <param name="player">Player info for test user</param>
         /// <returns>User builder object</returns>
@@ -139,7 +133,7 @@
         }
 
         /// <summary>
-        /// Builds test user
+        ///     Builds test user
         /// </summary>
         /// <returns>Test user</returns>
         public User Build()

@@ -1,36 +1,21 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Web.Mvc;
+using FluentAssertions;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Domain.PlayersAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using VolleyManagement.UI.Areas.Admin.Controllers;
+using VolleyManagement.UnitTests.Services.PlayerService;
+using VolleyManagement.UnitTests.Services.UsersService;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Mvc.Controllers
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Mvc;
-    using Xunit;
-    using Moq;
-    using Contracts;
-    using Contracts.Exceptions;
-    using Domain.PlayersAggregate;
-    using Domain.UsersAggregate;
-    using UI.Areas.Admin.Controllers;
-    using Services.PlayerService;
-    using Services.UsersService;
-
     [ExcludeFromCodeCoverage]
-    
     public class RequestControllerTests
     {
-        #region Fields
-        private const int REQUEST_ID = 1;
-        private const int USER_ID = 1;
-        private const int PLAYER_ID = 1;
-
-        private Mock<IRequestService> _requestServiceMock = new Mock<IRequestService>();
-        private Mock<IUserService> _userServiceMock = new Mock<IUserService>();
-        private Mock<IPlayerService> _playerServiceMock = new Mock<IPlayerService>();
-
-        #endregion
-
-        #region Init
-
         public RequestControllerTests()
         {
             _requestServiceMock = new Mock<IRequestService>();
@@ -38,167 +23,25 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
             _playerServiceMock = new Mock<IPlayerService>();
         }
 
-        #endregion
+        private const int REQUEST_ID = 1;
+        private const int USER_ID = 1;
+        private const int PLAYER_ID = 1;
 
-        #region Tests
-
-        [Fact]
-        public void UserDetails_ExistingUser_UserReturned()
-        {
-            // Arrange
-            var expected = GetUser();
-            SetupUserService(USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.UserDetails(USER_ID);
-            var actual = TestExtensions.GetModel<User>(actionResult);
-
-            // Assert
-            TestHelper.AreEqual<User>(expected, actual, new UserComparer());
-        }
-
-        [Fact]
-        public void UserDetails_NonExistentUser_HttpNotFoundResultIsReturned()
-        {
-            // Arrange
-            SetupUserServiceReturnsNullUser(USER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.UserDetails(USER_ID);
-
-            // Assert
-            Assert.IsType<HttpNotFoundResult>(actionResult);
-        }
-
-        [Fact]
-        public void PlayerDetails_ExistingPlayer_PlayerReturned()
-        {
-            // Arrange
-            var expected = GetPlayer();
-            SetupPlayerService(PLAYER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.PlayerDetails(PLAYER_ID);
-            var actual = TestExtensions.GetModel<Player>(actionResult);
-
-            // Assert
-            TestHelper.AreEqual<Player>(expected, actual, new PlayerComparer());
-        }
-
-        [Fact]
-        public void PlayerDetails_NonExistentUser_HttpNotFoundResultIsReturned()
-        {
-            // Arrange
-            SetupPlayerServiceReturnsNullPlayer(PLAYER_ID);
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.PlayerDetails(PLAYER_ID);
-
-            // Assert
-            Assert.IsType<HttpNotFoundResult>(actionResult);
-        }
-
-        [Fact]
-        public void Confirm_AnyRequest_RequestRedirectToIndex()
-        {
-            // Arrange
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Confirm(REQUEST_ID);
-
-            // Assert
-            AssertValidRedirectResult(actionResult, "Index");
-        }
-
-        [Fact]
-        public void Confirm_AnyRequest_RequestConfirmed()
-        {
-            // Arrange
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Confirm(REQUEST_ID);
-
-            // Assert
-            AssertVerifyConfirm(_requestServiceMock, REQUEST_ID);
-        }
-
-        [Fact]
-        public void Confirm_NonExistentRequest_ThrowsMissingEntityException()
-        {
-            // Arrange
-            SetupConfirmThrowsMissingEntityException();
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Confirm(REQUEST_ID);
-
-            // Assert
-            Assert.NotNull(actionResult);
-        }
-
-        [Fact]
-        public void Decline_AnyRequest_RequestRedirectToIndex()
-        {
-            // Arrange
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Decline(REQUEST_ID);
-
-            // Assert
-            AssertValidRedirectResult(actionResult, "Index");
-        }
-
-        [Fact]
-        public void Decline_AnyRequest_RequestDeclined()
-        {
-            // Arrange
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Decline(REQUEST_ID);
-
-            // Assert
-            AssertVerifyDecline(_requestServiceMock, REQUEST_ID);
-        }
-
-        [Fact]
-        public void Decline_NonExistentRequest_ThrowsMissingEntityException()
-        {
-            // Arrange
-            SetupDeclineThrowsMissingEntityException();
-            var sut = BuildSUT();
-
-            // Act
-            var actionResult = sut.Decline(REQUEST_ID);
-
-            // Assert
-            Assert.NotNull(actionResult);
-        }
-
-        #endregion
-
-        #region Custom assertions
+        private readonly Mock<IRequestService> _requestServiceMock = new Mock<IRequestService>();
+        private readonly Mock<IUserService> _userServiceMock = new Mock<IUserService>();
+        private readonly Mock<IPlayerService> _playerServiceMock = new Mock<IPlayerService>();
 
         private static void AssertValidRedirectResult(ActionResult actionResult, string view)
         {
-            var result = (RedirectToRouteResult)actionResult;
+            var result = (RedirectToRouteResult) actionResult;
             result.Should().NotBeNull("Method result should be instance of RedirectToRouteResult");
             result.Should().NotBeNull("Method result should be instance of RedirectToRouteResult");
             Assert.False(result.Permanent, "Redirect should not be permanent");
-            result.RouteValues.Count.Should().Be(1, string.Format("Redirect should forward to Requests.{0} action", view));
-            result.RouteValues["action"].Should().Be(view, string.Format("Redirect should forward to Requests.{0} action", view));
+            result.RouteValues.Count.Should()
+                .Be(1, string.Format("Redirect should forward to Requests.{0} action", view));
+            result.RouteValues["action"].Should()
+                .Be(view, string.Format("Redirect should forward to Requests.{0} action", view));
         }
-
-        #endregion
-
-        #region Test data
 
         private User GetUser()
         {
@@ -209,10 +52,6 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
         {
             return new Player();
         }
-
-        #endregion
-
-        #region Mock
 
         private RequestController BuildSUT()
         {
@@ -265,6 +104,145 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
         {
             mock.Verify(m => m.Decline(It.Is<int>(id => id == requestId)), Times.Once());
         }
-        #endregion
+
+        [Fact]
+        public void Confirm_AnyRequest_RequestConfirmed()
+        {
+            // Arrange
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Confirm(REQUEST_ID);
+
+            // Assert
+            AssertVerifyConfirm(_requestServiceMock, REQUEST_ID);
+        }
+
+        [Fact]
+        public void Confirm_AnyRequest_RequestRedirectToIndex()
+        {
+            // Arrange
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Confirm(REQUEST_ID);
+
+            // Assert
+            AssertValidRedirectResult(actionResult, "Index");
+        }
+
+        [Fact]
+        public void Confirm_NonExistentRequest_ThrowsMissingEntityException()
+        {
+            // Arrange
+            SetupConfirmThrowsMissingEntityException();
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Confirm(REQUEST_ID);
+
+            // Assert
+            Assert.NotNull(actionResult);
+        }
+
+        [Fact]
+        public void Decline_AnyRequest_RequestDeclined()
+        {
+            // Arrange
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Decline(REQUEST_ID);
+
+            // Assert
+            AssertVerifyDecline(_requestServiceMock, REQUEST_ID);
+        }
+
+        [Fact]
+        public void Decline_AnyRequest_RequestRedirectToIndex()
+        {
+            // Arrange
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Decline(REQUEST_ID);
+
+            // Assert
+            AssertValidRedirectResult(actionResult, "Index");
+        }
+
+        [Fact]
+        public void Decline_NonExistentRequest_ThrowsMissingEntityException()
+        {
+            // Arrange
+            SetupDeclineThrowsMissingEntityException();
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.Decline(REQUEST_ID);
+
+            // Assert
+            Assert.NotNull(actionResult);
+        }
+
+        [Fact]
+        public void PlayerDetails_ExistingPlayer_PlayerReturned()
+        {
+            // Arrange
+            var expected = GetPlayer();
+            SetupPlayerService(PLAYER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.PlayerDetails(PLAYER_ID);
+            var actual = TestExtensions.GetModel<Player>(actionResult);
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new PlayerComparer());
+        }
+
+        [Fact]
+        public void PlayerDetails_NonExistentUser_HttpNotFoundResultIsReturned()
+        {
+            // Arrange
+            SetupPlayerServiceReturnsNullPlayer(PLAYER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.PlayerDetails(PLAYER_ID);
+
+            // Assert
+            Assert.IsType<HttpNotFoundResult>(actionResult);
+        }
+
+        [Fact]
+        public void UserDetails_ExistingUser_UserReturned()
+        {
+            // Arrange
+            var expected = GetUser();
+            SetupUserService(USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.UserDetails(USER_ID);
+            var actual = TestExtensions.GetModel<User>(actionResult);
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new UserComparer());
+        }
+
+        [Fact]
+        public void UserDetails_NonExistentUser_HttpNotFoundResultIsReturned()
+        {
+            // Arrange
+            SetupUserServiceReturnsNullUser(USER_ID);
+            var sut = BuildSUT();
+
+            // Act
+            var actionResult = sut.UserDetails(USER_ID);
+
+            // Assert
+            Assert.IsType<HttpNotFoundResult>(actionResult);
+        }
     }
 }

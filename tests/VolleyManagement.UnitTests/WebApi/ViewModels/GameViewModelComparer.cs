@@ -1,13 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Games;
 
 namespace VolleyManagement.UnitTests.WebApi.ViewModels
 {
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using UI.Areas.WebApi.ViewModels.Games;
-
     /// <summary>
-    /// Builder for test game view models
+    ///     Builder for test game view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal static class GameViewModelComparer
@@ -28,7 +26,8 @@ namespace VolleyManagement.UnitTests.WebApi.ViewModels
             AreResultsEqual(expected.Result, actual.Result, messagePrefix);
         }
 
-        private static void AreResultsEqual(GameViewModel.GameResult expected, GameViewModel.GameResult actual, string messagePrefix = "")
+        private static void AreResultsEqual(GameViewModel.GameResult expected, GameViewModel.GameResult actual,
+            string messagePrefix = "")
         {
             if (expected == null && actual == null)
             {
@@ -37,14 +36,20 @@ namespace VolleyManagement.UnitTests.WebApi.ViewModels
             {
                 for (var i = 0; i < expected.SetScores.Count; i++)
                 {
-                    actual.SetScores[i].Home.Should().Be(expected.SetScores[i].Home, $"{messagePrefix}Score of {i} set for home team do not match");
-                    actual.SetScores[i].Away.Should().Be(expected.SetScores[i].Away, $"{messagePrefix}Score of {i} set for away team do not match");
-                    actual.SetScores[i].IsTechnicalDefeat.Should().Be(expected.SetScores[i].IsTechnicalDefeat, $"{messagePrefix}Technical defeat in {i} set do not match");
+                    actual.SetScores[i].Home.Should().Be(expected.SetScores[i].Home,
+                        $"{messagePrefix}Score of {i} set for home team do not match");
+                    actual.SetScores[i].Away.Should().Be(expected.SetScores[i].Away,
+                        $"{messagePrefix}Score of {i} set for away team do not match");
+                    actual.SetScores[i].IsTechnicalDefeat.Should().Be(expected.SetScores[i].IsTechnicalDefeat,
+                        $"{messagePrefix}Technical defeat in {i} set do not match");
                 }
 
-                actual.TotalScore.Home.Should().Be(expected.TotalScore.Home, $"{messagePrefix}Game score for home team do not match");
-                actual.TotalScore.Away.Should().Be(expected.TotalScore.Away, $"{messagePrefix}Game score for away team do not match");
-                actual.IsTechnicalDefeat.Should().Be(expected.IsTechnicalDefeat, $"{messagePrefix}Technical defeat in game do not match");
+                actual.TotalScore.Home.Should().Be(expected.TotalScore.Home,
+                    $"{messagePrefix}Game score for home team do not match");
+                actual.TotalScore.Away.Should().Be(expected.TotalScore.Away,
+                    $"{messagePrefix}Game score for away team do not match");
+                actual.IsTechnicalDefeat.Should().Be(expected.IsTechnicalDefeat,
+                    $"{messagePrefix}Technical defeat in game do not match");
             }
         }
     }

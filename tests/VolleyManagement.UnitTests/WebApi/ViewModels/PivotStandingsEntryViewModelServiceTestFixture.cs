@@ -1,45 +1,42 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.GameReports;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.GameReports;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Generates <see cref="PivotStandingsViewModel"/> test data for unit tests.
+    ///     Generates <see cref="PivotStandingsViewModel" /> test data for unit tests.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PivotStandingsEntryViewModelServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of entries
+        ///     Holds collection of entries
         /// </summary>
-        private IList<PivotStandingsTeamViewModel> _entries = new List<PivotStandingsTeamViewModel>();
+        private readonly IList<PivotStandingsTeamViewModel> _entries = new List<PivotStandingsTeamViewModel>();
 
         /// <summary>
-        /// Adds entries to collection
+        ///     Adds entries to collection
         /// </summary>
         /// <returns>Builder object with collection of entries</returns>
         public PivotStandingsEntryViewModelServiceTestFixture TestEntries()
         {
             _entries.Add(
-                new PivotStandingsTeamViewModel
-                {
+                new PivotStandingsTeamViewModel {
                     TeamName = "TeamNameA",
                     TeamId = 1,
                     Points = 5,
                     SetsRatio = 6.0f / 3
                 });
             _entries.Add(
-                 new PivotStandingsTeamViewModel
-                 {
-                     TeamName = "TeamNameC",
-                     TeamId = 3,
-                     Points = 3,
-                     SetsRatio = 4.0f / 3
-                 });
+                new PivotStandingsTeamViewModel {
+                    TeamName = "TeamNameC",
+                    TeamId = 3,
+                    Points = 3,
+                    SetsRatio = 4.0f / 3
+                });
             _entries.Add(
-                new PivotStandingsTeamViewModel
-                {
+                new PivotStandingsTeamViewModel {
                     TeamName = "TeamNameB",
                     TeamId = 2,
                     Points = 1,
@@ -49,7 +46,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Entries collection</returns>
         public IList<PivotStandingsTeamViewModel> Build()

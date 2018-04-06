@@ -1,27 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using UI.Areas.Mvc.ViewModels.Teams;
+﻿using System.Collections.Generic;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     public class TeamNameViewModelBuilder
     {
-        private TeamNameViewModel _teamNameViewModel;
+        private readonly TeamNameViewModel _teamNameViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TeamNameViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TeamNameViewModelBuilder" /> class
         /// </summary>
         public TeamNameViewModelBuilder()
         {
-            _teamNameViewModel = new TeamNameViewModel()
-            {
+            _teamNameViewModel = new TeamNameViewModel {
                 Id = 1,
                 Name = "Name"
             };
         }
 
         /// <summary>
-        /// Sets id of test team view model
+        ///     Sets id of test team view model
         /// </summary>
         /// <param name="id">Id for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -32,7 +30,7 @@
         }
 
         /// <summary>
-        /// Sets name of test team view model
+        ///     Sets name of test team view model
         /// </summary>
         /// <param name="name">Name for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -43,33 +41,29 @@
         }
 
         /// <summary>
-        /// Builds test team view model
+        ///     Builds test team view model
         /// </summary>
         /// <returns>test team view model</returns>
         public IEnumerable<TeamNameViewModel> GetList()
         {
-            return new List<TeamNameViewModel>()
-            {
-                new TeamNameViewModel()
-                {
+            return new List<TeamNameViewModel> {
+                new TeamNameViewModel {
                     Id = 1,
-                    Name = "TeamNameA",
+                    Name = "TeamNameA"
                 },
-                new TeamNameViewModel()
-                {
+                new TeamNameViewModel {
                     Id = 2,
-                    Name = "TeamNameB",
+                    Name = "TeamNameB"
                 },
-                new TeamNameViewModel()
-                {
+                new TeamNameViewModel {
                     Id = 3,
-                    Name = "TeamNameC",
-                },
+                    Name = "TeamNameC"
+                }
             };
         }
 
         /// <summary>
-        /// Builds test team view model
+        ///     Builds test team view model
         /// </summary>
         /// <returns>test team view model</returns>
         public TeamNameViewModel Build()

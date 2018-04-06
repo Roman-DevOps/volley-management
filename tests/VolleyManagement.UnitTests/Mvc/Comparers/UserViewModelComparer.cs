@@ -1,16 +1,22 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Comparers
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.Users;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Users;
 
+namespace VolleyManagement.UnitTests.Mvc.Comparers
+{
     /// <summary>
-    /// Compares User instances
+    ///     Compares User instances
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class UserViewModelComparer : IComparer<UserViewModel>, IComparer, IComparer<UI.Areas.Admin.Models.UserViewModel>
+    public class UserViewModelComparer : IComparer<UserViewModel>, IComparer,
+        IComparer<UI.Areas.Admin.Models.UserViewModel>
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as UserViewModel, y as UserViewModel);
+        }
+
         public int Compare(UserViewModel x, UserViewModel y)
         {
             if (x == null && y == null)
@@ -31,9 +37,16 @@
             return CompareInternal(x, y);
         }
 
-        public int Compare(object x, object y)
+        public int Compare(UI.Areas.Admin.Models.UserViewModel x, UI.Areas.Admin.Models.UserViewModel y)
         {
-            return Compare(x as UserViewModel, y as UserViewModel);
+            var result = y.Id - x.Id;
+            if (result != 0)
+            {
+                return result;
+            }
+
+            result = string.CompareOrdinal(x.Email, y.Email);
+            return result;
         }
 
         private int CompareInternal(UserViewModel x, UserViewModel y)
@@ -45,18 +58,6 @@
             }
 
             result = string.CompareOrdinal(x.UserName, y.UserName);
-            return result;
-        }
-
-        public int Compare(UI.Areas.Admin.Models.UserViewModel x, UI.Areas.Admin.Models.UserViewModel y)
-        {
-            var result = y.Id - x.Id;
-            if (result != 0)
-            {
-                return result;
-            }
-
-            result = string.CompareOrdinal(x.Email, y.Email);
             return result;
         }
     }

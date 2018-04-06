@@ -1,18 +1,17 @@
-﻿namespace VolleyManagement.UnitTests.Services.UserService
-{
-    using Domain.UsersAggregate;
+﻿using VolleyManagement.Domain.UsersAggregate;
 
+namespace VolleyManagement.UnitTests.Services.UserService
+{
     internal class BlockUserBuilder
     {
         private readonly User _user;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BlockUserBuilder"/> class.
+        ///     Initializes a new instance of the <see cref="BlockUserBuilder" /> class.
         /// </summary>
         public BlockUserBuilder()
         {
-            _user = new User
-            {
+            _user = new User {
                 Id = 1,
                 UserName = "TestName",
                 PersonName = "TestFullName",
@@ -22,7 +21,7 @@
         }
 
         /// <summary>
-        /// Sets the identifier of the user.
+        ///     Sets the identifier of the user.
         /// </summary>
         /// <param name="id">Identifier of the user.</param>
         /// <returns>User object.</returns>
@@ -33,7 +32,7 @@
         }
 
         /// <summary>
-        /// Sets the user email.
+        ///     Sets the user email.
         /// </summary>
         /// <param name="email">User email.</param>
         /// <returns>User object.</returns>
@@ -44,7 +43,7 @@
         }
 
         /// <summary>
-        /// Sets the user name.
+        ///     Sets the user name.
         /// </summary>
         /// <param name="userName">User name.</param>
         /// <returns>User object.</returns>
@@ -55,7 +54,7 @@
         }
 
         /// <summary>
-        /// Sets the person name.
+        ///     Sets the person name.
         /// </summary>
         /// <param name="personName">Person name</param>
         /// <returns>User object.</returns>
@@ -66,7 +65,7 @@
         }
 
         /// <summary>
-        /// Sets the user block status.
+        ///     Sets the user block status.
         /// </summary>
         /// <param name="blockStatus">User block status</param>
         /// <returns>User object.</returns>
@@ -77,7 +76,7 @@
         }
 
         /// <summary>
-        /// Builds test user.
+        ///     Builds test user.
         /// </summary>
         /// <returns>Test user.</returns>
         public User Build()

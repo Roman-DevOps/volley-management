@@ -1,18 +1,17 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using Xunit;
-    using Services.PlayerService;
-    using UI.Areas.Mvc.ViewModels.Players;
+﻿using VolleyManagement.UI.Areas.Mvc.ViewModels.Players;
+using VolleyManagement.UnitTests.Services.PlayerService;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// View model player class test
+    ///     View model player class test
     /// </summary>
-    
     public class PlayerDomainToViewModel
     {
         /// <summary>
-        /// Map() method test.
-        /// Does correct a player domain model mapped to a view model.
+        ///     Map() method test.
+        ///     Does correct a player domain model mapped to a view model.
         /// </summary>
         [Fact]
         public void Map_DomainPlayerAsParam_MappedToViewModel()
@@ -40,7 +39,7 @@
             var actual = PlayerViewModel.Map(testDomainModel);
 
             // Assert
-            TestHelper.AreEqual<PlayerViewModel>(testViewModel, actual, new PlayerViewModelComparer());
+            TestHelper.AreEqual(testViewModel, actual, new PlayerViewModelComparer());
         }
     }
 }

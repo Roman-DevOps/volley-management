@@ -1,109 +1,35 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Controllers
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using Moq;
-    using Contracts;
-    using Domain.GameReportsAggregate;
-    using UI.Areas.Mvc.Controllers;
-    using UI.Areas.Mvc.ViewModels.GameReports;
-    using ViewModels;
-    using Services.GameReportService;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Domain.GameReportsAggregate;
+using VolleyManagement.UI.Areas.Mvc.Controllers;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameReports;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
+using VolleyManagement.UnitTests.Services.GameReportService;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Mvc.Controllers
+{
     /// <summary>
-    /// Tests for <see cref="GameReportsController"/> class.
+    ///     Tests for <see cref="GameReportsController" /> class.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    
     public class GameReportsControllerTests
     {
-        private const int TOURNAMENT_ID = 1;
-        private const int TOURNAMENT_PLAYOFF_ID = 4;
-        private const string TOURNAMENT_NAME = "Name";
-
-        private Mock<IGameReportService> _gameReportServiceMock;
-
         /// <summary>
-        /// Initializes test data.
+        ///     Initializes test data.
         /// </summary>
         public GameReportsControllerTests()
         {
             _gameReportServiceMock = new Mock<IGameReportService>();
         }
 
-        /// <summary>
-        /// Test for Standings() method. Tournament standings are requested. Tournament standings are returned.
-        /// </summary>
-        [Fact]
-        public void Standings_StandingsRequested_StandingsReturned()
-        {
-            // Arrange
-            var testPivotStandings = new PivotStandingsTestFixture().WithMultipleDivisionsAllPossibleScores().Build();
-            var testStandings = new StandingsTestFixture().WithMultipleDivisionsAllPossibleScores().Build();
+        private const int TOURNAMENT_ID = 1;
+        private const int TOURNAMENT_PLAYOFF_ID = 4;
+        private const string TOURNAMENT_NAME = "Name";
 
-            var expected = new StandingsViewModelBuilder().WithMultipleDivisionsAllPossibleScores().Build();
-
-            SetupIsStandingsAvailableTrue(TOURNAMENT_ID);
-            SetupGameReportGetStandings(TOURNAMENT_ID, testStandings);
-            SetupGameReportGetPivotStandings(TOURNAMENT_ID, testPivotStandings);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_ID, TOURNAMENT_NAME));
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
-        }
-
-        [Fact]
-        public void Standings_LastUpdateTimeExists_StandingsReturnLastUpdateTime()
-        {
-            // Arrange
-            var LAST_UPDATE_TIME = new DateTime(2017, 4, 5, 12, 4, 23);
-
-            var testPivotStandings = new PivotStandingsTestFixture().WithMultipleDivisionsAllPossibleScores()
-                                            .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
-            var testStandings = new StandingsTestFixture().WithMultipleDivisionsAllPossibleScores()
-                                            .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
-
-            var expected = new StandingsViewModelBuilder().WithMultipleDivisionsAllPossibleScores()
-                                            .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
-
-            SetupIsStandingsAvailableTrue(TOURNAMENT_ID);
-            SetupGameReportGetStandings(TOURNAMENT_ID, testStandings);
-            SetupGameReportGetPivotStandings(TOURNAMENT_ID, testPivotStandings);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_ID, TOURNAMENT_NAME));
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
-        }
-
-        /// <summary>
-        /// Test for Standings() method. Tournament standings view model are requested.
-        /// Tournament standings not available for playoff scheme
-        /// </summary>
-        [Fact]
-        public void Standings_StandingsForPlayoffScheme_StandingsNotAvailableReturned()
-        {
-            // Arrange
-            var expected = new StandingsViewModelBuilder().WithStandingsNotAvailableMessage().Build();
-
-            SetupIsStandingsAvailableFalse(TOURNAMENT_PLAYOFF_ID);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_PLAYOFF_ID, TOURNAMENT_NAME));
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
-        }
+        private readonly Mock<IGameReportService> _gameReportServiceMock;
 
         private GameReportsController BuildSUT()
         {
@@ -132,6 +58,80 @@
         {
             _gameReportServiceMock
                 .Setup(m => m.IsStandingAvailable(It.Is<int>(id => id == tournamentId))).Returns(false);
+        }
+
+        [Fact]
+        public void Standings_LastUpdateTimeExists_StandingsReturnLastUpdateTime()
+        {
+            // Arrange
+            var LAST_UPDATE_TIME = new DateTime(2017, 4, 5, 12, 4, 23);
+
+            var testPivotStandings = new PivotStandingsTestFixture().WithMultipleDivisionsAllPossibleScores()
+                .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
+            var testStandings = new StandingsTestFixture().WithMultipleDivisionsAllPossibleScores()
+                .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
+
+            var expected = new StandingsViewModelBuilder().WithMultipleDivisionsAllPossibleScores()
+                .WithLastUpdateTime(LAST_UPDATE_TIME).Build();
+
+            SetupIsStandingsAvailableTrue(TOURNAMENT_ID);
+            SetupGameReportGetStandings(TOURNAMENT_ID, testStandings);
+            SetupGameReportGetPivotStandings(TOURNAMENT_ID, testPivotStandings);
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual = TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_ID, TOURNAMENT_NAME));
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
+        }
+
+        /// <summary>
+        ///     Test for Standings() method. Tournament standings view model are requested.
+        ///     Tournament standings not available for playoff scheme
+        /// </summary>
+        [Fact]
+        public void Standings_StandingsForPlayoffScheme_StandingsNotAvailableReturned()
+        {
+            // Arrange
+            var expected = new StandingsViewModelBuilder().WithStandingsNotAvailableMessage().Build();
+
+            SetupIsStandingsAvailableFalse(TOURNAMENT_PLAYOFF_ID);
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual =
+                TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_PLAYOFF_ID, TOURNAMENT_NAME));
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
+        }
+
+        /// <summary>
+        ///     Test for Standings() method. Tournament standings are requested. Tournament standings are returned.
+        /// </summary>
+        [Fact]
+        public void Standings_StandingsRequested_StandingsReturned()
+        {
+            // Arrange
+            var testPivotStandings = new PivotStandingsTestFixture().WithMultipleDivisionsAllPossibleScores().Build();
+            var testStandings = new StandingsTestFixture().WithMultipleDivisionsAllPossibleScores().Build();
+
+            var expected = new StandingsViewModelBuilder().WithMultipleDivisionsAllPossibleScores().Build();
+
+            SetupIsStandingsAvailableTrue(TOURNAMENT_ID);
+            SetupGameReportGetStandings(TOURNAMENT_ID, testStandings);
+            SetupGameReportGetPivotStandings(TOURNAMENT_ID, testPivotStandings);
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual = TestExtensions.GetModel<StandingsViewModel>(sut.Standings(TOURNAMENT_ID, TOURNAMENT_NAME));
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new StandingsViewModelComparer());
         }
     }
 }

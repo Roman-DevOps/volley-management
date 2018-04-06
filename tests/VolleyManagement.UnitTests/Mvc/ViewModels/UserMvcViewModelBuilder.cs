@@ -1,33 +1,31 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.Users;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Users;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC user view models
+    ///     Builder for test MVC user view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class UserMvcViewModelBuilder
     {
         /// <summary>
-        /// Holds test user view model instance
+        ///     Holds test user view model instance
         /// </summary>
-        private UserViewModel _userViewModel;
+        private readonly UserViewModel _userViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserMvcViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="UserMvcViewModelBuilder" /> class
         /// </summary>
         public UserMvcViewModelBuilder()
         {
-            _userViewModel = new UserViewModel()
-            {
+            _userViewModel = new UserViewModel {
                 Id = 1,
                 FullName = "Name",
                 CellPhone = "068-11-22-777",
                 Email = "exampler@i.ua",
-                LoginProviders = new List<string>()
-                {
+                LoginProviders = new List<string> {
                     "Google",
                     "Twitter",
                     "Facebook"
@@ -36,7 +34,7 @@
         }
 
         /// <summary>
-        /// Sets id of test user view model
+        ///     Sets id of test user view model
         /// </summary>
         /// <param name="id">Id for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -47,7 +45,7 @@
         }
 
         /// <summary>
-        /// Sets name of test user view model
+        ///     Sets name of test user view model
         /// </summary>
         /// <param name="name">Name for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -58,7 +56,7 @@
         }
 
         /// <summary>
-        /// Sets Username of user view model
+        ///     Sets Username of user view model
         /// </summary>
         /// <param name="userName">Username for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -69,7 +67,7 @@
         }
 
         /// <summary>
-        /// Sets Cellphone of user view model
+        ///     Sets Cellphone of user view model
         /// </summary>
         /// <param name="cellphone">Cellphone for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -80,7 +78,7 @@
         }
 
         /// <summary>
-        /// Sets login providers of test user view model
+        ///     Sets login providers of test user view model
         /// </summary>
         /// <param name="providers">Login providers for test user view model</param>
         /// <returns>User view model builder object</returns>
@@ -91,7 +89,7 @@
         }
 
         /// <summary>
-        /// Builds test user view model
+        ///     Builds test user view model
         /// </summary>
         /// <returns>test user view model</returns>
         public UserViewModel Build()

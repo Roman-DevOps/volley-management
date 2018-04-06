@@ -1,29 +1,28 @@
-﻿namespace VolleyManagement.UnitTests.Services.TournamentService
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentsAggregate;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TournamentService
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of tournaments
+        ///     Holds collection of tournaments
         /// </summary>
-        private List<Tournament> _tournaments = new List<Tournament>();
+        private readonly List<Tournament> _tournaments = new List<Tournament>();
 
         /// <summary>
-        /// Adds tournaments to collection
+        ///     Adds tournaments to collection
         /// </summary>
         /// <returns>Builder object with collection of tournaments</returns>
         public TournamentServiceTestFixture TestTournaments()
         {
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 1,
                 Name = "Tournament 1",
                 Description = "Tournament 1 description",
@@ -37,8 +36,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 2,
                 Name = "Tournament 2",
                 Description = "Tournament 2 description",
@@ -52,8 +50,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 3,
                 Name = "Tournament 3",
                 Description = "Tournament 3 description",
@@ -67,8 +64,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 4,
                 Name = "Tournament 4",
                 Description = "Tournament 4 description",
@@ -86,7 +82,7 @@
         }
 
         /// <summary>
-        /// Add tournament to collection.
+        ///     Add tournament to collection.
         /// </summary>
         /// <param name="newTournament">Tournament to add.</param>
         /// <returns>Builder object with collection of tournaments.</returns>
@@ -97,13 +93,12 @@
         }
 
         /// <summary>
-        /// Add archived tournaments to collection.
+        ///     Add archived tournaments to collection.
         /// </summary>
         /// <returns>Builder object with collection of tournaments.</returns>
         public TournamentServiceTestFixture WithArchivedTournaments()
         {
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 5,
                 Name = "Tournament 5",
                 Description = "Tournament 5 description",
@@ -118,8 +113,7 @@
                 TransferEnd = new DateTime(2015, 09, 10),
                 IsArchived = true
             });
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 6,
                 Name = "Tournament 6",
                 Description = "Tournament 6 description",
@@ -138,13 +132,12 @@
         }
 
         /// <summary>
-        /// Add tournament to collection.
+        ///     Add tournament to collection.
         /// </summary>
         /// <returns>Builder object with collection of tournaments.</returns>
         public TournamentServiceTestFixture WithFinishedTournaments()
         {
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 1,
                 Name = "Tournament 1",
                 Description = "Tournament 1 description",
@@ -159,8 +152,7 @@
                 TransferEnd = new DateTime(2014, 09, 10)
             });
 
-            _tournaments.Add(new Tournament()
-            {
+            _tournaments.Add(new Tournament {
                 Id = 2,
                 Name = "Tournament 2",
                 Description = "Tournament 2 description",
@@ -178,7 +170,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Tournament collection</returns>
         public List<Tournament> Build()

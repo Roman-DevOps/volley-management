@@ -1,28 +1,27 @@
-﻿namespace VolleyManagement.UnitTests.Services.PlayerService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.PlayersAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.PlayersAggregate;
 
+namespace VolleyManagement.UnitTests.Services.PlayerService
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class PlayerServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of players
+        ///     Holds collection of players
         /// </summary>
-        private List<Player> _players = new List<Player>();
+        private readonly List<Player> _players = new List<Player>();
 
         /// <summary>
-        /// Adds players to collection
+        ///     Adds players to collection
         /// </summary>
         /// <returns>Builder object with collection of players</returns>
         public PlayerServiceTestFixture TestPlayers()
         {
-            _players.Add(new Player()
-            {
+            _players.Add(new Player {
                 Id = 1,
                 FirstName = "FirstNameA",
                 LastName = "LastNameA",
@@ -30,8 +29,7 @@
                 Height = 211,
                 Weight = 120
             });
-            _players.Add(new Player()
-            {
+            _players.Add(new Player {
                 Id = 2,
                 FirstName = "FirstNameB",
                 LastName = "LastNameB",
@@ -39,8 +37,7 @@
                 Height = 205,
                 Weight = 99
             });
-            _players.Add(new Player()
-            {
+            _players.Add(new Player {
                 Id = 3,
                 FirstName = "FirstNameC",
                 LastName = "LastNameC",
@@ -52,7 +49,7 @@
         }
 
         /// <summary>
-        /// Add player to collection.
+        ///     Add player to collection.
         /// </summary>
         /// <param name="newPlayer">Player to add.</param>
         /// <returns>Builder object with collection of tournaments.</returns>
@@ -63,7 +60,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Player collection</returns>
         public List<Player> Build()

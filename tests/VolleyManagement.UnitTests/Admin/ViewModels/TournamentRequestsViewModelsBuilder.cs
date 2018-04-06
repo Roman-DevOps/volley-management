@@ -1,28 +1,27 @@
-﻿namespace VolleyManagement.UnitTests.Admin.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Admin.Models;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Admin.Models;
 
+namespace VolleyManagement.UnitTests.Admin.ViewModels
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentRequestsViewModelsBuilder
     {
         /// <summary>
-        /// Holds collection of tournaments requests
+        ///     Holds collection of tournaments requests
         /// </summary>
-        private List<TournamentRequestViewModel> _tournamentsRequest = new List<TournamentRequestViewModel>();
+        private readonly List<TournamentRequestViewModel> _tournamentsRequest = new List<TournamentRequestViewModel>();
 
         /// <summary>
-        /// Adds tournaments to collection
+        ///     Adds tournaments to collection
         /// </summary>
         /// <returns>Builder object with collection of tournaments</returns>
         public TournamentRequestsViewModelsBuilder TestTournamentsRequests()
         {
-            _tournamentsRequest.Add(new TournamentRequestViewModel()
-            {
+            _tournamentsRequest.Add(new TournamentRequestViewModel {
                 Id = 1,
                 TeamId = 4,
                 PersonId = 1,
@@ -36,7 +35,7 @@
         }
 
         /// <summary>
-        /// Add tournament request to collection.
+        ///     Add tournament request to collection.
         /// </summary>
         /// <param name="newTournament">Tournament request to add.</param>
         /// <returns>Builder object with collection of tournaments requests.</returns>
@@ -47,7 +46,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Tournament request collection</returns>
         public List<TournamentRequestViewModel> Build()

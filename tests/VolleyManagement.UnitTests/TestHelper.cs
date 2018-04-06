@@ -1,15 +1,15 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using FluentAssertions;
+using Xunit;
 
 namespace VolleyManagement.UnitTests
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-
-    using static System.Linq.Enumerable;
+    using static Enumerable;
 
     /// <summary>
-    /// Class for custom asserts.
+    ///     Class for custom asserts.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal static class TestHelper
@@ -18,7 +18,7 @@ namespace VolleyManagement.UnitTests
         private const string COLLECTIONS_COUNT_UNEQUAL_MESSAGE = "Number of items in collections should match.";
 
         /// <summary>
-        /// Test equals of two objects with specific comparer.
+        ///     Test equals of two objects with specific comparer.
         /// </summary>
         /// <typeparam name="T">Type of object.</typeparam>
         /// <param name="expected">Expected result</param>
@@ -32,32 +32,42 @@ namespace VolleyManagement.UnitTests
             Assert.Equal(equalsResult, compareResult);
         }
 
-        public static void AreEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual, IComparer<T> comparer) =>
-            AreEqual(expected.ToList(), actual.ToList(), comparer, string.Empty);
-
-        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual) =>
-            AreEqual(expected, actual, null, string.Empty);
-
-        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, IComparer<T> comparer) =>
-            AreEqual(expected, actual, comparer, string.Empty);
-
-        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, string message) =>
-            AreEqual(expected, actual, null, message);
-
-        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, IComparer<T> comparer, string message)
+        public static void AreEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual, IComparer<T> comparer)
         {
-            if (expected == null || actual == null)
-            {
-                Assert.Fail(COLLECTION_IS_NULL_MESSAGE);
-            }
+            AreEqual(expected.ToList(), actual.ToList(), comparer, string.Empty);
+        }
+
+        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual)
+        {
+            AreEqual(expected, actual, null, string.Empty);
+        }
+
+        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, IComparer<T> comparer)
+        {
+            AreEqual(expected, actual, comparer, string.Empty);
+        }
+
+        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, string message)
+        {
+            AreEqual(expected, actual, null, message);
+        }
+
+        public static void AreEqual<T>(ICollection<T> expected, ICollection<T> actual, IComparer<T> comparer,
+            string message)
+        {
+            (expected == null || actual == null).Should().BeFalse(COLLECTION_IS_NULL_MESSAGE);
 
             actual.Count.Should().Be(expected.Count, COLLECTIONS_COUNT_UNEQUAL_MESSAGE);
 
             string preparedErrorMessage;
-            foreach (var pair in expected.Zip(actual, (e, a) => new { Expected = e, Actual = a }))
+            foreach (var pair in expected.Zip(actual, (e, a) => new {
+                Expected = e,
+                Actual = a
+            }))
             {
-                preparedErrorMessage = !string.IsNullOrEmpty(message) ? message
-                        : $"[Item#{pair.Expected.ToString()}] ";
+                preparedErrorMessage = !string.IsNullOrEmpty(message)
+                    ? message
+                    : $"[Item#{pair.Expected.ToString()}] ";
 
                 if (comparer == null)
                 {

@@ -1,21 +1,16 @@
-﻿namespace VolleyManagement.UnitTests.Admin.Comparers
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Admin.Models;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Admin.Models;
 
+namespace VolleyManagement.UnitTests.Admin.Comparers
+{
     /// <summary>
-    /// Compares message instances
+    ///     Compares message instances
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class MessageViewModelComparer : IComparer<MessageViewModel>, IComparer
     {
-        public int Compare(MessageViewModel x, MessageViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
         public int Compare(object x, object y)
         {
             var firstMessage = x as MessageViewModel;
@@ -25,12 +20,18 @@
             {
                 return -1;
             }
-            else if (secondMessage == null)
+
+            if (secondMessage == null)
             {
                 return 1;
             }
 
             return Compare(firstMessage, secondMessage);
+        }
+
+        public int Compare(MessageViewModel x, MessageViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
         }
 
         private bool AreEqual(MessageViewModel x, MessageViewModel y)

@@ -1,14 +1,14 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentsAggregate;
-    using UI.Areas.Mvc.ViewModels.Division;
-    using UI.Areas.Mvc.ViewModels.Tournaments;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentsAggregate;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Division;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Tournaments;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC tournament view models
+    ///     Builder for test MVC tournament view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentMvcViewModelBuilder
@@ -16,17 +16,16 @@
         private const int TOURNAMENT_DEFAULT_ID = 1;
 
         /// <summary>
-        /// Holds test tournament view model instance
+        ///     Holds test tournament view model instance
         /// </summary>
-        private TournamentViewModel _tournamentViewModel;
+        private readonly TournamentViewModel _tournamentViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TournamentMvcViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TournamentMvcViewModelBuilder" /> class
         /// </summary>
         public TournamentMvcViewModelBuilder()
         {
-            _tournamentViewModel = new TournamentViewModel()
-            {
+            _tournamentViewModel = new TournamentViewModel {
                 Id = TOURNAMENT_DEFAULT_ID,
                 Name = "Name",
                 Description = "Description 1",
@@ -40,28 +39,39 @@
                 TransferStart = new DateTime(2015, 10, 01),
                 TransferEnd = new DateTime(2015, 11, 01),
                 IsTransferEnabled = true,
-                Divisions = new List<DivisionViewModel>
-                {
-                    new DivisionViewModel()
-                    {
+                Divisions = new List<DivisionViewModel> {
+                    new DivisionViewModel {
                         Id = 1,
                         Name = "Division 1",
                         TournamentId = TOURNAMENT_DEFAULT_ID,
-                        Groups = new List<GroupViewModel>
-                        {
-                            new GroupViewModel { Id = 1, Name = "Group 1", DivisionId = 1 },
-                            new GroupViewModel { Id = 2, Name = "Group 2", DivisionId = 1 }
+                        Groups = new List<GroupViewModel> {
+                            new GroupViewModel {
+                                Id = 1,
+                                Name = "Group 1",
+                                DivisionId = 1
+                            },
+                            new GroupViewModel {
+                                Id = 2,
+                                Name = "Group 2",
+                                DivisionId = 1
+                            }
                         }
                     },
-                    new DivisionViewModel()
-                    {
+                    new DivisionViewModel {
                         Id = 2,
                         Name = "Division 2",
                         TournamentId = TOURNAMENT_DEFAULT_ID,
-                        Groups = new List<GroupViewModel>
-                        {
-                            new GroupViewModel { Id = 3, Name = "Group 1", DivisionId = 2 },
-                            new GroupViewModel { Id = 4, Name = "Group 2", DivisionId = 2 }
+                        Groups = new List<GroupViewModel> {
+                            new GroupViewModel {
+                                Id = 3,
+                                Name = "Group 1",
+                                DivisionId = 2
+                            },
+                            new GroupViewModel {
+                                Id = 4,
+                                Name = "Group 2",
+                                DivisionId = 2
+                            }
                         }
                     }
                 }
@@ -69,7 +79,7 @@
         }
 
         /// <summary>
-        /// Sets id of test tournament view model
+        ///     Sets id of test tournament view model
         /// </summary>
         /// <param name="id">Id for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -80,7 +90,7 @@
         }
 
         /// <summary>
-        /// Sets name of test tournament view model
+        ///     Sets name of test tournament view model
         /// </summary>
         /// <param name="name">Name for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -91,7 +101,7 @@
         }
 
         /// <summary>
-        /// Sets description of test tournament view model
+        ///     Sets description of test tournament view model
         /// </summary>
         /// <param name="description">Description for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -102,7 +112,7 @@
         }
 
         /// <summary>
-        /// Sets scheme of test tournament view model
+        ///     Sets scheme of test tournament view model
         /// </summary>
         /// <param name="scheme">Scheme for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -113,7 +123,7 @@
         }
 
         /// <summary>
-        /// Sets season of test tournament view model
+        ///     Sets season of test tournament view model
         /// </summary>
         /// <param name="season">Season for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -124,7 +134,7 @@
         }
 
         /// <summary>
-        /// Sets regulations link of test tournament view model
+        ///     Sets regulations link of test tournament view model
         /// </summary>
         /// <param name="regulationsLink">Regulations link for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -135,7 +145,7 @@
         }
 
         /// <summary>
-        /// Sets tournament start
+        ///     Sets tournament start
         /// </summary>
         /// <param name="gamesStart">Games start</param>
         /// <returns>Tournament builder object</returns>
@@ -146,7 +156,7 @@
         }
 
         /// <summary>
-        /// Sets tournament end
+        ///     Sets tournament end
         /// </summary>
         /// <param name="gamesEnd">Games end</param>
         /// <returns>Tournament builder object</returns>
@@ -157,7 +167,7 @@
         }
 
         /// <summary>
-        /// Sets applying start date of a tournament
+        ///     Sets applying start date of a tournament
         /// </summary>
         /// <param name="applyingPeriodStart">Applying period start</param>
         /// <returns>Tournament builder object</returns>
@@ -168,7 +178,7 @@
         }
 
         /// <summary>
-        /// Sets applying end date of a tournament
+        ///     Sets applying end date of a tournament
         /// </summary>
         /// <param name="applyingPeriodEnd">Applying period end</param>
         /// <returns>Tournament builder object</returns>
@@ -179,7 +189,7 @@
         }
 
         /// <summary>
-        /// Sets tournament transfer end date to a specified date.
+        ///     Sets tournament transfer end date to a specified date.
         /// </summary>
         /// <param name="transferStart">Date of transfer start.</param>
         /// <returns>Instance of Tournament builder.</returns>
@@ -190,7 +200,7 @@
         }
 
         /// <summary>
-        /// Sets tournament transfer end date to a specified date.
+        ///     Sets tournament transfer end date to a specified date.
         /// </summary>
         /// <param name="transferEnd">Date of transfer end.</param>
         /// <returns>Instance of Tournament builder.</returns>
@@ -201,7 +211,7 @@
         }
 
         /// <summary>
-        /// Sets tournament transfer start date and end date to null.
+        ///     Sets tournament transfer start date and end date to null.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentMvcViewModelBuilder WithNoTransferPeriod()
@@ -212,7 +222,7 @@
         }
 
         /// <summary>
-        /// Sets divisions of test tournament view model
+        ///     Sets divisions of test tournament view model
         /// </summary>
         /// <param name="divisions">Divisions for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -223,7 +233,7 @@
         }
 
         /// <summary>
-        /// Builds test tournament view model
+        ///     Builds test tournament view model
         /// </summary>
         /// <returns>test tournament view model</returns>
         public TournamentViewModel Build()

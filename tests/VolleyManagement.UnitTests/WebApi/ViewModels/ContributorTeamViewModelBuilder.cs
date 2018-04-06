@@ -1,36 +1,39 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.ContributorsTeam;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.ContributorsTeam;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Builder for test contributors team view models
+    ///     Builder for test contributors team view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class ContributorTeamViewModelBuilder
     {
         /// <summary>
-        /// Holds test contributors team view model instance
+        ///     Holds test contributors team view model instance
         /// </summary>
-        private ContributorsTeamViewModel _contributorTeamViewModel;
+        private readonly ContributorsTeamViewModel _contributorTeamViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContributorTeamViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="ContributorTeamViewModelBuilder" /> class
         /// </summary>
         public ContributorTeamViewModelBuilder()
         {
-            _contributorTeamViewModel = new ContributorsTeamViewModel()
-            {
+            _contributorTeamViewModel = new ContributorsTeamViewModel {
                 Id = 1,
                 Name = "FirstName",
                 CourseDirection = "Course",
-                Contributors = new List<string> { "FirstNameA", "FirstNameB", "FirstNameC" }
+                Contributors = new List<string> {
+                    "FirstNameA",
+                    "FirstNameB",
+                    "FirstNameC"
+                }
             };
         }
 
         /// <summary>
-        /// Sets id of test contributors team view model
+        ///     Sets id of test contributors team view model
         /// </summary>
         /// <param name="id">Id for test contributors team view model</param>
         /// <returns>Contributors team view model builder object</returns>
@@ -41,7 +44,7 @@
         }
 
         /// <summary>
-        /// Sets id of test contributor view model
+        ///     Sets id of test contributor view model
         /// </summary>
         /// <param name="name">Name for test contributors team view model</param>
         /// <returns>Contributor view model builder object</returns>
@@ -52,7 +55,7 @@
         }
 
         /// <summary>
-        /// Sets id of test contributor view model
+        ///     Sets id of test contributor view model
         /// </summary>
         /// <param name="courseDirection">course direction for test contributor view model</param>
         /// <returns>Contributor view model builder object</returns>
@@ -63,7 +66,7 @@
         }
 
         /// <summary>
-        /// Sets id of test contributor view model
+        ///     Sets id of test contributor view model
         /// </summary>
         /// <param name="contributors">Contributors in team for test contributor view model</param>
         /// <returns>Contributor view model builder object</returns>
@@ -78,7 +81,7 @@
         }
 
         /// <summary>
-        /// Builds test contributor team view model
+        ///     Builds test contributor team view model
         /// </summary>
         /// <returns>test contributor view model</returns>
         public ContributorsTeamViewModel Build()

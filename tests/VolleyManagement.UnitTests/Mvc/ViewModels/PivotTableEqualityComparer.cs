@@ -1,28 +1,24 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameReports;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Xunit;
-    using UI.Areas.Mvc.ViewModels.GameReports;
-
     /// <summary>
-    /// Represents an equality comparer for <see cref="PivotTableViewModel"/> objects.
+    ///     Represents an equality comparer for <see cref="PivotTableViewModel" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PivotTableEqualityComparer
     {
-        public static bool AreResultTablesEquals(List<PivotGameResultViewModel>[] expected, PivotTableViewModel actual, string messagePrefix = "")
+        public static bool AreResultTablesEquals(List<PivotGameResultViewModel>[] expected, PivotTableViewModel actual,
+            string messagePrefix = "")
         {
             if (expected != null || actual != null)
             {
-                if (expected == null || actual == null)
-                {
-                    Assert.Fail($"{messagePrefix} One of the results table is null");
-                }
+                (expected == null || actual == null).Should()
+                    .BeFalse($"{messagePrefix} One of the results table is null");
 
                 for (var i = 0; i < expected.Length; i++)
                 {
@@ -31,13 +27,11 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
 
                     if (expected[i] != null || actualCell != null)
                     {
-                        if (expected[i] == null || actualCell == null)
-                        {
-                            Assert.Fail($"{messagePrefix}Pos:({pos.Row},{pos.Col}) One of the results cell is null");
-                        }
+                        (expected[i] == null || actualCell == null).Should()
+                            .BeFalse($"{messagePrefix}Pos:({pos.Row},{pos.Col}) One of the results cell is null");
 
                         actualCell.Count.Should().Be(expected[i].Count,
-                        $"{messagePrefix}Pos:({pos.Row},{pos.Col}) Number of cell results do not match");
+                            $"{messagePrefix}Pos:({pos.Row},{pos.Col}) Number of cell results do not match");
 
                         for (var j = 0; j < expected[i].Count; j++)
                         {
@@ -48,7 +42,6 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
                         }
                     }
                 }
-
             }
 
             return true;
@@ -56,7 +49,7 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
 
         private static (int Row, int Col) GetPosition(int i, int count)
         {
-            var size = (int)Math.Sqrt(count);
+            var size = (int) Math.Sqrt(count);
 
             return (i / size, i % size);
         }

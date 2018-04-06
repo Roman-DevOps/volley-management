@@ -1,29 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.Services.TeamService
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentsAggregate;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TeamService
+{
     /// <summary>
-    /// Comparer for Group objects.
+    ///     Comparer for Group objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GroupComparer : IComparer<Group>, IComparer
     {
         /// <summary>
-        /// Compares two Groups.
-        /// </summary>
-        /// <param name="x">The first Group to compare.</param>
-        /// <param name="y">The second Group to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of Groups.</returns>
-        public int Compare(Group x, Group y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two Group objects (non-generic implementation).
+        ///     Compares two Group objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first Group to compare.</param>
         /// <param name="y">The second Group to compare.</param>
@@ -37,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondGroup == null)
+
+            if (secondGroup == null)
             {
                 return 1;
             }
@@ -46,7 +36,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two Groups have the same properties.
+        ///     Compares two Groups.
+        /// </summary>
+        /// <param name="x">The first Group to compare.</param>
+        /// <param name="y">The second Group to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of Groups.</returns>
+        public int Compare(Group x, Group y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two Groups have the same properties.
         /// </summary>
         /// <param name="x">The first Group to compare.</param>
         /// <param name="y">The second Group to compare.</param>

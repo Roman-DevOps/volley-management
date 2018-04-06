@@ -1,16 +1,15 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.WebAPI.ViewModels.Schedule;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.WebApi.ViewModels.Schedule
 {
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using UI.Areas.WebAPI.ViewModels.Schedule;
-
     [ExcludeFromCodeCoverage]
     internal static class ScheduleViewModelComparer
     {
         /// <summary>
-        /// Finds out whether two standings entries objects have the same properties.
+        ///     Finds out whether two standings entries objects have the same properties.
         /// </summary>
         /// <param name="expected">The first object to compare.</param>
         /// <param name="actual">The second object to compare.</param>

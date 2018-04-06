@@ -1,28 +1,27 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Players;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Players;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PlayerViewModelServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of players
+        ///     Holds collection of players
         /// </summary>
-        private IList<PlayerViewModel> _players = new List<PlayerViewModel>();
+        private readonly IList<PlayerViewModel> _players = new List<PlayerViewModel>();
 
         /// <summary>
-        /// Adds players to collection
+        ///     Adds players to collection
         /// </summary>
         /// <returns>Builder object with collection of players</returns>
         public PlayerViewModelServiceTestFixture TestPlayers()
         {
-            _players.Add(new PlayerViewModel()
-            {
+            _players.Add(new PlayerViewModel {
                 Id = 1,
                 FirstName = "FirstNameA",
                 LastName = "LastNameA",
@@ -30,8 +29,7 @@
                 Height = 211,
                 Weight = 120
             });
-            _players.Add(new PlayerViewModel()
-            {
+            _players.Add(new PlayerViewModel {
                 Id = 2,
                 FirstName = "FirstNameB",
                 LastName = "LastNameB",
@@ -39,8 +37,7 @@
                 Height = 205,
                 Weight = 99
             });
-            _players.Add(new PlayerViewModel()
-            {
+            _players.Add(new PlayerViewModel {
                 Id = 3,
                 FirstName = "FirstNameC",
                 LastName = "LastNameC",
@@ -52,7 +49,7 @@
         }
 
         /// <summary>
-        /// Add player to collection.
+        ///     Add player to collection.
         /// </summary>
         /// <param name="newPlayer">Player to add.</param>
         /// <returns>Builder object with collection of players.</returns>
@@ -63,7 +60,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Player collection</returns>
         public IList<PlayerViewModel> Build()

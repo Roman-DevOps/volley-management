@@ -1,18 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System.Collections.Generic;
-    using Domain.ContributorsAggregate;
-    using Xunit;
-    using Services.ContributorService;
+﻿using System.Collections.Generic;
+using VolleyManagement.Domain.ContributorsAggregate;
+using VolleyManagement.UnitTests.Services.ContributorService;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// View model contributor team class test
+    ///     View model contributor team class test
     /// </summary>
-     public class ContributorTeamViewModelToDomain
+    public class ContributorTeamViewModelToDomain
     {
         /// <summary>
-        /// ToDomain() method test.
-        /// Does correct contributor team view model mapped to domain model.
+        ///     ToDomain() method test.
+        ///     Does correct contributor team view model mapped to domain model.
         /// </summary>
         [Fact]
         public void ToDomain_ContributorTeamViewModel_MappedToDomain()
@@ -22,22 +22,18 @@
                 .WithId(1)
                 .WithName("First")
                 .WithCourseDirection("Course")
-                .WithContributors(new List<Contributor>
-                {
-                    new Contributor
-                    {
+                .WithContributors(new List<Contributor> {
+                    new Contributor {
                         Id = 1,
                         Name = "FirstNameA",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 2,
                         Name = "FirstNameB",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 3,
                         Name = "FirstNameC",
                         ContributorTeamId = 1
@@ -46,37 +42,33 @@
                 .Build();
 
             var testDomainModel = new ContributorTeamBuilder()
-               .WithId(1)
-               .WithName("First")
-               .WithcourseDirection("Course")
-               .Withcontributors(new List<Contributor>
-               {
-                    new Contributor
-                    {
+                .WithId(1)
+                .WithName("First")
+                .WithcourseDirection("Course")
+                .Withcontributors(new List<Contributor> {
+                    new Contributor {
                         Id = 1,
                         Name = "FirstNameA",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 2,
                         Name = "FirstNameB",
                         ContributorTeamId = 1
                     },
-                    new Contributor
-                    {
+                    new Contributor {
                         Id = 3,
                         Name = "FirstNameC",
                         ContributorTeamId = 1
                     }
-               })
-               .Build();
+                })
+                .Build();
 
             // Act
             var actual = testViewModel.ToDomain();
 
             // Assert
-            TestHelper.AreEqual<ContributorTeam>(testDomainModel, actual, new ContributorTeamComparer());
+            TestHelper.AreEqual(testDomainModel, actual, new ContributorTeamComparer());
         }
     }
 }

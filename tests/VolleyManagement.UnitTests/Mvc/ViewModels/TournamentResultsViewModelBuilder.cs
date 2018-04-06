@@ -1,13 +1,12 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GamesAggregate;
-    using UI.Areas.Mvc.ViewModels.GameResults;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.GameResults;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Builder for test MVC tournament results view models
+    ///     Builder for test MVC tournament results view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentResultsViewModelBuilder
@@ -27,23 +26,20 @@
         private const string URL_D = "http://test-url-d.com";
 
         /// <summary>
-        /// Holds test Tournament results view model instance
+        ///     Holds test Tournament results view model instance
         /// </summary>
-        private TournamentResultsViewModel _tournamentResultsViewModel;
+        private readonly TournamentResultsViewModel _tournamentResultsViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TournamentResultsViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TournamentResultsViewModelBuilder" /> class
         /// </summary>
         public TournamentResultsViewModelBuilder()
         {
-            _tournamentResultsViewModel = new TournamentResultsViewModel()
-            {
+            _tournamentResultsViewModel = new TournamentResultsViewModel {
                 Id = 1,
                 Name = "Name",
-                GameResults = new List<GameResultViewModel>
-                {
-                    new GameResultViewModel
-                    {
+                GameResults = new List<GameResultViewModel> {
+                    new GameResultViewModel {
                         Id = 1,
                         HomeTeamId = 1,
                         AwayTeamId = 2,
@@ -51,21 +47,19 @@
                         AwayTeamName = "TeamNameB",
                         IsTechnicalDefeat = false,
                         GameScore = new ScoreViewModel(3, 2),
-                        SetScores = new List<ScoreViewModel>
-                        {
+                        SetScores = new List<ScoreViewModel> {
                             new ScoreViewModel(25, 20),
                             new ScoreViewModel(24, 26),
                             new ScoreViewModel(28, 30),
                             new ScoreViewModel(25, 22),
-                            new ScoreViewModel(27, 25),
+                            new ScoreViewModel(27, 25)
                         },
                         GameDate = DateTime.Parse(DATE_A),
                         Round = 1,
                         TournamentId = 1,
-                        UrlToGameVideo = URL_A,
+                        UrlToGameVideo = URL_A
                     },
-                    new GameResultViewModel
-                    {
+                    new GameResultViewModel {
                         Id = 2,
                         HomeTeamId = 1,
                         AwayTeamId = 3,
@@ -73,21 +67,19 @@
                         AwayTeamName = "TeamNameC",
                         IsTechnicalDefeat = false,
                         GameScore = new ScoreViewModel(3, 1),
-                        SetScores = new List<ScoreViewModel>
-                        {
+                        SetScores = new List<ScoreViewModel> {
                             new ScoreViewModel(26, 28),
                             new ScoreViewModel(25, 15),
                             new ScoreViewModel(25, 21),
                             new ScoreViewModel(29, 27),
-                            new ScoreViewModel(),
+                            new ScoreViewModel()
                         },
                         GameDate = DateTime.Parse(DATE_B),
                         Round = 2,
                         TournamentId = 1,
-                        UrlToGameVideo = URL_B,
+                        UrlToGameVideo = URL_B
                     },
-                    new GameResultViewModel
-                    {
+                    new GameResultViewModel {
                         Id = 3,
                         HomeTeamId = 2,
                         AwayTeamId = 3,
@@ -95,25 +87,24 @@
                         AwayTeamName = "TeamNameC",
                         IsTechnicalDefeat = true,
                         GameScore = new ScoreViewModel(0, 3),
-                        SetScores = new List<ScoreViewModel>
-                        {
+                        SetScores = new List<ScoreViewModel> {
                             new ScoreViewModel(0, 25),
                             new ScoreViewModel(0, 25),
                             new ScoreViewModel(0, 25),
                             new ScoreViewModel(),
-                            new ScoreViewModel(),
+                            new ScoreViewModel()
                         },
                         GameDate = DateTime.Parse(DATE_C),
                         Round = 3,
                         TournamentId = 1,
-                        UrlToGameVideo = URL_C,
-                    },
-                },
+                        UrlToGameVideo = URL_C
+                    }
+                }
             };
         }
 
         /// <summary>
-        /// Sets id of test tournament
+        ///     Sets id of test tournament
         /// </summary>
         /// <param name="id">Id of tournament</param>
         /// <returns>Tournament results view model builder object</returns>
@@ -124,7 +115,7 @@
         }
 
         /// <summary>
-        /// Sets name of test tournament
+        ///     Sets name of test tournament
         /// </summary>
         /// <param name="name">Tournament name</param>
         /// <returns>Tournament results view model builder object</returns>
@@ -135,7 +126,7 @@
         }
 
         /// <summary>
-        /// Builds test Tournament results view model
+        ///     Builds test Tournament results view model
         /// </summary>
         /// <returns>test Tournament results view model</returns>
         public TournamentResultsViewModel Build()

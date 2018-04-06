@@ -1,14 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.Domain.TournamentsAggregate;
 
 namespace VolleyManagement.UnitTests.Services.TournamentService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentsAggregate;
-
     /// <summary>
-    /// Builder for test tournaments
+    ///     Builder for test tournaments
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentBuilder
@@ -20,17 +19,16 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         private const string TEST_END_DATE = "2016-04-05 10:00";
 
         /// <summary>
-        /// Holds test tournament instance
+        ///     Holds test tournament instance
         /// </summary>
-        private Tournament _tournament;
+        private readonly Tournament _tournament;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TournamentBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TournamentBuilder" /> class
         /// </summary>
         public TournamentBuilder()
         {
-            _tournament = new Tournament
-            {
+            _tournament = new Tournament {
                 Id = TOURNAMENT_DEFAULT_ID,
                 Name = "Name",
                 Description = "Description 1",
@@ -43,28 +41,39 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
                 GamesEnd = new DateTime(2015, 12, 03),
                 TransferStart = new DateTime(2015, 10, 01),
                 TransferEnd = new DateTime(2015, 11, 01),
-                Divisions = new List<Division>
-                {
-                    new Division()
-                    {
+                Divisions = new List<Division> {
+                    new Division {
                         Id = 1,
                         Name = "Division 1",
                         TournamentId = TOURNAMENT_DEFAULT_ID,
-                        Groups = new List<Group>
-                        {
-                            new Group { Id = 1, Name = "Group 1", DivisionId = 1 },
-                            new Group { Id = 2, Name = "Group 2", DivisionId = 1 }
+                        Groups = new List<Group> {
+                            new Group {
+                                Id = 1,
+                                Name = "Group 1",
+                                DivisionId = 1
+                            },
+                            new Group {
+                                Id = 2,
+                                Name = "Group 2",
+                                DivisionId = 1
+                            }
                         }
                     },
-                    new Division()
-                    {
+                    new Division {
                         Id = 2,
                         Name = "Division 2",
                         TournamentId = TOURNAMENT_DEFAULT_ID,
-                        Groups = new List<Group>
-                        {
-                            new Group { Id = 3, Name = "Group 1", DivisionId = 2 },
-                            new Group { Id = 4, Name = "Group 2", DivisionId = 2 }
+                        Groups = new List<Group> {
+                            new Group {
+                                Id = 3,
+                                Name = "Group 1",
+                                DivisionId = 2
+                            },
+                            new Group {
+                                Id = 4,
+                                Name = "Group 2",
+                                DivisionId = 2
+                            }
                         }
                     }
                 }
@@ -78,7 +87,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets id of test tournament
+        ///     Sets id of test tournament
         /// </summary>
         /// <param name="id">Id for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -89,7 +98,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets name of test tournament
+        ///     Sets name of test tournament
         /// </summary>
         /// <param name="name">Name for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -100,7 +109,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets description of test tournament
+        ///     Sets description of test tournament
         /// </summary>
         /// <param name="description">Description for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -111,7 +120,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets scheme of test tournament
+        ///     Sets scheme of test tournament
         /// </summary>
         /// <param name="scheme">Scheme for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -122,7 +131,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets season of test tournament
+        ///     Sets season of test tournament
         /// </summary>
         /// <param name="season">Season for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -133,7 +142,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets regulations link of test tournament
+        ///     Sets regulations link of test tournament
         /// </summary>
         /// <param name="regulationsLink">Regulations link for test tournament</param>
         /// <returns>Tournament builder object</returns>
@@ -144,7 +153,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets tournament start
+        ///     Sets tournament start
         /// </summary>
         /// <param name="gamesStart">Games start</param>
         /// <returns>Tournament builder object</returns>
@@ -155,7 +164,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets tournament end
+        ///     Sets tournament end
         /// </summary>
         /// <param name="gamesEnd">Games end</param>
         /// <returns>Tournament builder object</returns>
@@ -166,7 +175,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets applying start date of a tournament
+        ///     Sets applying start date of a tournament
         /// </summary>
         /// <param name="applyingPeriodStart">Applying period start</param>
         /// <returns>Tournament builder object</returns>
@@ -177,7 +186,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets applying end date of a tournament
+        ///     Sets applying end date of a tournament
         /// </summary>
         /// <param name="applyingPeriodEnd">Applying period end</param>
         /// <returns>Tournament builder object</returns>
@@ -188,7 +197,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets tournament transfer start date to a specified date.
+        ///     Sets tournament transfer start date to a specified date.
         /// </summary>
         /// <param name="transferStart">Date of transfer start.</param>
         /// <returns>Instance of Tournament builder.</returns>
@@ -199,7 +208,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets tournament transfer end date to a specified date.
+        ///     Sets tournament transfer end date to a specified date.
         /// </summary>
         /// <param name="transferEnd">Date of transfer end.</param>
         /// <returns>Instance of Tournament builder.</returns>
@@ -210,7 +219,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets tournament transfer start date and end date to null.
+        ///     Sets tournament transfer start date and end date to null.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentBuilder WithNoTransferPeriod()
@@ -221,7 +230,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Set divisions list
+        ///     Set divisions list
         /// </summary>
         /// <param name="divisions">Divisions list</param>
         /// <returns>Instance of Tournament builder.</returns>
@@ -232,7 +241,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Clears all tournament's divisions.
+        ///     Clears all tournament's divisions.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentBuilder WithNoDivisions()
@@ -242,23 +251,34 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets divisions list to divisions with non-unique names.
+        ///     Sets divisions list to divisions with non-unique names.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentBuilder WithNonUniqueNameDivisions()
         {
-            _tournament.Divisions = new List<Division>
-            {
-                new Division { Id = 1, Name = "Division 1", TournamentId = TOURNAMENT_DEFAULT_ID },
-                new Division { Id = 2, Name = "Division 2", TournamentId = TOURNAMENT_DEFAULT_ID },
-                new Division { Id = 3, Name = "Division 1", TournamentId = TOURNAMENT_DEFAULT_ID }
+            _tournament.Divisions = new List<Division> {
+                new Division {
+                    Id = 1,
+                    Name = "Division 1",
+                    TournamentId = TOURNAMENT_DEFAULT_ID
+                },
+                new Division {
+                    Id = 2,
+                    Name = "Division 2",
+                    TournamentId = TOURNAMENT_DEFAULT_ID
+                },
+                new Division {
+                    Id = 3,
+                    Name = "Division 1",
+                    TournamentId = TOURNAMENT_DEFAULT_ID
+                }
             };
 
             return this;
         }
 
         /// <summary>
-        /// Set group list for division specified by index.
+        ///     Set group list for division specified by index.
         /// </summary>
         /// <param name="divisionIdx">Index of the division in tournament divisions.</param>
         /// <param name="groups">Groups list.</param>
@@ -270,7 +290,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Clears all groups in tournament's divisions.
+        ///     Clears all groups in tournament's divisions.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentBuilder WithNoDivisionsGroups()
@@ -284,7 +304,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Sets group lists for all divisions to groups with non-unique names.
+        ///     Sets group lists for all divisions to groups with non-unique names.
         /// </summary>
         /// <returns>Instance of Tournament builder.</returns>
         public TournamentBuilder WithDivisionsNonUniqueNameGroups()
@@ -293,11 +313,22 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
 
             for (var i = 1; i <= _tournament.Divisions.Count; i++)
             {
-                _tournament.Divisions.ElementAt(i - 1).Groups = new List<Group>
-                {
-                    new Group { Id = startId++, Name = "Group 1", DivisionId = i },
-                    new Group { Id = startId++, Name = "Group 2", DivisionId = i },
-                    new Group { Id = startId++, Name = "Group 1", DivisionId = i }
+                _tournament.Divisions.ElementAt(i - 1).Groups = new List<Group> {
+                    new Group {
+                        Id = startId++,
+                        Name = "Group 1",
+                        DivisionId = i
+                    },
+                    new Group {
+                        Id = startId++,
+                        Name = "Group 2",
+                        DivisionId = i
+                    },
+                    new Group {
+                        Id = startId++,
+                        Name = "Group 1",
+                        DivisionId = i
+                    }
                 };
             }
 
@@ -312,7 +343,7 @@ namespace VolleyManagement.UnitTests.Services.TournamentService
         }
 
         /// <summary>
-        /// Builds test tournament.
+        ///     Builds test tournament.
         /// </summary>
         /// <returns>Instance of test tournament.</returns>
         public Tournament Build()

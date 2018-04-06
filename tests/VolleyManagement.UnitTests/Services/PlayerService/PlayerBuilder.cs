@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.Services.PlayerService
-{
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.PlayersAggregate;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.PlayersAggregate;
 
+namespace VolleyManagement.UnitTests.Services.PlayerService
+{
     /// <summary>
-    /// Player domain object builder
+    ///     Player domain object builder
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PlayerBuilder
     {
         /// <summary>
-        /// Holds test player instance
+        ///     Holds test player instance
         /// </summary>
-        private Player _player;
+        private readonly Player _player;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerBuilder"/> class
+        ///     Initializes a new instance of the <see cref="PlayerBuilder" /> class
         /// </summary>
         public PlayerBuilder()
         {
-            _player = new Player
-            {
+            _player = new Player {
                 Id = 1,
                 FirstName = "FirstName",
                 LastName = "LastName",
@@ -32,7 +31,7 @@
         }
 
         /// <summary>
-        /// Sets player test Id
+        ///     Sets player test Id
         /// </summary>
         /// <param name="id">Test player Id</param>
         /// <returns>Player builder object</returns>
@@ -43,7 +42,7 @@
         }
 
         /// <summary>
-        /// Sets player test first name
+        ///     Sets player test first name
         /// </summary>
         /// <param name="firstName">Test player first name</param>
         /// <returns>Player builder object</returns>
@@ -54,7 +53,7 @@
         }
 
         /// <summary>
-        /// Sets player test last name
+        ///     Sets player test last name
         /// </summary>
         /// <param name="lastName">Test player last name</param>
         /// <returns>Player builder object</returns>
@@ -65,7 +64,7 @@
         }
 
         /// <summary>
-        /// Sets player test birth year
+        ///     Sets player test birth year
         /// </summary>
         /// <param name="birthYear">Test player birth year</param>
         /// <returns>Player builder object</returns>
@@ -76,7 +75,7 @@
         }
 
         /// <summary>
-        /// Sets player test height
+        ///     Sets player test height
         /// </summary>
         /// <param name="height">Test player height</param>
         /// <returns>Player builder object</returns>
@@ -87,7 +86,7 @@
         }
 
         /// <summary>
-        /// Sets player test weight
+        ///     Sets player test weight
         /// </summary>
         /// <param name="weight">Test player weight</param>
         /// <returns>Player builder object</returns>
@@ -98,7 +97,7 @@
         }
 
         /// <summary>
-        /// Sets player test teamId
+        ///     Sets player test teamId
         /// </summary>
         /// <param name="teamId">Test player weight</param>
         /// <returns>Player builder object</returns>
@@ -109,7 +108,7 @@
         }
 
         /// <summary>
-        /// Sets player test teamId = null
+        ///     Sets player test teamId = null
         /// </summary>
         /// <returns>Player builder object</returns>
         public PlayerBuilder WithNoTeam()
@@ -119,7 +118,7 @@
         }
 
         /// <summary>
-        /// Builds test player
+        ///     Builds test player
         /// </summary>
         /// <returns>Test player</returns>
         public Player Build()

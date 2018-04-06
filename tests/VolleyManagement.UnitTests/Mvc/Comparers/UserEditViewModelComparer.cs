@@ -1,16 +1,21 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.Comparers
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.Users;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Users;
 
+namespace VolleyManagement.UnitTests.Mvc.Comparers
+{
     /// <summary>
-    /// Compares User instances
+    ///     Compares User instances
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class UserEditViewModelComparer : IComparer<UserEditViewModel>, IComparer
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as UserEditViewModel, y as UserEditViewModel);
+        }
+
         public int Compare(UserEditViewModel x, UserEditViewModel y)
         {
             if (x == null && y == null)
@@ -29,11 +34,6 @@
             }
 
             return CompareInternal(x, y);
-        }
-
-        public int Compare(object x, object y)
-        {
-            return Compare(x as UserEditViewModel, y as UserEditViewModel);
         }
 
         private int CompareInternal(UserEditViewModel x, UserEditViewModel y)

@@ -1,18 +1,18 @@
-﻿namespace VolleyManagement.UnitTests.Services.TournamentRequestService
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentRequestAggregate;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentRequestAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TournamentRequestService
+{
     /// <summary>
-    /// Comparer for tournament request objects.
+    ///     Comparer for tournament request objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class TournamentRequestComparer : IComparer<TournamentRequest>, IComparer
     {
         /// <summary>
-        /// Compares two tournament requests objects (non-generic implementation).
+        ///     Compares two tournament requests objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -26,7 +26,8 @@
             {
                 return -1;
             }
-            else if (secondTournamentRequest == null)
+
+            if (secondTournamentRequest == null)
             {
                 return 1;
             }
@@ -35,7 +36,7 @@
         }
 
         /// <summary>
-        /// Compares two tournament request objects.
+        ///     Compares two tournament request objects.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -46,7 +47,7 @@
         }
 
         /// <summary>
-        /// Finds out whether two request objects have the same properties.
+        ///     Finds out whether two request objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -54,9 +55,9 @@
         public bool AreEquals(TournamentRequest x, TournamentRequest y)
         {
             return x.Id == y.Id &&
-                x.TeamId == y.TeamId &&
-                x.TournamentId == y.TournamentId &&
-                x.UserId == y.UserId;
+                   x.TeamId == y.TeamId &&
+                   x.TournamentId == y.TournamentId &&
+                   x.UserId == y.UserId;
         }
     }
 }

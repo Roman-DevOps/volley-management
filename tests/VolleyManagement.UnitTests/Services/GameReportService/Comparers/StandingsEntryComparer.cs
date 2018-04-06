@@ -1,15 +1,13 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.Domain.GameReportsAggregate;
 
 namespace VolleyManagement.UnitTests.Services.GameReportService
 {
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GameReportsAggregate;
-    using Xunit;
-
     /// <summary>
-    /// Represents a comparer for <see cref="StandingsEntry"/> objects.
+    ///     Represents a comparer for <see cref="StandingsEntry" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class StandingsEntryComparer : IComparer<StandingsEntry>, IComparer
@@ -18,6 +16,63 @@ namespace VolleyManagement.UnitTests.Services.GameReportService
         private bool HasComparerByGames { get; set; } = true;
         private bool HasComparerBySets { get; set; } = true;
         private bool HasComparerByBalls { get; set; } = true;
+
+        /// <summary>
+        ///     Compares two <see cref="StandingsEntry" /> objects (non-generic implementation).
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsEntry" /> x and y.</returns>
+        public int Compare(object x, object y)
+        {
+            var firstStandingsEntry = x as StandingsEntry;
+            var secondStandingsEntry = y as StandingsEntry;
+
+            if (firstStandingsEntry == null)
+            {
+                return -1;
+            }
+
+            if (secondStandingsEntry == null)
+            {
+                return 1;
+            }
+
+            return Compare(firstStandingsEntry, secondStandingsEntry);
+        }
+
+        /// <summary>
+        ///     Compares two <see cref="StandingsEntry" /> objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsEntry" /> x and y.</returns>
+        public int Compare(StandingsEntry x, StandingsEntry y)
+        {
+            y.TeamName.Should().Be(x.TeamName, "TeamNames do not match");
+
+            if (HasComparerByPoints)
+            {
+                PointsComparer(x, y);
+            }
+
+            if (HasComparerByGames)
+            {
+                GamesComparer(x, y);
+            }
+
+            if (HasComparerBySets)
+            {
+                SetsComparer(x, y);
+            }
+
+            if (HasComparerByBalls)
+            {
+                BallsComparer(x, y);
+            }
+
+            return 0;
+        }
 
         public void CleanComparerFlags()
         {
@@ -51,36 +106,6 @@ namespace VolleyManagement.UnitTests.Services.GameReportService
             HasComparerByBalls = true;
         }
 
-        /// <summary>
-        /// Compares two <see cref="StandingsEntry"/> objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsEntry"/> x and y.</returns>
-        public int Compare(StandingsEntry x, StandingsEntry y)
-        {
-            y.TeamName.Should().Be(x.TeamName, "TeamNames do not match");
-
-            if (HasComparerByPoints)
-            {
-                PointsComparer(x, y);
-            }
-
-            if (HasComparerByGames)
-            {
-                GamesComparer(x, y);
-            }
-            if (HasComparerBySets)
-            {
-                SetsComparer(x, y);
-            }
-            if (HasComparerByBalls)
-            {
-                BallsComparer(x, y);
-            }
-            return 0;
-        }
-
         public void PointsComparer(StandingsEntry x, StandingsEntry y)
         {
             y.Points.Should().Be(x.Points, "Points do not match");
@@ -110,29 +135,6 @@ namespace VolleyManagement.UnitTests.Services.GameReportService
         {
             y.BallsWon.Should().Be(x.BallsWon, "BallsWon do not match");
             y.BallsLost.Should().Be(x.BallsLost, "BallsLost do not match");
-        }
-
-        /// <summary>
-        /// Compares two <see cref="StandingsEntry"/> objects (non-generic implementation).
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="StandingsEntry"/> x and y.</returns>
-        public int Compare(object x, object y)
-        {
-            var firstStandingsEntry = x as StandingsEntry;
-            var secondStandingsEntry = y as StandingsEntry;
-
-            if (firstStandingsEntry == null)
-            {
-                return -1;
-            }
-            else if (secondStandingsEntry == null)
-            {
-                return 1;
-            }
-
-            return Compare(firstStandingsEntry, secondStandingsEntry);
         }
     }
 }

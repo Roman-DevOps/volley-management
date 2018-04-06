@@ -1,27 +1,26 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Games;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Games;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Builder for test game view models
+    ///     Builder for test game view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GameViewModelBuilder
     {
         /// <summary>
-        /// Holds test game view model instance
+        ///     Holds test game view model instance
         /// </summary>
-        private GameViewModel _gameViewModel;
+        private readonly GameViewModel _gameViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="GameViewModelBuilder" /> class
         /// </summary>
         public GameViewModelBuilder()
         {
-            _gameViewModel = new GameViewModel()
-            {
+            _gameViewModel = new GameViewModel {
                 Id = 1,
                 HomeTeamName = "HomeTeam",
                 AwayTeamName = "AwayTeam",
@@ -31,7 +30,7 @@
         }
 
         /// <summary>
-        /// Sets id of test game view model
+        ///     Sets id of test game view model
         /// </summary>
         /// <param name="id">Id for test game view model</param>
         /// <returns>Game view model builder object</returns>
@@ -42,7 +41,7 @@
         }
 
         /// <summary>
-        /// Sets home team name of test game view model
+        ///     Sets home team name of test game view model
         /// </summary>
         /// <param name="name">Home team name for test game view model</param>
         /// <returns>Game view model builder object</returns>
@@ -53,7 +52,7 @@
         }
 
         /// <summary>
-        /// Sets away team name of test game view model
+        ///     Sets away team name of test game view model
         /// </summary>
         /// <param name="name">Away team name for test game view model</param>
         /// <returns>Game view model builder object</returns>
@@ -64,7 +63,7 @@
         }
 
         /// <summary>
-        /// Sets game date of test game view model
+        ///     Sets game date of test game view model
         /// </summary>
         /// <param name="date">Game date for test game view model</param>
         /// <returns>Game view model builder object</returns>
@@ -75,7 +74,7 @@
         }
 
         /// <summary>
-        /// Sets game result of test game view model
+        ///     Sets game result of test game view model
         /// </summary>
         /// <param name="result">Game result for test game view model</param>
         /// <returns>Game view model builder object</returns>
@@ -86,7 +85,7 @@
         }
 
         /// <summary>
-        /// Builds test game view model
+        ///     Builds test game view model
         /// </summary>
         /// <returns>test game view model</returns>
         public GameViewModel Build()

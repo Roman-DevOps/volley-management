@@ -1,29 +1,28 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Tournaments;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Tournaments;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentViewModelServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of tournaments
+        ///     Holds collection of tournaments
         /// </summary>
-        private IList<TournamentViewModel> _tournaments = new List<TournamentViewModel>();
+        private readonly IList<TournamentViewModel> _tournaments = new List<TournamentViewModel>();
 
         /// <summary>
-        /// Adds tournaments to collection
+        ///     Adds tournaments to collection
         /// </summary>
         /// <returns>Builder object with collection of tournaments</returns>
         public TournamentViewModelServiceTestFixture TestTournaments()
         {
-            _tournaments.Add(new TournamentViewModel()
-            {
+            _tournaments.Add(new TournamentViewModel {
                 Id = 1,
                 Name = "Tournament 1",
                 Description = "Tournament 1 description",
@@ -37,8 +36,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new TournamentViewModel()
-            {
+            _tournaments.Add(new TournamentViewModel {
                 Id = 2,
                 Name = "Tournament 2",
                 Description = "Tournament 2 description",
@@ -52,8 +50,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new TournamentViewModel()
-            {
+            _tournaments.Add(new TournamentViewModel {
                 Id = 3,
                 Name = "Tournament 3",
                 Description = "Tournament 3 description",
@@ -67,8 +64,7 @@
                 TransferStart = new DateTime(2015, 08, 20),
                 TransferEnd = new DateTime(2015, 09, 10)
             });
-            _tournaments.Add(new TournamentViewModel()
-            {
+            _tournaments.Add(new TournamentViewModel {
                 Id = 4,
                 Name = "Tournament 4",
                 Description = "Tournament 4 description",
@@ -86,7 +82,7 @@
         }
 
         /// <summary>
-        /// Add tournament to collection.
+        ///     Add tournament to collection.
         /// </summary>
         /// <param name="newTournament">Tournament to add.</param>
         /// <returns>Builder object with collection of tournaments.</returns>
@@ -97,7 +93,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Tournament collection</returns>
         public IList<TournamentViewModel> Build()

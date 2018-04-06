@@ -1,23 +1,21 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.Mvc.ViewModels.Tournaments;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Tournaments;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     [ExcludeFromCodeCoverage]
     public class TournamentApplyViewModelBuilder
     {
         private const int DEFAULT_ID = 1;
 
-        private TournamentApplyViewModel _tournamentApplyViewModel;
+        private readonly TournamentApplyViewModel _tournamentApplyViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TournamentApplyViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TournamentApplyViewModelBuilder" /> class
         /// </summary>
         public TournamentApplyViewModelBuilder()
         {
-            _tournamentApplyViewModel = new TournamentApplyViewModel()
-            {
+            _tournamentApplyViewModel = new TournamentApplyViewModel {
                 Id = DEFAULT_ID,
                 TournamentTitle = "Name",
                 Teams = new TeamNameViewModelBuilder().GetList()
@@ -25,7 +23,7 @@
         }
 
         /// <summary>
-        /// Sets id of test team view model
+        ///     Sets id of test team view model
         /// </summary>
         /// <param name="id">Id for tournament team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -36,7 +34,7 @@
         }
 
         /// <summary>
-        /// Sets id of test team view model
+        ///     Sets id of test team view model
         /// </summary>
         /// <param name="id">Id for test team view model</param>
         /// <returns>Team view model builder object</returns>
@@ -47,7 +45,7 @@
         }
 
         /// <summary>
-        /// Sets title of test tournament in view model
+        ///     Sets title of test tournament in view model
         /// </summary>
         /// <param name="title">Title for test tournament in view model</param>
         /// <returns>Team view model builder object</returns>
@@ -58,7 +56,7 @@
         }
 
         /// <summary>
-        /// Builds test tournament view model
+        ///     Builds test tournament view model
         /// </summary>
         /// <returns>test tournament view model</returns>
         public TournamentApplyViewModel Build()

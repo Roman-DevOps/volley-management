@@ -1,16 +1,21 @@
-﻿namespace VolleyManagement.UnitTests.Services.RolesService
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.RolesAggregate;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.RolesAggregate;
 
+namespace VolleyManagement.UnitTests.Services.RolesService
+{
     /// <summary>
-    /// Compares Role instances
+    ///     Compares Role instances
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class RoleComparer : IComparer<Role>, IComparer
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as Role, y as Role);
+        }
+
         public int Compare(Role x, Role y)
         {
             if (x == null && y == null)
@@ -29,11 +34,6 @@
             }
 
             return CompareInternal(x, y);
-        }
-
-        public int Compare(object x, object y)
-        {
-            return Compare(x as Role, y as Role);
         }
 
         private int CompareInternal(Role x, Role y)

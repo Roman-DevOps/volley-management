@@ -1,34 +1,21 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Tournaments;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Mvc.ViewModels
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Xunit;
-    using UI.Areas.Mvc.ViewModels.Tournaments;
-
     /// <summary>
-    /// Comparer for tournament objects.
+    ///     Comparer for tournament objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class TournamentApplyViewModelComparer : IComparer<TournamentApplyViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two tournament objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of tournaments.</returns>
-        public int Compare(TournamentApplyViewModel x, TournamentApplyViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two tournament objects (non-generic implementation).
+        ///     Compares two tournament objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -42,7 +29,8 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
             {
                 return -1;
             }
-            else if (secondTournament == null)
+
+            if (secondTournament == null)
             {
                 return 1;
             }
@@ -51,7 +39,18 @@ namespace VolleyManagement.UnitTests.Mvc.ViewModels
         }
 
         /// <summary>
-        /// Finds out whether two tournament objects have the same properties.
+        ///     Compares two tournament objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of tournaments.</returns>
+        public int Compare(TournamentApplyViewModel x, TournamentApplyViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two tournament objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>

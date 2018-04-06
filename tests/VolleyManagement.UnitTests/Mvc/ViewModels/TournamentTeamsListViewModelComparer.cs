@@ -1,31 +1,19 @@
-﻿namespace VolleyManagement.UnitTests.Mvc.ViewModels
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using UI.Areas.Mvc.ViewModels.Teams;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.Teams;
 
+namespace VolleyManagement.UnitTests.Mvc.ViewModels
+{
     /// <summary>
-    /// Comparer for tournament teams list view model objects.
+    ///     Comparer for tournament teams list view model objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentTeamsListViewModelComparer : IComparer<TournamentTeamsListViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two teams list objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of teams lists.</returns>
-        public int Compare(TournamentTeamsListViewModel x, TournamentTeamsListViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two teams list objects (non-generic implementation).
+        ///     Compares two teams list objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -39,7 +27,8 @@
             {
                 return -1;
             }
-            else if (secondTeamList == null)
+
+            if (secondTeamList == null)
             {
                 return 1;
             }
@@ -48,7 +37,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two team objects have the same properties.
+        ///     Compares two teams list objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of teams lists.</returns>
+        public int Compare(TournamentTeamsListViewModel x, TournamentTeamsListViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two team objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>

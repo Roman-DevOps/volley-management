@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.Services.TournamentRequestService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentRequestAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentRequestAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TournamentRequestService
+{
     /// <summary>
-    /// Class for generation test data.
+    ///     Class for generation test data.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class TournamentRequestServiceTestFixture
     {
-        private List<TournamentRequest> _request
+        private readonly List<TournamentRequest> _request
             = new List<TournamentRequest>();
 
         /// <summary>
-        /// Return test collection of tournament requests
+        ///     Return test collection of tournament requests
         /// </summary>
         /// <returns>Builder object with collection of tournament requests</returns>
         public TournamentRequestServiceTestFixture TestRequests()
         {
-            _request.Add(new TournamentRequest()
-            {
+            _request.Add(new TournamentRequest {
                 Id = 1,
                 UserId = 1,
                 GroupId = 1,
@@ -31,7 +30,7 @@
         }
 
         /// <summary>
-        /// Add tournament request to collection.
+        ///     Add tournament request to collection.
         /// </summary>
         /// <param name="newTournamentRequest">Request to add</param>
         /// <returns>Builder object with collection of requests.</returns>
@@ -43,7 +42,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Request collection</returns>
         public List<TournamentRequest> Build()

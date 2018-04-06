@@ -1,30 +1,39 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Domain.FeedbackAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using VolleyManagement.UI.Areas.Mvc.Controllers;
+using VolleyManagement.UI.Areas.Mvc.ViewModels.FeedbackViewModel;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
+using VolleyManagement.UnitTests.Services.FeedbackService;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Mvc.Controllers
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Web.Mvc;
-    using Contracts;
-    using Contracts.Authorization;
-    using Domain.FeedbackAggregate;
-    using Domain.UsersAggregate;
-    using Xunit;
-    using Moq;
-    using UI.Areas.Mvc.Controllers;
-    using UI.Areas.Mvc.ViewModels.FeedbackViewModel;
-    using ViewModels;
-    using Services.FeedbackService;
-    using System.Threading.Tasks;
-
     /// <summary>
-    /// Feedbacks controller tests.
+    ///     Feedbacks controller tests.
     /// </summary>
     [ExcludeFromCodeCoverage]
-
     public class FeedbacksControllerTests
     {
-        #region Fields
+        /// <summary>
+        ///     Initializes test data.
+        /// </summary>
+        public FeedbacksControllerTests()
+        {
+            _feedbackServiceMock = new Mock<IFeedbackService>();
+            _userServiceMock = new Mock<IUserService>();
+            _currentUserServiceMock = new Mock<ICurrentUserService>();
+            _captchaManagerMock = new Mock<ICaptchaManager>();
+
+            _captchaManagerMock.Setup(m => m.ValidateUserCaptchaAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+        }
 
         private const int TEST_ID = 1;
         private const int ANONYM_ID = -1;
@@ -38,191 +47,10 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
         private const string CHECK_CAPTCHA_MESSAGE = "Please verify that you are not a robot.";
         private const string SUCCESS_SENT_MESSAGE = "Your Feedback has been sent successfully.";
 
-        private Mock<IFeedbackService> _feedbackServiceMock;
-        private Mock<IUserService> _userServiceMock;
-        private Mock<ICurrentUserService> _currentUserServiceMock;
-        private Mock<ICaptchaManager> _captchaManagerMock;
-
-        #endregion
-
-        #region Init
-
-        /// <summary>
-        /// Initializes test data.
-        /// </summary>
-        public FeedbacksControllerTests()
-        {
-            _feedbackServiceMock = new Mock<IFeedbackService>();
-            _userServiceMock = new Mock<IUserService>();
-            _currentUserServiceMock = new Mock<ICurrentUserService>();
-            _captchaManagerMock = new Mock<ICaptchaManager>();
-
-            _captchaManagerMock.Setup(m => m.ValidateUserCaptchaAsync(It.IsAny<string>())).Returns(Task.FromResult<bool>(true));
-        }
-
-        #endregion
-
-        #region CreateGetAction
-
-        /// <summary>
-        /// Test for create GET method.
-        /// User email is empty if user is not authenticated.
-        /// </summary>
-        [Fact]
-        public void
-            CreateGetAction_UserIsNotAuthentificated_FeedbackHasEmptyEmailField()
-        {
-            // Arrange
-            var feedback = CreateInvalidFeedback();
-            SetupCurrentUserGetId(ANONYM_ID);
-
-            var sut = BuildSUT();
-
-            // Act
-            sut.Create();
-
-            // Assert
-            feedback.UsersEmail.Should().BeEmpty();
-        }
-
-        /// <summary>
-        /// Test for create GET method.
-        /// User is authenticated. User email returned.
-        /// </summary>
-        [Fact]
-        public void
-            CreateGetAction_UserIsAuthentificated_UsersEmailPrepolulated()
-        {
-            // Arrange
-            SetupCurrentUserGetId(TEST_ID);
-
-            _userServiceMock.Setup(us => us.GetUser(TEST_ID))
-                .Returns(new User { Email = TEST_MAIL });
-
-            var sut = BuildSUT();
-
-            // Act
-            var feedback = TestExtensions
-                .GetModel<FeedbackViewModel>(sut.Create());
-
-            // Assert
-            feedback.UsersEmail.Should().BeEmpty(TEST_MAIL);
-        }
-
-        #endregion
-
-        #region CreatePostAction
-
-        /// <summary>
-        /// Test for create POST method.
-        /// Feedback is incorrect, Create view is returned.
-        /// </summary>
-        [Fact]
-        public void CreatePostAction_ModelIsInvalid_CheckDataMessageReturned()
-        {
-            // Arrange
-            var feedback = CreateInvalidFeedback();
-
-            var sut = BuildSUT();
-            SetInvalidModelState(sut);
-
-            // Act
-            var result = sut.Create(feedback).Result as JsonResult;
-            var returnedDataResult = result.Data as FeedbackMessageViewModel;
-
-            // Assert
-            returnedDataResult.ResultMessage.Should().Be(CHECK_DATA_MESSAGE);
-        }
-
-        /// <summary>
-        /// Test for create POST method.
-        /// Feedback is correct, feedback sent message returned.
-        /// </summary>
-        [Fact]
-        public void CreatePostAction_ModelIsValid_SuccessSentMessageReturned()
-        {
-            // Arrange
-            var sut = BuildSUT();
-            var feedback = CreateValidFeedback();
-
-            // Act
-            var result = sut.Create(feedback).Result as JsonResult;
-            var returnedDataResult = result.Data as FeedbackMessageViewModel;
-
-            // Assert
-            returnedDataResult.ResultMessage.Should().Be(SUCCESS_SENT_MESSAGE);
-        }
-
-        /// <summary>
-        /// Test for Create POST method.
-        /// Valid model passed. Feedback created.
-        /// </summary>
-        [Fact]
-        public void CreatePostAction_ModelIsValid_FeedbackCreated()
-        {
-            // Arrange
-            var sut = BuildSUT();
-            var feedback = CreateValidFeedback();
-            var expectedFeedback = CreateExpectedFeedback();
-
-            Feedback actualFeedback = null;
-            _feedbackServiceMock.Setup(f => f.Create(It.IsAny<Feedback>()))
-                .Callback<Feedback>(a => actualFeedback = a);
-
-            // Act
-            sut.Create(feedback).Wait();
-
-            // Assert
-            TestHelper.AreEqual(
-                expectedFeedback,
-                actualFeedback,
-                new FeedbackComparer());
-        }
-
-        /// <summary>
-        /// Test for Create POST method.
-        /// While calling IFeedbackService method Create()
-        /// argument exception is thrown, ModelState has changed.
-        /// </summary>
-        [Fact]
-        public void CreatePostAction_ArgumentExceptionThrown_ModelChanged()
-        {
-            // Arrange
-            var feedback = CreateValidFeedback();
-            _feedbackServiceMock.Setup(f => f.Create(It.IsAny<Feedback>()))
-                .Throws(new ArgumentException(EXCEPTION_MESSAGE));
-
-            var sut = BuildSUT();
-
-            // Act
-            sut.Create(feedback).Wait();
-            var res = sut.ModelState[EXCEPTION_MESSAGE].Errors;
-
-            // Assert
-            sut.ModelState.IsValid.Should().BeFalse();
-            res[0].ErrorMessage.Should().Be(EXCEPTION_MESSAGE);
-        }
-
-        [Fact]
-        public void CreatePostAction_CaptchaIsNotApproved_CheckCaptchaMessageReturned()
-        {
-            // Arrange
-            var feedback = CreateValidFeedback();
-            var sut = BuildSUT();
-
-            // Act
-            _captchaManagerMock
-                .Setup(cm => cm.ValidateUserCaptchaAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult<bool>(false));
-            var res = sut.Create(feedback).Result as JsonResult;
-            var returnedDataResult = res.Data as FeedbackMessageViewModel;
-
-            // Assert
-            returnedDataResult.ResultMessage.Should().Be(CHECK_CAPTCHA_MESSAGE);
-        }
-        #endregion
-
-        #region Private
+        private readonly Mock<IFeedbackService> _feedbackServiceMock;
+        private readonly Mock<IUserService> _userServiceMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+        private readonly Mock<ICaptchaManager> _captchaManagerMock;
 
         private FeedbackViewModel CreateValidFeedback()
         {
@@ -278,6 +106,156 @@ namespace VolleyManagement.UnitTests.Mvc.Controllers
                 .Returns(id);
         }
 
-        #endregion
+        /// <summary>
+        ///     Test for create GET method.
+        ///     User is authenticated. User email returned.
+        /// </summary>
+        [Fact]
+        public void CreateGetAction_UserIsAuthentificated_UsersEmailPrepolulated()
+        {
+            // Arrange
+            SetupCurrentUserGetId(TEST_ID);
+
+            _userServiceMock.Setup(us => us.GetUser(TEST_ID))
+                .Returns(new User {Email = TEST_MAIL});
+
+            var sut = BuildSUT();
+
+            // Act
+            var feedback = TestExtensions
+                .GetModel<FeedbackViewModel>(sut.Create());
+
+            // Assert
+            feedback.UsersEmail.Should().Be(TEST_MAIL);
+        }
+
+        /// <summary>
+        ///     Test for create GET method.
+        ///     User email is empty if user is not authenticated.
+        /// </summary>
+        [Fact]
+        public void
+            CreateGetAction_UserIsNotAuthentificated_FeedbackHasEmptyEmailField()
+        {
+            // Arrange
+            var feedback = CreateInvalidFeedback();
+            SetupCurrentUserGetId(ANONYM_ID);
+
+            var sut = BuildSUT();
+
+            // Act
+            sut.Create();
+
+            // Assert
+            feedback.UsersEmail.Should().BeEmpty();
+        }
+
+        /// <summary>
+        ///     Test for Create POST method.
+        ///     While calling IFeedbackService method Create()
+        ///     argument exception is thrown, ModelState has changed.
+        /// </summary>
+        [Fact]
+        public void CreatePostAction_ArgumentExceptionThrown_ModelChanged()
+        {
+            // Arrange
+            var feedback = CreateValidFeedback();
+            _feedbackServiceMock.Setup(f => f.Create(It.IsAny<Feedback>()))
+                .Throws(new ArgumentException(EXCEPTION_MESSAGE));
+
+            var sut = BuildSUT();
+
+            // Act
+            sut.Create(feedback).Wait();
+            var res = sut.ModelState[EXCEPTION_MESSAGE].Errors;
+
+            // Assert
+            sut.ModelState.IsValid.Should().BeFalse();
+            res[0].ErrorMessage.Should().Be(EXCEPTION_MESSAGE);
+        }
+
+        [Fact]
+        public void CreatePostAction_CaptchaIsNotApproved_CheckCaptchaMessageReturned()
+        {
+            // Arrange
+            var feedback = CreateValidFeedback();
+            var sut = BuildSUT();
+
+            // Act
+            _captchaManagerMock
+                .Setup(cm => cm.ValidateUserCaptchaAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
+            var res = sut.Create(feedback).Result;
+            var returnedDataResult = res.Data as FeedbackMessageViewModel;
+
+            // Assert
+            returnedDataResult.ResultMessage.Should().Be(CHECK_CAPTCHA_MESSAGE);
+        }
+
+        /// <summary>
+        ///     Test for create POST method.
+        ///     Feedback is incorrect, Create view is returned.
+        /// </summary>
+        [Fact]
+        public void CreatePostAction_ModelIsInvalid_CheckDataMessageReturned()
+        {
+            // Arrange
+            var feedback = CreateInvalidFeedback();
+
+            var sut = BuildSUT();
+            SetInvalidModelState(sut);
+
+            // Act
+            var result = sut.Create(feedback).Result;
+            var returnedDataResult = result.Data as FeedbackMessageViewModel;
+
+            // Assert
+            returnedDataResult.ResultMessage.Should().Be(CHECK_DATA_MESSAGE);
+        }
+
+        /// <summary>
+        ///     Test for Create POST method.
+        ///     Valid model passed. Feedback created.
+        /// </summary>
+        [Fact]
+        public void CreatePostAction_ModelIsValid_FeedbackCreated()
+        {
+            // Arrange
+            var sut = BuildSUT();
+            var feedback = CreateValidFeedback();
+            var expectedFeedback = CreateExpectedFeedback();
+
+            Feedback actualFeedback = null;
+            _feedbackServiceMock.Setup(f => f.Create(It.IsAny<Feedback>()))
+                .Callback<Feedback>(a => actualFeedback = a);
+
+            // Act
+            sut.Create(feedback).Wait();
+
+            // Assert
+            TestHelper.AreEqual(
+                expectedFeedback,
+                actualFeedback,
+                new FeedbackComparer());
+        }
+
+        /// <summary>
+        ///     Test for create POST method.
+        ///     Feedback is correct, feedback sent message returned.
+        /// </summary>
+        [Fact]
+        public void CreatePostAction_ModelIsValid_SuccessSentMessageReturned()
+        {
+            // Arrange
+            var sut = BuildSUT();
+            var feedback = CreateValidFeedback();
+
+            // Act
+            var result = sut.Create(feedback).Result;
+            var returnedDataResult = result.Data as FeedbackMessageViewModel;
+
+            // Assert
+            returnedDataResult.ResultMessage.Should().Be(SUCCESS_SENT_MESSAGE);
+        }
     }
 }

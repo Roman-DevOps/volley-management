@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Players;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Players;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Builder for test player view models
+    ///     Builder for test player view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class PlayerViewModelBuilder
     {
         /// <summary>
-        /// Holds test player view model instance
+        ///     Holds test player view model instance
         /// </summary>
-        private PlayerViewModel _playerViewModel;
+        private readonly PlayerViewModel _playerViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerViewModelBuilder" /> class
+        ///     Initializes a new instance of the <see cref="PlayerViewModelBuilder" /> class
         /// </summary>
         public PlayerViewModelBuilder()
         {
-            _playerViewModel = new PlayerViewModel()
-            {
+            _playerViewModel = new PlayerViewModel {
                 Id = 2,
                 FirstName = "FirstName",
                 LastName = "LastName",
@@ -32,7 +31,7 @@
         }
 
         /// <summary>
-        /// Sets id of test player view model
+        ///     Sets id of test player view model
         /// </summary>
         /// <param name="id">Id for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -43,7 +42,7 @@
         }
 
         /// <summary>
-        /// Sets the first name of test player view model
+        ///     Sets the first name of test player view model
         /// </summary>
         /// <param name="firstName">First name for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -54,7 +53,7 @@
         }
 
         /// <summary>
-        /// Sets the last name of test player view model
+        ///     Sets the last name of test player view model
         /// </summary>
         /// <param name="lastName">Last name fir test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -65,7 +64,7 @@
         }
 
         /// <summary>
-        /// Sets the birth year view model
+        ///     Sets the birth year view model
         /// </summary>
         /// <param name="birthYear">Birth year for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -76,7 +75,7 @@
         }
 
         /// <summary>
-        /// Sets the weight view model
+        ///     Sets the weight view model
         /// </summary>
         /// <param name="weight">Weight for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -87,7 +86,7 @@
         }
 
         /// <summary>
-        /// Sets the height view model
+        ///     Sets the height view model
         /// </summary>
         /// <param name="height">Height for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -98,7 +97,7 @@
         }
 
         /// <summary>
-        /// Sets the height view model
+        ///     Sets the height view model
         /// </summary>
         /// <param name="teamId">Height for test player view model</param>
         /// <returns>Player view model builder object</returns>
@@ -109,7 +108,7 @@
         }
 
         /// <summary>
-        /// Builds test player view model
+        ///     Builds test player view model
         /// </summary>
         /// <returns>test player view model</returns>
         public PlayerViewModel Build()

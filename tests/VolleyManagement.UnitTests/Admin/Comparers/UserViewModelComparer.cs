@@ -1,23 +1,17 @@
-﻿namespace VolleyManagement.UnitTests.Admin.Comparers
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Mvc.ViewModels;
-    using UI.Areas.Admin.Models;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.Admin.Models;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
 
+namespace VolleyManagement.UnitTests.Admin.Comparers
+{
     /// <summary>
-    /// Compares User instances
+    ///     Compares User instances
     /// </summary>
     [ExcludeFromCodeCoverage]
-
     public class UserViewModelComparer : IComparer<UserViewModel>, IComparer
     {
-        public int Compare(UserViewModel x, UserViewModel y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
         public int Compare(object x, object y)
         {
             var firstUser = x as UserViewModel;
@@ -27,7 +21,8 @@
             {
                 return -1;
             }
-            else if (secondUser == null)
+
+            if (secondUser == null)
             {
                 return 1;
             }
@@ -35,15 +30,20 @@
             return Compare(firstUser, secondUser);
         }
 
+        public int Compare(UserViewModel x, UserViewModel y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
         private bool AreEqual(UserViewModel x, UserViewModel y)
         {
             var playerComparer = new PlayerViewModelComparer();
 
             var result = x.Id == y.Id &&
-                          x.Name == y.Name &&
-                          x.PersonName == y.PersonName &&
-                          x.Phone == y.Phone &&
-                          x.IsBlocked == y.IsBlocked;
+                         x.Name == y.Name &&
+                         x.PersonName == y.PersonName &&
+                         x.Phone == y.Phone &&
+                         x.IsBlocked == y.IsBlocked;
 
             if (result && x.Player != null)
             {

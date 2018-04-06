@@ -1,19 +1,18 @@
-﻿using FluentAssertions;
-using VolleyManagement.Contracts.Exceptions;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using FluentAssertions;
+using Xunit;
 
 namespace VolleyManagement.UnitTests.Services.FileService
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using Xunit;
-    using VolleyManagement.Services;
-
     [ExcludeFromCodeCoverage]
-    
     public class FileServiceTests
     {
-        #region Delete
+        private VolleyManagement.Services.FileService BuildSUT()
+        {
+            return new VolleyManagement.Services.FileService();
+        }
 
         [Fact]
         public void Delete_InvalidNullFile_FileNotFoundException()
@@ -27,10 +26,6 @@ namespace VolleyManagement.UnitTests.Services.FileService
             //Assert
             act.Should().Throw<FileNotFoundException>();
         }
-
-        #endregion
-
-        #region FileExists
 
         [Fact]
         public void FileExists_NoFile_FileNotFound()
@@ -47,10 +42,6 @@ namespace VolleyManagement.UnitTests.Services.FileService
             actual.Should().Be(expected, "There is no file on server");
         }
 
-        #endregion
-
-        #region Upload
-
         [Fact]
         public void Upload_InvalidNullFile_ArgumentException()
         {
@@ -62,13 +53,6 @@ namespace VolleyManagement.UnitTests.Services.FileService
 
             // Assert
             act.Should().Throw<ArgumentException>();
-        }
-
-        #endregion
-
-        private FileService BuildSUT()
-        {
-            return new FileService();
         }
     }
 }

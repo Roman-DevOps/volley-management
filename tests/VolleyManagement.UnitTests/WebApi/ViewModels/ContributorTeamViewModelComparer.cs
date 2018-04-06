@@ -1,30 +1,19 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using UI.Areas.WebApi.ViewModels.ContributorsTeam;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.ContributorsTeam;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Comparer for contributor objects.
+    ///     Comparer for contributor objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class ContributorTeamViewModelComparer : IComparer<ContributorsTeamViewModel>, IComparer
     {
         /// <summary>
-        /// Compares two contributors team objects.
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of contributors.</returns>
-        public int Compare(ContributorsTeamViewModel x, ContributorsTeamViewModel y)
-        {
-            return IsEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two contributors team objects (non-generic implementation).
+        ///     Compares two contributors team objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -38,7 +27,8 @@
             {
                 return -1;
             }
-            else if (secondContributorTeam == null)
+
+            if (secondContributorTeam == null)
             {
                 return 1;
             }
@@ -47,7 +37,18 @@
         }
 
         /// <summary>
-        /// Finds out whether two contributors team objects have the same properties.
+        ///     Compares two contributors team objects.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>A signed integer that indicates the relative values of contributors.</returns>
+        public int Compare(ContributorsTeamViewModel x, ContributorsTeamViewModel y)
+        {
+            return IsEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two contributors team objects have the same properties.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
@@ -55,9 +56,9 @@
         private bool IsEqual(ContributorsTeamViewModel x, ContributorsTeamViewModel y)
         {
             return x.Id == y.Id &&
-               x.Name == y.Name &&
-               x.CourseDirection == y.CourseDirection &&
-               x.Contributors.SequenceEqual(y.Contributors);
+                   x.Name == y.Name &&
+                   x.CourseDirection == y.CourseDirection &&
+                   x.Contributors.SequenceEqual(y.Contributors);
         }
     }
 }

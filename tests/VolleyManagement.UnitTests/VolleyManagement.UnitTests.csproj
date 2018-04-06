@@ -123,7 +123,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Admin\Comparers\MessageViewModelComparer.cs" />
-    <Compile Include="Admin\Comparers\TournamentRequestViewModelComparer.cs" />
     <Compile Include="Admin\Comparers\UserViewModelComparer.cs" />
     <Compile Include="Admin\Controllers\TournamentRequestControllerTest.cs" />
     <Compile Include="Admin\Controllers\UsersControllerTest.cs" />

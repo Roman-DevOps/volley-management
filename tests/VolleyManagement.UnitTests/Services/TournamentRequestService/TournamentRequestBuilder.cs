@@ -1,20 +1,19 @@
-﻿namespace VolleyManagement.UnitTests.Services.TournamentRequestService
-{
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.TournamentRequestAggregate;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.TournamentRequestAggregate;
 
+namespace VolleyManagement.UnitTests.Services.TournamentRequestService
+{
     [ExcludeFromCodeCoverage]
     public class TournamentRequestBuilder
     {
-        private TournamentRequest _tournamentRequest;
+        private readonly TournamentRequest _tournamentRequest;
 
         public TournamentRequestBuilder()
         {
-            _tournamentRequest = new TournamentRequest
-            {
+            _tournamentRequest = new TournamentRequest {
                 TeamId = 1,
                 GroupId = 1,
-                UserId = 1,
+                UserId = 1
             };
         }
 

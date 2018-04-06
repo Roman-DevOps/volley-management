@@ -1,26 +1,25 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Diagnostics.CodeAnalysis;
-    using UI.Areas.WebApi.ViewModels.Tournaments;
+﻿using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.Tournaments;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Builder for test tournament view models
+    ///     Builder for test tournament view models
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class TournamentViewModelBuilder
     {
         /// <summary>
-        /// Holds test tournament view model instance
+        ///     Holds test tournament view model instance
         /// </summary>
-        private TournamentViewModel _tournamentViewModel;
+        private readonly TournamentViewModel _tournamentViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TournamentViewModelBuilder"/> class
+        ///     Initializes a new instance of the <see cref="TournamentViewModelBuilder" /> class
         /// </summary>
         public TournamentViewModelBuilder()
         {
-            _tournamentViewModel = new TournamentViewModel()
-            {
+            _tournamentViewModel = new TournamentViewModel {
                 Id = 1,
                 Name = "Name",
                 Description = "Description 1",
@@ -31,7 +30,7 @@
         }
 
         /// <summary>
-        /// Sets id of test tournament view model
+        ///     Sets id of test tournament view model
         /// </summary>
         /// <param name="id">Id for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -42,7 +41,7 @@
         }
 
         /// <summary>
-        /// Sets name of test tournament view model
+        ///     Sets name of test tournament view model
         /// </summary>
         /// <param name="name">Name for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -53,7 +52,7 @@
         }
 
         /// <summary>
-        /// Sets description of test tournament view model
+        ///     Sets description of test tournament view model
         /// </summary>
         /// <param name="description">Description for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -64,7 +63,7 @@
         }
 
         /// <summary>
-        /// Sets scheme of test tournament view model
+        ///     Sets scheme of test tournament view model
         /// </summary>
         /// <param name="scheme">Scheme for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -75,7 +74,7 @@
         }
 
         /// <summary>
-        /// Sets season of test tournament view model
+        ///     Sets season of test tournament view model
         /// </summary>
         /// <param name="season">Season for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -86,7 +85,7 @@
         }
 
         /// <summary>
-        /// Sets regulations link of test tournament view model
+        ///     Sets regulations link of test tournament view model
         /// </summary>
         /// <param name="regulationsLink">Regulations link for test tournament view model</param>
         /// <returns>Tournament view model builder object</returns>
@@ -97,7 +96,7 @@
         }
 
         /// <summary>
-        /// Builds test tournament view model
+        ///     Builds test tournament view model
         /// </summary>
         /// <returns>test tournament view model</returns>
         public TournamentViewModel Build()

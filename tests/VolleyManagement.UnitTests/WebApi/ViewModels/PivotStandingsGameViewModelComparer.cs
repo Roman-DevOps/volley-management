@@ -1,23 +1,27 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.GameReports;
+using VolleyManagement.UnitTests.Mvc.ViewModels;
 
 namespace VolleyManagement.UnitTests.WebApi.ViewModels
 {
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Xunit;
-    using UI.Areas.WebApi.ViewModels.GameReports;
-    using Mvc.ViewModels;
-
     [ExcludeFromCodeCoverage]
     internal class PivotStandingsGameViewModelComparer : IComparer, IComparer<PivotStandingsGameViewModel>
     {
+        public int Compare(object x, object y)
+        {
+            return Compare(x as PivotStandingsGameViewModel, y as PivotStandingsGameViewModel);
+        }
+
         public int Compare(PivotStandingsGameViewModel x, PivotStandingsGameViewModel y)
         {
             if (x == null && y == null)
             {
                 return 0;
             }
+
             if (x == null)
             {
                 return -1;
@@ -29,11 +33,6 @@ namespace VolleyManagement.UnitTests.WebApi.ViewModels
             }
 
             return CompareInternal(x, y);
-        }
-
-        public int Compare(object x, object y)
-        {
-            return Compare(x as PivotStandingsGameViewModel, y as PivotStandingsGameViewModel);
         }
 
         private int CompareInternal(PivotStandingsGameViewModel x, PivotStandingsGameViewModel y)

@@ -1,35 +1,24 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameService
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Domain.GamesAggregate;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using VolleyManagement.Domain.GamesAggregate;
 
+namespace VolleyManagement.UnitTests.Services.GameService
+{
     /// <summary>
-    /// Represents a comparer for <see cref="Game"/> objects.
+    ///     Represents a comparer for <see cref="Game" /> objects.
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class GameComparer : IComparer<Game>, IComparer
     {
         /// <summary>
-        /// Compares two <see cref="Game"/> objects.
+        ///     Compares two <see cref="Game" /> objects (non-generic implementation).
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="Game"/> x and y.</returns>
-        public int Compare(Game x, Game y)
-        {
-            return AreEqual(x, y) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Compares two <see cref="Game"/> objects (non-generic implementation).
-        /// </summary>
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// <returns>A signed integer that indicates the relative values of <see cref="Game"/> x and y.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="Game" /> x and y.</returns>
         public int Compare(object x, object y)
         {
             var firstGameResult = x as Game;
@@ -39,7 +28,8 @@
             {
                 return -1;
             }
-            else if (secondGameResult == null)
+
+            if (secondGameResult == null)
             {
                 return 1;
             }
@@ -48,20 +38,31 @@
         }
 
         /// <summary>
-        /// Finds out whether two <see cref="Game"/> objects are equal.
+        ///     Compares two <see cref="Game" /> objects.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// <returns>True if given <see cref="Game"/> objects are equal.</returns>
+        /// <returns>A signed integer that indicates the relative values of <see cref="Game" /> x and y.</returns>
+        public int Compare(Game x, Game y)
+        {
+            return AreEqual(x, y) ? 0 : 1;
+        }
+
+        /// <summary>
+        ///     Finds out whether two <see cref="Game" /> objects are equal.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>True if given <see cref="Game" /> objects are equal.</returns>
         internal bool AreEqual(Game x, Game y)
         {
             var result = x.Id == y.Id
-                && x.TournamentId == y.TournamentId
-                && x.HomeTeamId == y.HomeTeamId
-                && x.AwayTeamId == y.AwayTeamId
-                && x.GameDate == y.GameDate
-                && x.Round == y.Round
-                && x.GameNumber == y.GameNumber;
+                         && x.TournamentId == y.TournamentId
+                         && x.HomeTeamId == y.HomeTeamId
+                         && x.AwayTeamId == y.AwayTeamId
+                         && x.GameDate == y.GameDate
+                         && x.Round == y.Round
+                         && x.GameNumber == y.GameNumber;
 
             if (!result)
             {

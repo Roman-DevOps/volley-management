@@ -1,51 +1,33 @@
-﻿namespace VolleyManagement.UnitTests.Services.TournamentRequestService
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Contracts;
-    using Contracts.Authorization;
-    using Contracts.Exceptions;
-    using Contracts.ExternalResources;
-    using Data.Contracts;
-    using Data.Exceptions;
-    using Data.Queries.Common;
-    using Data.Queries.TournamentRequest;
-    using Domain.RolesAggregate;
-    using Domain.TournamentRequestAggregate;
-    using Domain.UsersAggregate;
-    using MailService;
-    using Xunit;
-    using Moq;
-    using MSTestExtensions;
-    using UserManager;
-    using VolleyManagement.Services;
-    using System.Collections;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Moq;
+using MSTestExtensions;
+using VolleyManagement.Contracts;
+using VolleyManagement.Contracts.Authorization;
+using VolleyManagement.Contracts.Exceptions;
+using VolleyManagement.Contracts.ExternalResources;
+using VolleyManagement.Data.Contracts;
+using VolleyManagement.Data.Exceptions;
+using VolleyManagement.Data.Queries.Common;
+using VolleyManagement.Data.Queries.TournamentRequest;
+using VolleyManagement.Domain.RolesAggregate;
+using VolleyManagement.Domain.TournamentRequestAggregate;
+using VolleyManagement.Domain.UsersAggregate;
+using VolleyManagement.UnitTests.Services.MailService;
+using VolleyManagement.UnitTests.Services.UserManager;
+using Xunit;
 
+namespace VolleyManagement.UnitTests.Services.TournamentRequestService
+{
     [ExcludeFromCodeCoverage]
-    
     public class TournamentRequestServiceTests : BaseTest
     {
-        private const int EXISTING_ID = 1;
-        private const int INVALID_REQUEST_ID = -1;
-        private readonly TournamentRequestServiceTestFixture _testFixture
-            = new TournamentRequestServiceTestFixture();
-
-        private Mock<ITournamentRequestRepository> _tournamentRequestRepositoryMock;
-        private Mock<IUnitOfWork> _unitOfWorkMock;
-        private Mock<IAuthorizationService> _authServiceMock;
-        private Mock<IQuery<ICollection<TournamentRequest>, GetAllCriteria>> _getAllRequestsQueryMock;
-        private Mock<IQuery<TournamentRequest, FindByIdCriteria>> _getRequestByIdQueryMock;
-        private Mock<IQuery<TournamentRequest, FindByTeamTournamentCriteria>> _getRequestByAllQueryMock;
-        private Mock<ITournamentService> _tournamentServiceMock = new Mock<ITournamentService>();
-        private Mock<IMailService> _mailServiceMock;
-        private Mock<IUserService> _userServiceMock;
-
         public TournamentRequestServiceTests()
         {
             _tournamentRequestRepositoryMock
-              = new Mock<ITournamentRequestRepository>();
+                = new Mock<ITournamentRequestRepository>();
 
             _unitOfWorkMock = new Mock<IUnitOfWork>();
 
@@ -67,124 +49,126 @@
                 .Returns(_unitOfWorkMock.Object);
         }
 
-        [Fact]
-        public void GetAll_RequestsExist_RequestsReturned()
+        private const int EXISTING_ID = 1;
+        private const int INVALID_REQUEST_ID = -1;
+
+        private readonly TournamentRequestServiceTestFixture _testFixture
+            = new TournamentRequestServiceTestFixture();
+
+        private readonly Mock<ITournamentRequestRepository> _tournamentRequestRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IAuthorizationService> _authServiceMock;
+        private readonly Mock<IQuery<ICollection<TournamentRequest>, GetAllCriteria>> _getAllRequestsQueryMock;
+        private readonly Mock<IQuery<TournamentRequest, FindByIdCriteria>> _getRequestByIdQueryMock;
+        private readonly Mock<IQuery<TournamentRequest, FindByTeamTournamentCriteria>> _getRequestByAllQueryMock;
+        private readonly Mock<ITournamentService> _tournamentServiceMock = new Mock<ITournamentService>();
+        private readonly Mock<IMailService> _mailServiceMock;
+        private readonly Mock<IUserService> _userServiceMock;
+
+        private VolleyManagement.Services.TournamentRequestService BuildSUT()
         {
-            // Arrange
-            var expected = _testFixture.TestRequests().Build();
-
-            MockGetAllTournamentRequestQuery(expected);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.Get();
-
-            // Assert
-            TestHelper.AreEqual(expected, actual, new TournamentRequestComparer());
+            return new VolleyManagement.Services.TournamentRequestService(
+                _tournamentRequestRepositoryMock.Object,
+                _authServiceMock.Object,
+                _getAllRequestsQueryMock.Object,
+                _getRequestByIdQueryMock.Object,
+                _getRequestByAllQueryMock.Object,
+                _tournamentServiceMock.Object,
+                _mailServiceMock.Object,
+                _userServiceMock.Object);
         }
 
-        [Fact]
-        public void GetAll_NoViewListRights_AuthorizationExceptionThrows()
+        private void VerifyCreateTournamentRequest(
+            TournamentRequest request,
+            Times times,
+            string message)
         {
-            // Arrange
-            MockAuthServiceThrownException(AuthOperations.TournamentRequests.ViewList);
-            var sut = BuildSUT();
-
-            // Act => Assert
-            Assert.Throws<AuthorizationException>(
-                () =>
-                sut.Get(),
-                "Requested operation is not allowed");
-        }
-
-        [Fact]
-        public void GetById_RequestExists_RequestReturned()
-        {
-            // Arrange
-            var expected = new TournamentRequestBuilder().WithId(EXISTING_ID).Build();
-            MockGetRequestByIdQuery(expected);
-
-            var sut = BuildSUT();
-
-            // Act
-            var actual = sut.Get(EXISTING_ID);
-
-            // Assert
-            TestHelper.AreEqual<TournamentRequest>(expected, actual, new TournamentRequestComparer());
-        }
-
-        [Fact]
-        public void Create_InvalidUserId_ExceptionThrows()
-        {
-            var newTournamentRequest = new TournamentRequestBuilder()
-               .Build();
-            _tournamentRequestRepositoryMock.Setup(
+            _tournamentRequestRepositoryMock
+                .Verify(
                     tr => tr.Add(
-                        newTournamentRequest))
-                .Callback<TournamentRequest>(t => t.UserId = -1);
-
-            // Arrange
-            var sut = BuildSUT();
-
-            // Act => Assert
-            Assert.Throws<ArgumentException>(
-                () =>
-                 sut.Create(newTournamentRequest),
-                "User's id is wrong");
+                        It.Is<TournamentRequest>(p => TournamentRequestAreEquals(p, request))),
+                    times,
+                    message);
+            _unitOfWorkMock.Verify(uow => uow.Commit(), times);
         }
 
-        [Fact]
-        public void Create_ValidTournamentRequest_RequestAdded()
+        private bool TournamentRequestAreEquals(TournamentRequest x, TournamentRequest y)
         {
-            // Arrange
-            var newTournamentRequest = new TournamentRequestBuilder()
-               .WithId(EXISTING_ID)
-               .WithTeamId(EXISTING_ID)
-               .WithGroupId(EXISTING_ID)
-               .WithUserId(EXISTING_ID)
-               .Build();
-            var emailMessage = new EmailMessageBuilder().Build();
-            MockMailService(emailMessage);
-            MockUserService();
-            _tournamentRequestRepositoryMock.Setup(
-                tr => tr.Add(
-                    It.IsAny<TournamentRequest>()))
-                    .Callback<TournamentRequest>(t => t.Id = EXISTING_ID);
-            var sut = BuildSUT();
-
-            // Act
-            sut.Create(newTournamentRequest);
-
-            // Assert
-            VerifyCreateTournamentRequest(newTournamentRequest, Times.Once(), "Parameter request is not equal to Instance of request");
+            return new TournamentRequestComparer().Compare(x, y) == 0;
         }
 
-        [Fact]
-        public void Create_TournamentRequesExist_RequestNotAdded()
+        private void MockRequestServiceThrowsInvalidKeyValueException()
         {
-            // Arrange
-            var newTournamentRequest = new TournamentRequestBuilder()
-               .WithId(EXISTING_ID)
-               .WithTeamId(EXISTING_ID)
-               .WithGroupId(EXISTING_ID)
-               .WithUserId(EXISTING_ID)
-               .Build();
-            var emailMessage = new EmailMessageBuilder().Build();
-            MockMailService(emailMessage);
-            MockUserService();
-            _tournamentRequestRepositoryMock.Setup(
-                tr => tr.Add(
-                    It.IsAny<TournamentRequest>()))
-                    .Callback<TournamentRequest>(t => t.Id = EXISTING_ID);
-            MockGetAllTournamentRequestQuery(newTournamentRequest);
-            var sut = BuildSUT();
+            _tournamentRequestRepositoryMock.Setup(tr => tr.Remove(It.IsAny<int>())).Throws<InvalidKeyValueException>();
+        }
 
-            // Act
-            sut.Create(newTournamentRequest);
+        private void MockGetAllTournamentRequestQuery(IEnumerable<TournamentRequest> testData)
+        {
+            _getAllRequestsQueryMock.Setup(tr => tr.Execute(It.IsAny<GetAllCriteria>())).Returns(testData.ToList());
+        }
 
-            // Assert
-            VerifyCreateTournamentRequest(newTournamentRequest, Times.Never(), "Parameter request is not equal to Instance of request");
+        private void MockGetAllTournamentRequestQuery(TournamentRequest testData)
+        {
+            _getRequestByAllQueryMock.Setup(tr => tr.Execute(It.IsAny<FindByTeamTournamentCriteria>()))
+                .Returns(testData);
+        }
+
+        private void VerifyAddedTeamToTournament(Times times)
+        {
+            _tournamentServiceMock.Verify(tr => tr.AddTeamsToTournament(It.IsAny<List<TeamTournamentAssignmentDto>>()),
+                times);
+        }
+
+        private void MockAuthServiceThrownException(AuthOperation operation)
+        {
+            _authServiceMock.Setup(tr => tr.CheckAccess(operation)).Throws<AuthorizationException>();
+        }
+
+        private void MockGetRequestByIdQuery(TournamentRequest request)
+        {
+            _getRequestByIdQueryMock.Setup(tr => tr.Execute(It.IsAny<FindByIdCriteria>())).Returns(request);
+        }
+
+        private void MockMailService(EmailMessage message)
+        {
+            _mailServiceMock.Setup(tr => tr.Send(message));
+        }
+
+        private void MockUserService()
+        {
+            var user = new UserBuilder().Build();
+            var userList = new List<User> {user};
+            _userServiceMock.Setup(tr => tr.GetAdminsList()).Returns(userList);
+        }
+
+        private void MockGetUser()
+        {
+            var user = new UserBuilder().Build();
+            _userServiceMock.Setup(tr => tr.GetUser(It.IsAny<int>())).Returns(user);
+        }
+
+        private void VerifyCheckAccess(AuthOperation operation, Times times)
+        {
+            _authServiceMock.Verify(tr => tr.CheckAccess(operation), times);
+        }
+
+        private void VerifyDeleteRequest(int requestid, Times repositoryTimes)
+        {
+            _tournamentRequestRepositoryMock.Verify(tr => tr.Remove(It.Is<int>(id => id == requestid)),
+                repositoryTimes);
+            _unitOfWorkMock.Verify(uow => uow.Commit(), repositoryTimes);
+        }
+
+        private void VerifyDeleteRequest(int requestid, Times repositoryTimes, Times unitOfWorkTimes)
+        {
+            _tournamentRequestRepositoryMock.Verify(tr => tr.Remove(It.Is<int>(id => id == requestid)),
+                repositoryTimes);
+            _unitOfWorkMock.Verify(uow => uow.Commit(), unitOfWorkTimes);
+        }
+
+        private void MockRemoveTournamentRequest()
+        {
+            _tournamentRequestRepositoryMock.Setup(tr => tr.Remove(It.IsAny<int>()));
         }
 
         [Fact]
@@ -197,8 +181,21 @@
             // Act => Assert
             Assert.Throws<AuthorizationException>(
                 () =>
-                sut.Confirm(EXISTING_ID),
+                    sut.Confirm(EXISTING_ID),
                 "Requested operation is not allowed");
+        }
+
+        [Fact]
+        public void Confirm_RequestDoesNotExist_ExceptionThrown()
+        {
+            // Arrange
+            var sut = BuildSUT();
+
+            // Act => Assert
+            Assert.Throws<MissingEntityException>(
+                () =>
+                    sut.Confirm(INVALID_REQUEST_ID),
+                "A tournament request with specified identifier was not found");
         }
 
         [Fact]
@@ -224,34 +221,78 @@
         }
 
         [Fact]
-        public void Confirm_RequestDoesNotExist_ExceptionThrown()
+        public void Create_InvalidUserId_ExceptionThrows()
         {
+            var newTournamentRequest = new TournamentRequestBuilder()
+                .Build();
+            _tournamentRequestRepositoryMock.Setup(
+                    tr => tr.Add(
+                        newTournamentRequest))
+                .Callback<TournamentRequest>(t => t.UserId = -1);
+
             // Arrange
             var sut = BuildSUT();
 
             // Act => Assert
-            Assert.Throws<MissingEntityException>(
+            Assert.Throws<ArgumentException>(
                 () =>
-                sut.Confirm(INVALID_REQUEST_ID),
-                "A tournament request with specified identifier was not found");
+                    sut.Create(newTournamentRequest),
+                "User's id is wrong");
         }
 
         [Fact]
-        public void Decline_RequestExist_RequestDeleted()
+        public void Create_TournamentRequesExist_RequestNotAdded()
         {
             // Arrange
-            var expected = new TournamentRequestBuilder().Build();
-            MockGetRequestByIdQuery(expected);
+            var newTournamentRequest = new TournamentRequestBuilder()
+                .WithId(EXISTING_ID)
+                .WithTeamId(EXISTING_ID)
+                .WithGroupId(EXISTING_ID)
+                .WithUserId(EXISTING_ID)
+                .Build();
             var emailMessage = new EmailMessageBuilder().Build();
             MockMailService(emailMessage);
-            MockGetUser();
+            MockUserService();
+            _tournamentRequestRepositoryMock.Setup(
+                    tr => tr.Add(
+                        It.IsAny<TournamentRequest>()))
+                .Callback<TournamentRequest>(t => t.Id = EXISTING_ID);
+            MockGetAllTournamentRequestQuery(newTournamentRequest);
             var sut = BuildSUT();
 
             // Act
-            sut.Decline(EXISTING_ID, emailMessage.Body);
+            sut.Create(newTournamentRequest);
 
             // Assert
-            VerifyDeleteRequest(EXISTING_ID, Times.Once());
+            VerifyCreateTournamentRequest(newTournamentRequest, Times.Never(),
+                "Parameter request is not equal to Instance of request");
+        }
+
+        [Fact]
+        public void Create_ValidTournamentRequest_RequestAdded()
+        {
+            // Arrange
+            var newTournamentRequest = new TournamentRequestBuilder()
+                .WithId(EXISTING_ID)
+                .WithTeamId(EXISTING_ID)
+                .WithGroupId(EXISTING_ID)
+                .WithUserId(EXISTING_ID)
+                .Build();
+            var emailMessage = new EmailMessageBuilder().Build();
+            MockMailService(emailMessage);
+            MockUserService();
+            _tournamentRequestRepositoryMock.Setup(
+                    tr => tr.Add(
+                        It.IsAny<TournamentRequest>()))
+                .Callback<TournamentRequest>(t => t.Id = EXISTING_ID);
+            var sut = BuildSUT();
+
+            // Act
+            sut.Create(newTournamentRequest);
+
+            // Assert
+            VerifyCreateTournamentRequest(newTournamentRequest, Times.Once(),
+                "Parameter request is not equal to Instance of request");
         }
 
         [Fact]
@@ -282,106 +323,69 @@
             VerifyDeleteRequest(INVALID_REQUEST_ID, Times.Once(), Times.Never());
         }
 
-        private TournamentRequestService BuildSUT()
+        [Fact]
+        public void Decline_RequestExist_RequestDeleted()
         {
-            return new TournamentRequestService(
-                _tournamentRequestRepositoryMock.Object,
-                _authServiceMock.Object,
-                _getAllRequestsQueryMock.Object,
-                _getRequestByIdQueryMock.Object,
-                _getRequestByAllQueryMock.Object,
-                _tournamentServiceMock.Object,
-                _mailServiceMock.Object,
-                _userServiceMock.Object);
+            // Arrange
+            var expected = new TournamentRequestBuilder().Build();
+            MockGetRequestByIdQuery(expected);
+            var emailMessage = new EmailMessageBuilder().Build();
+            MockMailService(emailMessage);
+            MockGetUser();
+            var sut = BuildSUT();
+
+            // Act
+            sut.Decline(EXISTING_ID, emailMessage.Body);
+
+            // Assert
+            VerifyDeleteRequest(EXISTING_ID, Times.Once());
         }
 
-        private void VerifyCreateTournamentRequest(
-            TournamentRequest request,
-            Times times,
-            string message)
+        [Fact]
+        public void GetAll_NoViewListRights_AuthorizationExceptionThrows()
         {
-            _tournamentRequestRepositoryMock
-                .Verify(
-                tr => tr.Add(
-                    It.Is<TournamentRequest>(p => TournamentRequestAreEquals(p, request))),
-                    times,
-                    message);
-            _unitOfWorkMock.Verify(uow => uow.Commit(), times);
+            // Arrange
+            MockAuthServiceThrownException(AuthOperations.TournamentRequests.ViewList);
+            var sut = BuildSUT();
+
+            // Act => Assert
+            Assert.Throws<AuthorizationException>(
+                () =>
+                    sut.Get(),
+                "Requested operation is not allowed");
         }
 
-        private bool TournamentRequestAreEquals(TournamentRequest x, TournamentRequest y)
+        [Fact]
+        public void GetAll_RequestsExist_RequestsReturned()
         {
-            return new TournamentRequestComparer().Compare(x, y) == 0;
+            // Arrange
+            var expected = _testFixture.TestRequests().Build();
+
+            MockGetAllTournamentRequestQuery(expected);
+
+            var sut = BuildSUT();
+
+            // Act
+            var actual = sut.Get();
+
+            // Assert
+            TestHelper.AreEqual(expected, actual, new TournamentRequestComparer());
         }
 
-        private void MockRequestServiceThrowsInvalidKeyValueException()
+        [Fact]
+        public void GetById_RequestExists_RequestReturned()
         {
-            _tournamentRequestRepositoryMock.Setup(tr => tr.Remove(It.IsAny<int>())).Throws<InvalidKeyValueException>();
-        }
+            // Arrange
+            var expected = new TournamentRequestBuilder().WithId(EXISTING_ID).Build();
+            MockGetRequestByIdQuery(expected);
 
-        private void MockGetAllTournamentRequestQuery(IEnumerable<TournamentRequest> testData)
-        {
-            _getAllRequestsQueryMock.Setup(tr => tr.Execute(It.IsAny<GetAllCriteria>())).Returns(testData.ToList());
-        }
+            var sut = BuildSUT();
 
-        private void MockGetAllTournamentRequestQuery(TournamentRequest testData)
-        {
-            _getRequestByAllQueryMock.Setup(tr => tr.Execute(It.IsAny<FindByTeamTournamentCriteria>())).Returns(testData);
-        }
+            // Act
+            var actual = sut.Get(EXISTING_ID);
 
-        private void VerifyAddedTeamToTournament(Times times)
-        {
-            _tournamentServiceMock.Verify(tr => tr.AddTeamsToTournament(It.IsAny<List<TeamTournamentAssignmentDto>>()), times);
-        }
-
-        private void MockAuthServiceThrownException(AuthOperation operation)
-        {
-            _authServiceMock.Setup(tr => tr.CheckAccess(operation)).Throws<AuthorizationException>();
-        }
-
-        private void MockGetRequestByIdQuery(TournamentRequest request)
-        {
-            _getRequestByIdQueryMock.Setup(tr => tr.Execute(It.IsAny<FindByIdCriteria>())).Returns(request);
-        }
-
-        private void MockMailService(EmailMessage message)
-        {
-            _mailServiceMock.Setup(tr => tr.Send(message));
-        }
-
-        private void MockUserService()
-        {
-            var user = new UserBuilder().Build();
-            var userList = new List<User> { user };
-            _userServiceMock.Setup(tr => tr.GetAdminsList()).Returns(userList);
-        }
-
-        private void MockGetUser()
-        {
-            var user = new UserBuilder().Build();
-            _userServiceMock.Setup(tr => tr.GetUser(It.IsAny<int>())).Returns(user);
-        }
-
-        private void VerifyCheckAccess(AuthOperation operation, Times times)
-        {
-            _authServiceMock.Verify(tr => tr.CheckAccess(operation), times);
-        }
-
-        private void VerifyDeleteRequest(int requestid, Times repositoryTimes)
-        {
-            _tournamentRequestRepositoryMock.Verify(tr => tr.Remove(It.Is<int>(id => id == requestid)), repositoryTimes);
-            _unitOfWorkMock.Verify(uow => uow.Commit(), repositoryTimes);
-        }
-
-        private void VerifyDeleteRequest(int requestid, Times repositoryTimes, Times unitOfWorkTimes)
-        {
-            _tournamentRequestRepositoryMock.Verify(tr => tr.Remove(It.Is<int>(id => id == requestid)), repositoryTimes);
-            _unitOfWorkMock.Verify(uow => uow.Commit(), unitOfWorkTimes);
-        }
-
-        private void MockRemoveTournamentRequest()
-        {
-            _tournamentRequestRepositoryMock.Setup(tr => tr.Remove(It.IsAny<int>()));
+            // Assert
+            TestHelper.AreEqual(expected, actual, new TournamentRequestComparer());
         }
     }
 }

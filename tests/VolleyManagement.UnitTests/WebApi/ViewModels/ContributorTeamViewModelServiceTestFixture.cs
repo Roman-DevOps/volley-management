@@ -1,46 +1,41 @@
-﻿namespace VolleyManagement.UnitTests.WebApi.ViewModels
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.ContributorsAggregate;
-    using UI.Areas.WebApi.ViewModels.ContributorsTeam;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.UI.Areas.WebApi.ViewModels.ContributorsTeam;
 
+namespace VolleyManagement.UnitTests.WebApi.ViewModels
+{
     /// <summary>
-    /// Class for generating test data
+    ///     Class for generating test data
     /// </summary>
     [ExcludeFromCodeCoverage]
     internal class ContributorTeamViewModelServiceTestFixture
     {
         /// <summary>
-        /// Holds collection of contributors team
+        ///     Holds collection of contributors team
         /// </summary>
-        private IList<ContributorsTeamViewModel> _contributorsTeam = new List<ContributorsTeamViewModel>();
+        private readonly IList<ContributorsTeamViewModel> _contributorsTeam = new List<ContributorsTeamViewModel>();
 
         /// <summary>
-        /// Adds contributors to collection
+        ///     Adds contributors to collection
         /// </summary>
         /// <returns>Builder object with collection of contributors team</returns>
         public ContributorTeamViewModelServiceTestFixture TestContributor()
         {
-            _contributorsTeam.Add(new ContributorsTeamViewModel()
-            {
+            _contributorsTeam.Add(new ContributorsTeamViewModel {
                 Id = 1,
                 Name = "FirstName1",
                 CourseDirection = "Course",
-                Contributors = new List<string>
-                {
+                Contributors = new List<string> {
                     "FirstNameA",
                     "FirstNameB",
                     "FirstNameC"
                 }
             });
-            _contributorsTeam.Add(new ContributorsTeamViewModel()
-            {
+            _contributorsTeam.Add(new ContributorsTeamViewModel {
                 Id = 2,
                 Name = "FirstName2",
                 CourseDirection = "Course",
-                Contributors = new List<string>
-                {
+                Contributors = new List<string> {
                     "FirstNameD",
                     "FirstNameE",
                     "FirstNameF"
@@ -50,7 +45,7 @@
         }
 
         /// <summary>
-        /// Add contributor team to collection.
+        ///     Add contributor team to collection.
         /// </summary>
         /// <param name="newContributor">Contributor to add.</param>
         /// <returns>Builder object with collection of contributors.</returns>
@@ -61,7 +56,7 @@
         }
 
         /// <summary>
-        /// Builds test data
+        ///     Builds test data
         /// </summary>
         /// <returns>Contributors team collection</returns>
         public IList<ContributorsTeamViewModel> Build()

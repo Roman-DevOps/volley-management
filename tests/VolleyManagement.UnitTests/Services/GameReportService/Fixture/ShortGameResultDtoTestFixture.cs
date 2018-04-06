@@ -1,9 +1,9 @@
-﻿namespace VolleyManagement.UnitTests.Services.GameReportService
-{
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using Domain.GameReportsAggregate;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using VolleyManagement.Domain.GameReportsAggregate;
 
+namespace VolleyManagement.UnitTests.Services.GameReportService
+{
     [ExcludeFromCodeCoverage]
     internal class ShortGameResultDtoTestFixture
     {
@@ -14,8 +14,7 @@
             _shortResults = new List<ShortGameResultDto>();
 
             _shortResults.Add(
-                new ShortGameResultDto
-                {
+                new ShortGameResultDto {
                     HomeTeamId = 1,
                     AwayTeamId = 3,
                     HomeGameScore = 3,
@@ -24,8 +23,7 @@
                 });
 
             _shortResults.Add(
-                new ShortGameResultDto
-                {
+                new ShortGameResultDto {
                     HomeTeamId = 3,
                     AwayTeamId = 1,
                     HomeGameScore = 3,
@@ -34,8 +32,7 @@
                 });
 
             _shortResults.Add(
-                new ShortGameResultDto
-                {
+                new ShortGameResultDto {
                     HomeTeamId = 2,
                     AwayTeamId = 1,
                     HomeGameScore = 1,
@@ -51,8 +48,7 @@
             _shortResults = new List<ShortGameResultDto>();
 
             _shortResults.Add(
-                new ShortGameResultDto
-                {
+                new ShortGameResultDto {
                     HomeTeamId = 1,
                     AwayTeamId = 2,
                     HomeGameScore = 1,
@@ -61,8 +57,7 @@
                 });
 
             _shortResults.Add(
-                new ShortGameResultDto
-                {
+                new ShortGameResultDto {
                     HomeTeamId = 1,
                     AwayTeamId = 3,
                     HomeGameScore = 1,
