@@ -32,7 +32,7 @@ image: Visual Studio 2017
 # environment variables
 environment:
   SONAR_TOKEN:
-    secure: e40a8346192994797c47462689e4aebf16702876
+    secure: 04a1bc2f83fb181867f46e16895c950f17f27bf8
   GITHUB_SONAR_PR_TOKEN:
     secure: Yw7T+6L/sj76jLwFSis3fGNkotT3iI99pJhoKdr8ocvW5xdIk/WfjSQb5PoAtryH
 
